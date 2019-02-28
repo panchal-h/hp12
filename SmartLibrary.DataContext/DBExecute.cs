@@ -29,7 +29,13 @@ namespace SmartLibrary.DataContext
         /// <summary>
         /// SQL server name
         /// </summary>    
-        public const string MasterDatabaseName = "SmartLibraryEntities";
+        public string MasterDatabaseName
+        {
+            get
+            {
+                return "SmartLibraryEntities";
+            }
+        }
 
         /// <summary>
         /// Gets or sets Database Connection Name
