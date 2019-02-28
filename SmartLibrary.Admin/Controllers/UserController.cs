@@ -68,7 +68,7 @@ namespace SmartLibrary.Admin.Controllers
         [PageAccessAttribute(PermissionName = Constants.ACTION_VIEW, ActionName = Actions.Users)]
         public JsonResult User([ModelBinder(typeof(DataTablesBinder))] IDataTablesRequest requestModel, string searchdata = "")
         {
-            List<User> usrerList = new List<User>();
+            List<User> usrerList;
 
             User model = new User()
             {
@@ -335,7 +335,7 @@ namespace SmartLibrary.Admin.Controllers
         [PageAccessAttribute(PermissionName = Constants.ACTION_VIEW, ActionName = Actions.Role)]
         public JsonResult Role([ModelBinder(typeof(DataTablesBinder))] IDataTablesRequest requestModel, string searchdata = "")
         {
-            List<Role> roleList = new List<Role>();
+            List<Role> roleList ;
 
             Role model = new Role()
             {
@@ -398,7 +398,7 @@ namespace SmartLibrary.Admin.Controllers
                 model.Active = true;
             }
 
-            List<PageAccess> dbPageAccessList = new List<PageAccess>();
+            List<PageAccess> dbPageAccessList;
             dbPageAccessList = (List<PageAccess>)this.commonBL.GetPageAccessBasedOnUserRole(model.Id);
             List<Page> pageList = this.masterBL.GetPageList(new Page() { Active = SystemEnumList.ActiveStatus.Active.GetHashCode().ToBoolean() });
             var pageAccessList = new List<PageAccess>();

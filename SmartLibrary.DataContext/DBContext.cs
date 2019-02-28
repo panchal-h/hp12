@@ -646,7 +646,6 @@ namespace SmartLibrary.DataContext
             }
             catch
             {
-                Console.WriteLine("There is an error in getting primary key value.");
                 throw;
             }
         }
@@ -676,7 +675,6 @@ namespace SmartLibrary.DataContext
             }
             catch (Exception)
             {
-                Console.WriteLine("There is an error in getting primary key Name.");
                 throw;
             }
         }
@@ -806,6 +804,8 @@ namespace SmartLibrary.DataContext
                     {
                         return DbType.String;
                     }
+                default:
+                    return DbType.String;
             }
 
             return DbType.String;

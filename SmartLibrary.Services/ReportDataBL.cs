@@ -26,18 +26,9 @@ namespace SmartLibrary.Services
         /// <returns>Report result.</returns>
         public DataSet GetCountForReport()
         {
-            int retVal = 0;
             using (CustomContext service = new CustomContext())
             {
                 DataSet ds = service.GetCountForReport();
-                if (ds?.Tables.Count > 0)
-                {
-                    if (ds.Tables[0]?.Rows.Count > 0)
-                    {
-                        retVal = ConvertTo.ToInteger(ds.Tables[0].Rows[0][0]);
-                    }
-                }
-
                 return ds;
             }
         }

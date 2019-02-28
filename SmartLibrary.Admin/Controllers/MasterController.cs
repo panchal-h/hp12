@@ -68,7 +68,7 @@ namespace SmartLibrary.Admin.Controllers
         [PageAccessAttribute(PermissionName = Constants.ACTION_VIEW, ActionName = Actions.BookGenre)]
         public JsonResult BookGenre([ModelBinder(typeof(DataTablesBinder))] IDataTablesRequest requestModel, string searchdata = "")
         {
-            List<BookGenre> bookGenreList = new List<BookGenre>();
+            List<BookGenre> bookGenreList;
 
             BookGenre model = new BookGenre()
             {
@@ -265,7 +265,7 @@ namespace SmartLibrary.Admin.Controllers
         [NoAntiForgeryCheck]
         public JsonResult Space([ModelBinder(typeof(DataTablesBinder))] IDataTablesRequest requestModel, string searchdata = "")
         {
-            List<Space> spaceList = new List<Space>();
+            List<Space> spaceList;
 
             Space model = new Space()
             {
@@ -461,7 +461,7 @@ namespace SmartLibrary.Admin.Controllers
         [NoAntiForgeryCheck]
         public JsonResult Pages([ModelBinder(typeof(DataTablesBinder))] IDataTablesRequest requestModel, string searchdata = "")
         {
-            List<Page> pageList = new List<Page>();
+            List<Page> pageList;
 
             Page model = new Page()
             {
@@ -658,7 +658,7 @@ namespace SmartLibrary.Admin.Controllers
         [PageAccessAttribute(PermissionName = Constants.ACTION_VIEW, ActionName = Actions.BookLocation)]
         public JsonResult BookLocation([ModelBinder(typeof(DataTablesBinder))] IDataTablesRequest requestModel, string searchData = "")
         {
-            List<BookLocation> bookLocationList = new List<BookLocation>();
+            List<BookLocation> bookLocationList;
             BookLocation model = new BookLocation()
             {
                 Name = searchData,

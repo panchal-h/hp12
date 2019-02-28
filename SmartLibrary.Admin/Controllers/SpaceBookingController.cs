@@ -64,7 +64,7 @@ namespace SmartLibrary.Admin.Controllers
         [PageAccessAttribute(PermissionName = Constants.ACTION_VIEW, ActionName = Actions.LibraryRoomBookings)]
         public JsonResult SpaceBookings([ModelBinder(typeof(DataTablesBinder))] IDataTablesRequest requestModel, string searchdata = "", int? statusId = null)
         {
-            List<SpaceBooking> spaceBookingList = new List<SpaceBooking>();
+            List<SpaceBooking> spaceBookingList;
 
             SpaceBooking model = new SpaceBooking()
             {

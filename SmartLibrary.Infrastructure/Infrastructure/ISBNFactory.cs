@@ -28,6 +28,8 @@ namespace SmartLibrary.Infrastructure
             {
                 case "GOOGLEBOOKAPI":
                     return new GoogleISBNService();
+                default:
+                    return null;
             }
 
             return null;

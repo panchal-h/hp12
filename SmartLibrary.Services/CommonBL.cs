@@ -38,12 +38,12 @@ namespace SmartLibrary.Services
             using (CustomContext service = new CustomContext())
             {
                 DataSet ds = service.CheckReferenceOfPrimaryKey(tableId, primaryKey);
-                if (ds?.Tables.Count > 0)
+                if (ds != null && ds.Tables.Count > 0)
                 {
                     for (int i = 0; i < ds.Tables.Count; i++)
                     {
                         DataTable dt = ds.Tables[i];
-                        if (dt?.Rows.Count > 0)
+                        if (dt != null && dt.Rows.Count > 0)
                         {
                             if (dt.Rows[0]["Count"].ToInteger() > 0)
                             {
@@ -82,13 +82,13 @@ namespace SmartLibrary.Services
                 searchCriteria.GetType().InvokeMember("Active", BindingFlags.Instance | BindingFlags.Public | BindingFlags.SetProperty, Type.DefaultBinder, searchCriteria, new object[] { true });
             }
 
-            List<T> listT = new List<T>();
+            List<T> listT;
             using (Services.ServiceContext service = new Services.ServiceContext())
             {
                 listT = service.Search<T>((T)searchCriteria).ToList();
             }
 
-            SelectListItem selectListItem = new SelectListItem();
+            SelectListItem selectListItem;
             if (!string.IsNullOrEmpty(pleaseSelectText))
             {
                 selectListItem = new SelectListItem();
@@ -946,21 +946,19 @@ namespace SmartLibrary.Services
                 DataSet ds = service.GetTodaysActivities(requestType, fromDate, toDate, active, customerId, searchText, startRowIndex, endRowIndex, sortExpression, sortDirection, status);
                 if (ds?.Tables.Count > 0)
                 {
-                    if (ds.Tables[0]?.Rows.Count > 0)
+                    if (ds != null && ds.Tables[0].Rows.Count > 0)
                     {
                         // if request type is book details
                         if (requestType == SystemEnumList.RequestTypeTodayActivity.BookDetails.GetDescription())
                         {
-                            List<BorrowedBook> finalList = new List<BorrowedBook>();
-                            finalList = ConvertTo.DataTableIntoList<BorrowedBook>(ds.Tables[0]);
+                            List<BorrowedBook> finalList = ConvertTo.DataTableIntoList<BorrowedBook>(ds.Tables[0]);
                             retVal = (object)finalList;
                         }
 
                         // if request type is room bookings
                         if (requestType == SystemEnumList.RequestTypeTodayActivity.RoomBookings.GetDescription())
                         {
-                            List<SpaceBooking> finalList = new List<SpaceBooking>();
-                            finalList = ConvertTo.DataTableIntoList<SpaceBooking>(ds.Tables[0]);
+                            List<SpaceBooking> finalList = ConvertTo.DataTableIntoList<SpaceBooking>(ds.Tables[0]);
                             retVal = (object)finalList;
                         }
                     }

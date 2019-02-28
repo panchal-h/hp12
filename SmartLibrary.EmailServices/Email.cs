@@ -278,7 +278,7 @@ namespace SmartLibrary.EmailServices
             bool isValid = true;
             if (!IsEmail(fromEmail))
             {
-                isValid = false;
+                return false;
             }
 
             isValid = ValidateEmail(toEmail);

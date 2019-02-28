@@ -67,12 +67,10 @@ namespace SmartLibrary.Infrastructure.DataAnnotations
             {
                 var uploadFile = value as HttpPostedFileBase;
                 var fileName = uploadFile.FileName;
-                int fileSize = 0; // in bytes
 
                 byte[] fileContent = null;
                 var reader = new System.IO.BinaryReader(uploadFile.InputStream);
                 fileContent = reader.ReadBytes(uploadFile.ContentLength); ////Get file data byte array
-                fileSize = uploadFile.ContentLength;
 
                 return CommonValidation.ValidateFileType(fileName, fileContent, Constants.MAXIMUM_FILE_UPLOAD_SIZE_BYTES, this.ValidExtensions) ? ValidationResult.Success : new ValidationResult(this.FormatErrorMessage(validationContext.DisplayName));
             }

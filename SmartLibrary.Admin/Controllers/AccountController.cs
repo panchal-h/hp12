@@ -248,7 +248,6 @@ namespace SmartLibrary.Admin.Controllers
                             return this.RedirectToAction(Actions.Index, Controllers.Account);
                         }
 
-                        // Business.Models.User user = service.Search(new Business.Models.User { Id = id }).FirstOrDefault();
                         User user = this.userDataBL.GetUsersList(new User { Id = id }).FirstOrDefault();
                         if (user != null && user.Id > 0)
                         {

@@ -70,8 +70,7 @@ namespace SmartLibrary.Admin.Pages
             this.pageAccessRight.AddUpdate = false;
             this.pageAccessRight.View = false;
             List<PageAccess> lstRights = (List<PageAccess>)ProjectSession.UserRoleRights;
-            PageAccess rights = new PageAccess();
-            rights = lstRights.Where(x => x.ActionName.ToLower() == actionName.ToLower()).FirstOrDefault();
+            PageAccess rights = lstRights.Where(x => x.ActionName.ToLower() == actionName.ToLower()).FirstOrDefault();
             if (rights != null)
             {
                 if (rights?.IsView ?? false)

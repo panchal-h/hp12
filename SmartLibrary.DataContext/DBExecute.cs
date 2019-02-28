@@ -131,7 +131,6 @@ namespace SmartLibrary.DataContext
             }
             catch (Exception)
             {
-                Console.WriteLine("There is an error in getting property value for " + propertyName);
                 throw;
             }
         }

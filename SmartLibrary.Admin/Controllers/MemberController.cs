@@ -161,7 +161,7 @@ namespace SmartLibrary.Admin.Controllers
         [PageAccessAttribute(PermissionName = Constants.ACTION_VIEW, ActionName = Actions.Customer)]
         public ActionResult CustomerGrid(BaseViewModel baseModel)
         {
-            List<Customer> customerList = new List<Customer>();
+            List<Customer> customerList;
             Customer model = new Customer()
             {
                 FirstName = baseModel.Searchtext,
@@ -173,11 +173,9 @@ namespace SmartLibrary.Admin.Controllers
             customerList = this.memberDataBL.GetCustomerList(model);
 
             int totalRecord = 0;
-            int filteredRecord = 0;
             if (customerList != null && customerList.Count > 0)
             {
                 totalRecord = customerList.FirstOrDefault().TotalRecords;
-                filteredRecord = customerList.FirstOrDefault().TotalRecords;
                 foreach (var customer in customerList)
                 {
                     customer.IdEncrypted = EncryptionDecryption.EncryptByTripleDES(customer.Id.ToString());
@@ -291,7 +289,6 @@ namespace SmartLibrary.Admin.Controllers
                     ExcelWorksheet workSheet = package.Workbook.Worksheets.Add("Member");
 
                     workSheet.Cells["A1"].LoadFromDataTable(customers, true);
-                    var reg = customers.Rows.Count;
                     workSheet.Cells["A1"].Value = "FirstName";
                     workSheet.Cells["B1"].Value = "LastName";
                     workSheet.Cells["C1"].Value = "Email";
@@ -365,7 +362,7 @@ namespace SmartLibrary.Admin.Controllers
             int filteredRecord = 0;
             if (historyType == 1)
             {
-                List<BorrowedBook> borrowedBookList = new List<BorrowedBook>();
+                List<BorrowedBook> borrowedBookList ;
                 borrowedBookList = this.commonDataBL.GetBookDetailsOfCustomer(id, searchdata, requestModel.Start + 1, requestModel.Start + requestModel.Length, requestModel.Columns.ElementAt(requestModel.OrderColumn).Data, requestModel.OrderDir);
                 if (borrowedBookList != null && borrowedBookList.Count > 0)
                 {
@@ -377,7 +374,7 @@ namespace SmartLibrary.Admin.Controllers
             }
             else
             {
-                List<SpaceBooking> spaceList = new List<SpaceBooking>();
+                List<SpaceBooking> spaceList;
                 spaceList = this.commonDataBL.GetSpaceDetailsOfCustomer(id, searchdata, requestModel.Start + 1, requestModel.Start + requestModel.Length, requestModel.Columns.ElementAt(requestModel.OrderColumn).Data, requestModel.OrderDir);
                 if (spaceList != null && spaceList.Count > 0)
                 {
@@ -603,7 +600,6 @@ namespace SmartLibrary.Admin.Controllers
                         }
                         else
                         {
-                            int deletedId = this.masterDataBL.Delete<SpaceBooking>(status);
                             return this.Json(new { success = false, status = Infrastructure.SystemEnumList.MessageBoxType.Error.GetDescription(), message = Messages.ErrorMessage.SetArguments(General.BookSpace), title = Infrastructure.SystemEnumList.Title.Space.GetDescription(), JsonRequestBehavior.AllowGet });
                         }
                     }
@@ -662,7 +658,7 @@ namespace SmartLibrary.Admin.Controllers
         [HttpGet]
         public ActionResult EditCustomer(int id = 0)
         {
-            Customer model = new Customer();
+            Customer model;
             if (id < 0)
             {
                 return this.View(Views.CustomerGrid);

@@ -53,7 +53,6 @@ namespace SmartLibrary.Admin.Controllers
         [ActionName(Actions.ManageMessages)]
         public ActionResult Index()
         {
-            // this.messageDataBL.MarkMessageAsRead(false);
             return this.View(Views.Message, new Message());
         }
 
@@ -158,7 +157,6 @@ namespace SmartLibrary.Admin.Controllers
                 int status = this.messageDataBL.Save<Message>(message, false, false);
                 if (status > 0)
                 {
-                    // SmartLibrary.Services.NotificationFactory.AddNotification(SystemEnumList.NotificationType.NewMessage, status);
                     Customer customer = this.messageDataBL.SelectObject<Customer>(message.CustomerId);
 
                     EmailViewModel emailModel = new EmailViewModel()

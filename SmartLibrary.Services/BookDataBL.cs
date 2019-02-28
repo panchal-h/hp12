@@ -141,7 +141,7 @@ namespace SmartLibrary.Services
                 DataSet ds = service.SchedulerRunforAllPendingRequests(schedulerDate);
                 if (ds?.Tables.Count > 0)
                 {
-                    if (ds.Tables[0]?.Rows.Count > 0)
+                    if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
                     {
                         retVal = ConvertTo.ToInteger(ds.Tables[0].Rows[0][0]);
                     }

@@ -142,7 +142,7 @@ namespace SmartLibrary.DataContext
         {
             /* Create Database object
             Database db = DatabaseFactory.CreateDatabase();*/
-            List<T> returnValue = new List<T>();
+            List<T> returnValue;
 
             // Create a suitable command type and add the required parameter
             using (SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(databaseConnection))
@@ -205,7 +205,7 @@ namespace SmartLibrary.DataContext
         {
             List<T> list = new List<T>();
 
-            T obj = default(T);
+            T obj;
 
             while (dr.Read())
             {

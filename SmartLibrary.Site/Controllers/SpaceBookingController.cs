@@ -75,7 +75,7 @@ namespace SmartLibrary.Site.Controllers
         [NoAntiForgeryCheck]
         public JsonResult SpaceBookings([ModelBinder(typeof(DataTablesBinder))] IDataTablesRequest requestModel, string searchdata = "")
         {
-            List<SpaceBooking> spaceBookingList = new List<SpaceBooking>();
+            List<SpaceBooking> spaceBookingList;
 
             SpaceBooking model = new SpaceBooking()
             {

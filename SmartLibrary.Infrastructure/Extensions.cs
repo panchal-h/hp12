@@ -191,7 +191,7 @@ namespace SmartLibrary.Infrastructure
         /// <returns>returns data table</returns>
         public static DataTable FromXMLStringToDataTable(this string xmlString)
         {
-            DataSet ds = new DataSet();
+            DataSet ds;
             using (StringReader stringReader = new StringReader(xmlString))
             {
                 ds = new DataSet();

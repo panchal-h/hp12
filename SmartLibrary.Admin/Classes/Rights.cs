@@ -115,7 +115,7 @@ namespace SmartLibrary.Admin.Classes
             if (ProjectSession.UserId > 0)
             {
                 List<PageAccess> lstRights = (List<PageAccess>)ProjectSession.UserRoleRights;
-                PageAccess rights = new PageAccess();
+                PageAccess rights;
                 rights = lstRights.Where(x => x.ActionName.ToLower() == actionName.ToLower()).FirstOrDefault();
                 if (rights != null)
                 {

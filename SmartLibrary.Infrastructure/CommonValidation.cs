@@ -104,12 +104,12 @@ namespace SmartLibrary.Infrastructure
 
             if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(extension))
             {
-                throw new Exception("File Name must have a value and an extension");
+                throw new ArgumentNullException("File Name");
             }
 
             if (fileContent == null || !fileContent.Any())
             {
-                throw new Exception("File Content cannot be null or empty");
+                throw new ArgumentNullException("File Content");
             }
 
             if (fileContent.Length > maxFileSize)

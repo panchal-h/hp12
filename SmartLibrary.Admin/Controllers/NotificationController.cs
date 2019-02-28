@@ -90,7 +90,7 @@ namespace SmartLibrary.Admin.Controllers
                 IsAdmin = true
             });
 
-            if (notifications?.Count > 0 && notifications.Any(n => n.IsRead == false))
+            if (notifications != null && notifications.Count > 0 && notifications.Any(n => n.IsRead == false))
             {
                 this.notificationDataBL.MarkNotificationAsRead(string.Join(",", notifications.Where(n => n.IsRead == false).Select(n => n.ID)));
             }

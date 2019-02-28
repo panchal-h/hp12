@@ -161,7 +161,7 @@ namespace SmartLibrary.Site.Controllers
         [ActionName(Actions.BookDetailView)]
         public ActionResult BookDetailView(string bookId = null)
         {
-            Book retmodel = new Book();
+            Book retmodel;
             string returnUrl = string.Empty;
             if (this.Request.UrlReferrer != null)
             {
@@ -219,7 +219,7 @@ namespace SmartLibrary.Site.Controllers
         [ActionName(Actions.CommentList)]
         public ActionResult CommentList(int? currentPage, int? bookId, int? pagesize)
         {
-            List<BookDiscussion> commentList = new List<BookDiscussion>();
+            List<BookDiscussion> commentList ;
 
             BookDiscussion model = new BookDiscussion()
             {
@@ -231,11 +231,9 @@ namespace SmartLibrary.Site.Controllers
             commentList = this.bookDataBL.Search<BookDiscussion>(model);
 
             int totalRecord = 0;
-            int filteredRecord = 0;
             if (commentList != null && commentList.Count > 0)
             {
                 totalRecord = commentList.FirstOrDefault().TotalRecords;
-                filteredRecord = commentList.FirstOrDefault().TotalRecords;
             }
 
             if (pagesize != 1)
@@ -288,7 +286,7 @@ namespace SmartLibrary.Site.Controllers
         [NoAntiForgeryCheck]
         public ActionResult BookGrid(BaseViewModel baseModel, string genre = null, string sector = null, string location = null, bool? favourite = null)
         {
-            List<Book> bookList = new List<Book>();
+            List<Book> bookList ;
             Book model = new Book()
             {
                 ID = baseModel.Id,
@@ -320,11 +318,9 @@ namespace SmartLibrary.Site.Controllers
             bookList = this.bookDataBL.Search(model);
 
             int totalRecord = 0;
-            int filteredRecord = 0;
             if (bookList != null && bookList.Count > 0)
             {
                 totalRecord = bookList.FirstOrDefault().TotalRecords;
-                filteredRecord = bookList.FirstOrDefault().TotalRecords;
             }
 
             this.ViewBag.TotalPage = Math.Ceiling((float)totalRecord / ProjectConfiguration.PageSizeGrid);
@@ -568,8 +564,7 @@ namespace SmartLibrary.Site.Controllers
             int totalRecord = 0;
             int filteredRecord = 0;
 
-            List<BorrowedBook> borrowedBookList = new List<BorrowedBook>();
-            borrowedBookList = this.commonBL.GetBookDetailsOfCustomer(id, searchdata, requestModel.Start + 1, requestModel.Start + requestModel.Length, requestModel.Columns.ElementAt(requestModel.OrderColumn).Data, requestModel.OrderDir);
+            List<BorrowedBook> borrowedBookList = this.commonBL.GetBookDetailsOfCustomer(id, searchdata, requestModel.Start + 1, requestModel.Start + requestModel.Length, requestModel.Columns.ElementAt(requestModel.OrderColumn).Data, requestModel.OrderDir);
             if (borrowedBookList != null && borrowedBookList.Count > 0)
             {
                 totalRecord = borrowedBookList.FirstOrDefault().TotalRecords;

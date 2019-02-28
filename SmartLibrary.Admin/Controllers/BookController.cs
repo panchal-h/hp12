@@ -356,7 +356,7 @@ namespace SmartLibrary.Admin.Controllers
         public ActionResult BookDetailView(string bookId = null, string q = null)
         {
             this.ViewData["CurrentPageAccessRight"] = this.PageAccessRight;
-            Book retmodel = new Book();
+            Book retmodel;
             string returnUrl = string.Empty;
             if (this.Request.UrlReferrer != null)
             {
@@ -583,7 +583,7 @@ namespace SmartLibrary.Admin.Controllers
         [PageAccessAttribute(PermissionName = Constants.ACTION_VIEW, ActionName = Actions.Book)]
         public ActionResult BookGrid(BaseViewModel baseModel, string genre = null, string sector = null, string location = null, int active = 1)
         {
-            List<Book> bookList = new List<Book>();
+            List<Book> bookList;
             Book model = new Book()
             {
                 ID = baseModel.Id,
@@ -613,11 +613,9 @@ namespace SmartLibrary.Admin.Controllers
             bookList = this.bookDataBL.Search(model);
 
             int totalRecord = 0;
-            int filteredRecord = 0;
             if (bookList != null && bookList.Count > 0)
             {
                 totalRecord = bookList.FirstOrDefault().TotalRecords;
-                filteredRecord = bookList.FirstOrDefault().TotalRecords;
             }
 
             this.ViewBag.TotalPage = Math.Ceiling((float)totalRecord / ProjectConfiguration.PageSizeGrid);
@@ -811,7 +809,6 @@ namespace SmartLibrary.Admin.Controllers
         [PageAccessAttribute(PermissionName = Constants.ACTION_ADDUPDATE, ActionName = Actions.Book)]
         public JsonResult ReturnBook(DateTime returnDate, int borrowid = 0, int bookId = 0, string returnNotes = null)
         {
-            string msg = string.Empty;
             try
             {
                 int result = this.commonBL.BookReturn(bookId, ProjectSession.UserId, borrowid, returnNotes, returnDate);
@@ -878,7 +875,7 @@ namespace SmartLibrary.Admin.Controllers
         [PageAccessAttribute(PermissionName = Constants.ACTION_VIEW, ActionName = Actions.Book)]
         public JsonResult BorrowerDetails([ModelBinder(typeof(DataTablesBinder))] IDataTablesRequest requestModel, string searchText = "", int id = 0, int active = 1, int? status = null)
         {
-            List<BorrowedBook> borrowers = new List<BorrowedBook>();
+            List<BorrowedBook> borrowers;
             borrowers = this.commonBL.GetBookBorrowedDetails(id, status, active, requestModel.Start + 1, requestModel.Start + requestModel.Length, requestModel.Columns.ElementAt(requestModel.OrderColumn).Data, requestModel.OrderDir, searchText);
             int totalRecord = 0;
             int filteredRecord = 0;
@@ -904,7 +901,7 @@ namespace SmartLibrary.Admin.Controllers
         [PageAccessAttribute(PermissionName = Constants.ACTION_VIEW, ActionName = Actions.Book)]
         public JsonResult BookComments([ModelBinder(typeof(DataTablesBinder))] IDataTablesRequest requestModel, string searchText = "", int bookid = 0)
         {
-            List<BookDiscussion> comments = new List<BookDiscussion>();
+            List<BookDiscussion> comments;
             comments = this.commonBL.GetBookComments(bookid, searchText, requestModel.Start + 1, requestModel.Start + requestModel.Length, requestModel.Columns.ElementAt(requestModel.OrderColumn).Data, requestModel.OrderDir);
             int totalRecord = 0;
             int filteredRecord = 0;
@@ -1126,7 +1123,6 @@ namespace SmartLibrary.Admin.Controllers
                 imageObject = Image.FromStream(ms);
             }
 
-            // System.IO.File.WriteAllBytes(Path.Combine(bookImageDirectory, imagePath + imageType), Convert.FromBase64String(image));
             ((Image)new Bitmap(imageObject)).Save(Path.Combine(bookImageTempDirectory, imagePath + imageType));
             if (imageObject.Size.Width > 150 && imageObject.Size.Height > 200)
             {
