@@ -24,71 +24,71 @@ namespace SmartLibrary.Admin.Pages
         /// <summary>
         /// Administration Controller
         /// </summary>
-        public const string Administration = "Administration";
+        public static string Administration { get { return "Administration"; } }
 
         /// <summary>
         /// Home Controller
         /// </summary>
-        public const string Home = "Home";
+        public static string Home { get { return "Home"; } }
 
         /// <summary>
         /// Message Controller
         /// </summary>
-        public const string Message = "Message";
+        public static string Message { get { return "Message"; } }
 
         /// <summary>
         /// Login Controller
         /// </summary>
-        public const string Login = "Login";
+        public static string Login { get { return "Login"; } }
 
         /// <summary>
         /// Account Controller
         /// </summary>
-        public const string Account = "Account";
+        public static string Account { get { return "Account"; } }
     
         /// <summary>
         /// User Controller
         /// </summary>
-        public const string User = "User";
+        public static string User { get { return "User"; } }
 
         /// <summary>
         /// Master Controller
         /// </summary>
-        public const string Master = "Master";
+        public static string Master { get { return "Master"; } }
 
         /// <summary>
         /// Member Controller
         /// </summary>
-        public const string Member = "Member";
+        public static string Member { get { return "Member"; } }
 
         /// <summary>
         /// Book Controller
         /// </summary>
-        public const string Book = "Book";
+        public static string Book { get { return "Book"; } }
 
         /// <summary>
         /// Error Controller
         /// </summary>
-        public const string Error = "error";
+        public static string Error { get { return "error"; } }
 
         /// <summary>
         /// Library Room Bookings(Space Booking)
         /// </summary>
-        public const string SpaceBooking = "SpaceBooking";
+        public static string SpaceBooking { get { return "SpaceBooking"; } }
 
         /// <summary>
         /// Notification Controller
         /// </summary>
-        public const string Notification = "Notification";
+        public static string Notification { get { return "Notification"; } }
 
         /// <summary>
         /// Report Controller
         /// </summary>
-        public const string Report = "Report";
+        public static string Report { get { return "Report"; } }
 
         /// <summary>
         /// Active Directory Controller
         /// </summary>
-        public const string ActiveDirectory = "ActiveDirectory";
+        public static string ActiveDirectory { get { return "ActiveDirectory"; } }
     }
 }

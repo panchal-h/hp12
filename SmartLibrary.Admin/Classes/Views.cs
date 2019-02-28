@@ -24,89 +24,89 @@ namespace SmartLibrary.Admin.Pages
         /// <summary>
         /// Index View
         /// </summary>
-        public const string Index = "index";
+        public static string Index { get { return "index"; } }
 
         /// <summary>
         /// Manage view
         /// </summary>
-        public const string Manage = "manage";
+        public static string Manage { get { return "manage"; } }
 
         /// <summary>
         /// Profile view
         /// </summary>
-        public const string Profile = "Profile";
+        public static string Profile { get { return "Profile"; } }
 
         /// <summary>
         /// Forgot Password View
         /// </summary>
-        public const string ForgotPassword = "forgotpassword";
+        public static string ForgotPassword { get { return "forgotpassword"; } }
 
         /// <summary>
         /// Change Password View
         /// </summary>
-        public const string ChangePassword = "changepassword";
+        public static string ChangePassword { get { return "changepassword"; } }
 
         /// <summary>
         /// The reset password
         /// </summary>
-        public const string ResetPassword = "resetpassword";
+        public static string ResetPassword { get { return "resetpassword"; } }
 
         /// <summary>
         /// Session Expired
         /// </summary>
-        public const string SessionExpired = "sessionexpired";
+        public static string SessionExpired { get { return "sessionexpired"; } }
 
         /// <summary>
         /// All Movies View
         /// </summary>
-        public const string AllMovies = "AllMovies";
+        public static string AllMovies { get { return "AllMovies"; } }
 
         /// <summary>
         /// Create Movie View
         /// </summary>
-        public const string CreateMovies = "ManageMovie";
+        public static string CreateMovies { get { return "ManageMovie"; } }
 
         /// <summary>
         /// Access Denied
         /// </summary>
-        public const string AccessDenied = "accessdenied";
+        public static string AccessDenied { get { return "accessdenied"; } }
 
         /// <summary>
         /// Staff Login
         /// </summary>
-        public const string StaffLogin = "StaffLogin";
+        public static string StaffLogin { get { return "StaffLogin"; } }
 
         #region User
 
         /// <summary>
         /// The Admin User
         /// </summary>
-        public const string User = "user";
+        public static string User { get { return "user"; } }
 
         /// <summary>
         /// The manage Admin User
         /// </summary>
-        public const string ManageUser = "manageuser";
+        public static string ManageUser { get { return "manageuser"; } }
 
         /// <summary>
         /// The manage User Profile
         /// </summary>
-        public const string MyProfile = "myprofile";
+        public static string MyProfile { get { return "myprofile"; } }
 
         /// <summary>
         /// The Customer Grid
         /// </summary>
-        public const string CustomerGrid = "Manage-Customer-Grid-View";
+        public static string CustomerGrid { get { return "Manage-Customer-Grid-View"; } }
 
         /// <summary>
         /// The Customer List
         /// </summary>
-        public const string CustomerList = "Manage-Customer-List-View";
+        public static string CustomerList { get { return "Manage-Customer-List-View"; } }
 
         /// <summary>
         /// The History of Member
         /// </summary>
-        public const string HistoryOfMember = "Member-History";
+        public static string HistoryOfMember { get { return "Member-History"; } }
 
         #endregion
 
@@ -115,12 +115,12 @@ namespace SmartLibrary.Admin.Pages
         /// <summary>
         /// The Page
         /// </summary>
-        public const string Page = "Manage-Page";
+        public static string Page { get { return "Manage-Page"; } }
 
         /// <summary>
         /// The manage Page
         /// </summary>
-        public const string ManagePage = "managepage";
+        public static string ManagePage { get { return "managepage"; } }
         #endregion
 
         #region Role
@@ -128,12 +128,12 @@ namespace SmartLibrary.Admin.Pages
         /// <summary>
         /// The Page
         /// </summary>
-        public const string Role = "Manage-Role";
+        public static string Role { get { return "Manage-Role"; } }
 
         /// <summary>
         /// The manage Role
         /// </summary>
-        public const string ManageRole = "managerole";
+        public static string ManageRole { get { return "managerole"; } }
         #endregion
 
         #region Accounts
@@ -141,17 +141,17 @@ namespace SmartLibrary.Admin.Pages
         /// <summary>
         /// The city
         /// </summary>
-        public const string Individual = "individual";
+        public static string Individual { get { return "individual"; } }
 
         /// <summary>
         /// The manage city
         /// </summary>
-        public const string ManageIndividual = "manageindividual";
+        public static string ManageIndividual { get { return "manageindividual"; } }
 
         /// <summary>
         /// The manage User Profile
         /// </summary>
-        public const string UserProfile = "userprofile";
+        public static string UserProfile { get { return "userprofile"; } }
 
         #endregion
 
@@ -160,12 +160,12 @@ namespace SmartLibrary.Admin.Pages
         /// <summary>
         /// The BookGenre
         /// </summary>
-        public const string BookGenre = "Manage-Bookgenre";
+        public static string BookGenre { get { return "Manage-Bookgenre"; } }
 
         /// <summary>
         /// The manage BookGenres
         /// </summary>
-        public const string ManageBookGenre = "managebookgenre";
+        public static string ManageBookGenre { get { return "managebookgenre"; } }
         #endregion
 
         #region Spaces
@@ -173,17 +173,17 @@ namespace SmartLibrary.Admin.Pages
         /// <summary>
         /// The BookGenres
         /// </summary>
-        public const string Space = "Manage-Space";
+        public static string Space { get { return "Manage-Space"; } }
 
         /// <summary>
         /// The manage BookGenres
         /// </summary>
-        public const string ManageSpaces = "managebookgenres";
+        public static string ManageSpaces { get { return "managebookgenres"; } }
 
         /// <summary>
         /// Space Booking list
         /// </summary>
-        public const string ManageSpaceBooking = "ManageSpaceBooking";
+        public static string ManageSpaceBooking { get { return "ManageSpaceBooking"; } }
 
         #endregion
 
@@ -192,7 +192,7 @@ namespace SmartLibrary.Admin.Pages
         /// <summary>
         /// The BookLocations
         /// </summary>
-        public const string BookLocation = "Manage-Booklocation";
+        public static string BookLocation { get { return "Manage-Booklocation"; } }
 
         #endregion
 
@@ -201,12 +201,12 @@ namespace SmartLibrary.Admin.Pages
         /// <summary>
         /// Book List
         /// </summary>
-        public const string BookList = "Manage-Book-List-View";
+        public static string BookList { get { return "Manage-Book-List-View"; } }
 
         /// <summary>
         /// Book Grid
         /// </summary>
-        public const string BookGrid = "Manage-Book-Grid-View";
+        public static string BookGrid { get { return "Manage-Book-Grid-View"; } }
 
         #endregion
 
@@ -215,23 +215,23 @@ namespace SmartLibrary.Admin.Pages
         /// <summary>
         /// Message View page
         /// </summary>
-        public const string Message = "Message";
+        public static string Message { get { return "Message"; } }
 
         #endregion
 
         /// <summary>
         /// Page not found view
         /// </summary>
-        public const string PageNotFound = "PageNotfound";
+        public static string PageNotFound { get { return "PageNotfound"; } }
 
         /// <summary>
         /// UnAuthorized
         /// </summary>
-        public const string UnAuthorizePage = "UnAuthorized";
+        public static string UnAuthorizePage { get { return "UnAuthorized"; } }
 
         /// <summary>
         /// UnAuthorized
         /// </summary>
-        public const string ErrorPage = "ErrorPage";
+        public static string ErrorPage { get { return "ErrorPage"; } }
     }
 }

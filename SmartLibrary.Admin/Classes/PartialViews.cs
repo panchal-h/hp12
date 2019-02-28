@@ -24,234 +24,234 @@ namespace SmartLibrary.Admin.Pages
         /// <summary>
         /// Access Denied Partial View
         /// </summary>
-        public const string AccessDenied = "_accessdenied";
+        public static string AccessDenied { get { return "_accessdenied"; } }
 
         /// <summary>
         /// Program Member Partial View
         /// </summary>
-        public const string ProgramMember = "_programmember";
+        public static string ProgramMember { get { return "_programmember"; } }
 
         /// <summary>
         /// Personal Details Partial View
         /// </summary>
-        public const string PersonalDetails = "_personaldetails";
+        public static string PersonalDetails { get { return "_personaldetails"; } }
 
         /// <summary>
         /// Business Description Partial View
         /// </summary>
-        public const string BusinessDescription = "_businessdescription";
+        public static string BusinessDescription { get { return "_businessdescription"; } }
 
         /// <summary>
         /// Business Identification Partial View
         /// </summary>
-        public const string BusinessIdentification = "_businessidentification";
+        public static string BusinessIdentification { get { return "_businessidentification"; } }
 
         /// <summary>
         /// Manage Business Identification Partial View
         /// </summary>
-        public const string ManageBusinessIdentification = "_managebusinessidentification";
+        public static string ManageBusinessIdentification { get { return "_managebusinessidentification"; } }
 
         /// <summary>
         /// Project Details Partial View
         /// </summary>
-        public const string ProjectDetails = "_projectdetails";
+        public static string ProjectDetails { get { return "_projectdetails"; } }
 
         /// <summary>
         /// Team Members Partial View
         /// </summary>
-        public const string TeamMembers = "_teammembers";
+        public static string TeamMembers { get { return "_teammembers"; } }
 
         /// <summary>
         /// Program Status Partial View
         /// </summary>
-        public const string ProgramStatus = "_programstatus";
+        public static string ProgramStatus { get { return "_programstatus"; } }
 
         /// <summary>
         /// Personal Details Partial View
         /// </summary>
-        public const string PersonalDetailHeader = "_personaldetailheader";
+        public static string PersonalDetailHeader { get { return "_personaldetailheader"; } }
 
         /// <summary>
         /// Invite Applicant Partial View
         /// </summary>
-        public const string InviteApplicant = "_inviteapplicant";
+        public static string InviteApplicant { get { return "_inviteapplicant"; } }
 
         /// <summary>
         /// The reject application
         /// </summary>
-        public const string RejectApplication = "_rejectapplication";
+        public static string RejectApplication { get { return "_rejectapplication"; } }
 
         /// <summary>
         /// The product sell details
         /// </summary>
-        public const string ProductSellDetails = "_productselldetails";
+        public static string ProductSellDetails { get { return "_productselldetails"; } }
 
         /// <summary>
         /// Assessment Partial View
         /// </summary>
-        public const string Assessment = "_assessment";
+        public static string Assessment { get { return "_assessment"; } }
 
         /// <summary>
         /// The new
         /// </summary>
-        public const string New = "_new";
+        public static string New { get { return "_new"; } }
 
         /// <summary>
         /// The previous messages
         /// </summary>
-        public const string PreviousMessages = "_previousmessages";
+        public static string PreviousMessages { get { return "_previousmessages"; } }
 
         /// <summary>
         /// The drafts
         /// </summary>
-        public const string Drafts = "_drafts";
+        public static string Drafts { get { return "_drafts"; } }
 
         /// <summary>
         /// The message details
         /// </summary>
-        public const string MessageDetails = "_messagedetails";
+        public static string MessageDetails { get { return "_messagedetails"; } }
 
         /// <summary>
         /// The Messages
         /// </summary>
-        public const string Messages = "_messages";
+        public static string Messages { get { return "_messages"; } }
 
         /// <summary>
         /// The message details
         /// </summary>
-        public const string MessageMembers = "_messagemembers";
+        public static string MessageMembers { get { return "_messagemembers"; } }
 
         /// <summary>
         /// Financial Information Partial View
         /// </summary>
-        public const string FinancialInformations = "_financialinformations";
+        public static string FinancialInformations { get { return "_financialinformations"; } }
 
         /// <summary>
         /// The manage financial information
         /// </summary>
-        public const string ManageFinancialInformation = "_managefinancialinformation";
+        public static string ManageFinancialInformation { get { return "_managefinancialinformation"; } }
 
         /// <summary>
         /// The business owners
         /// </summary>
-        public const string BusinessOwners = "_businessowners";
+        public static string BusinessOwners { get { return "_businessowners"; } }
 
         /// <summary>
         /// The business owner header
         /// </summary>
-        public const string BusinessOwnerHeader = "_businessownerheader";
+        public static string BusinessOwnerHeader { get { return "_businessownerheader"; } }
 
         /// <summary>
         /// The reply
         /// </summary>
-        public const string Reply = "_reply";
+        public static string Reply { get { return "_reply"; } }
 
         /// <summary>
         /// The BookGenres
         /// </summary>
-        public const string BookGenres = "_BookGenres";
+        public static string BookGenres { get { return "_BookGenres"; } }
 
         /// <summary>
         /// The Spaces
         /// </summary>
-        public const string Spaces = "_Spaces";
+        public static string Spaces { get { return "_Spaces"; } }
 
         /// <summary>
         /// The Book Location
         /// </summary>
-        public const string BookLocation = "_BookLocation";
+        public static string BookLocation { get { return "_BookLocation"; } }
 
         /// <summary>
         /// The Book Location
         /// </summary>
-        public const string AddEditBookLocation = "_AddEditBookLocation";
+        public static string AddEditBookLocation { get { return "_AddEditBookLocation"; } }
 
         /// <summary>
         /// The ManageBookGenre
         /// </summary>
-        public const string AddEditBookGenre = "_AddEditBookGenre";
+        public static string AddEditBookGenre { get { return "_AddEditBookGenre"; } }
 
         /// <summary>
         /// The Pages
         /// </summary>
-        public const string AddEditPage = "_AddEditPage";
+        public static string AddEditPage { get { return "_AddEditPage"; } }
 
         /// <summary>
         /// The Pages
         /// </summary>
-        public const string Pages = "_Pages";
+        public static string Pages { get { return "_Pages"; } }
 
         /// <summary>
         /// The Users
         /// </summary>
-        public const string AddEditUsers = "_AddEditUsers";
+        public static string AddEditUsers { get { return "_AddEditUsers"; } }
 
         /// <summary>
         /// The CustomerList
         /// </summary>
-        public const string CustomerList = "_CustomerList";
+        public static string CustomerList { get { return "_CustomerList"; } }
 
         /// <summary>
         /// The CustomerGrid
         /// </summary>
-        public const string CustomerGrid = "_CustomerGrid";
+        public static string CustomerGrid { get { return "_CustomerGrid"; } }
 
         /// <summary>
         /// The Users
         /// </summary>
-        public const string Users = "_Users";
+        public static string Users { get { return "_Users"; } }
 
         /// <summary>
         /// The ManageSpace
         /// </summary>
-        public const string AddEditSpace = "_AddEditSpace";
+        public static string AddEditSpace { get { return "_AddEditSpace"; } }
 
         /// <summary>
         /// The Role
         /// </summary>
-        public const string ManageRole = "_ManageRole";
+        public static string ManageRole { get { return "_ManageRole"; } }
 
         /// <summary>
         /// The Role
         /// </summary>
-        public const string Roles = "_Roles";
+        public static string Roles { get { return "_Roles"; } }
 
         /// <summary>
         /// InviteCustomer
         /// </summary>
-        public const string InviteCustomer = "_InviteCustomer";
+        public static string InviteCustomer { get { return "_InviteCustomer"; } }
 
         #region Books
 
         /// <summary>
         /// Manage Book
         /// </summary>
-        public const string ManageBook = "_managebook";
+        public static string ManageBook { get { return "_managebook"; } }
 
         /// <summary>
         /// The BookGrid
         /// </summary>
-        public const string BookGrid = "_BookGrid";
+        public static string BookGrid { get { return "_BookGrid"; } }
 
         /// <summary>
         /// The BookGrid
         /// </summary>
-        public const string BookDetailSideBar = "_BookDetailSideBar";
+        public static string BookDetailSideBar { get { return "_BookDetailSideBar"; } }
 
         /// <summary>
         /// The BorrowerDetails
         /// </summary>
-        public const string BorrowerDetails = "_BorrowerDetails";
+        public static string BorrowerDetails { get { return "_BorrowerDetails"; } }
 
         /// <summary>
         /// The BookDetailViewReload
         /// </summary>
-        public const string BookDetailViewReload = "_BookDetailViewReload";
+        public static string BookDetailViewReload { get { return "_BookDetailViewReload"; } }
 
         /// <summary>
         /// The ReturnBook
         /// </summary>
-        public const string ReturnBook = "_ReturnBook";
+        public static string ReturnBook { get { return "_ReturnBook"; } }
 
         #endregion
 
@@ -260,47 +260,47 @@ namespace SmartLibrary.Admin.Pages
         /// <summary>
         ///  Book the Space
         /// </summary>
-        public const string BookSpace = "_bookspace";
+        public static string BookSpace { get { return "_bookspace"; } }
 
         /// <summary>
         ///  Book the Space
         /// </summary>
-        public const string ViewSpaceStatus = "_ViewSpaceStatus";
+        public static string ViewSpaceStatus { get { return "_ViewSpaceStatus"; } }
 
         /// <summary>
         ///  Book the Space
         /// </summary>
-        public const string SpaceBookingRequests = "_BookingRequests";
+        public static string SpaceBookingRequests { get { return "_BookingRequests"; } }
         #endregion
 
         /// <summary>
         /// The Notifications Side Bar
         /// </summary>
-        public const string Notifications = "_notification";
+        public static string Notifications { get { return "_notification"; } }
 
         /// <summary>
         /// The Messages
         /// </summary>
-        public const string MessageList = "_messagelist";
+        public static string MessageList { get { return "_messagelist"; } }
 
         /// <summary>
         /// The Chat Users List
         /// </summary>
-        public const string ChatList = "_chatlist";
+        public static string ChatList { get { return "_chatlist"; } }
 
         /// <summary>
         /// The Chat Users List
         /// </summary>
-        public const string SendMessageModal = "_sendmessage";
+        public static string SendMessageModal { get { return "_sendmessage"; } }
 
         /// <summary>
         /// The Edit Customer
         /// </summary>
-        public const string EditCustomer = "_EditCustomer";
+        public static string EditCustomer { get { return "_EditCustomer"; } }
 
         /// <summary>
         ///  Event Requests
         /// </summary>
-        public const string EventRequests = "_EventRequests";
+        public static string EventRequests { get { return "_EventRequests"; } }
     }
 }
