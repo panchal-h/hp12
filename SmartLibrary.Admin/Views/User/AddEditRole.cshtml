@@ -1,0 +1,454 @@
+﻿@model SmartLibrary.Models.Role
+@using SmartLibrary.Resources;
+@using SmartLibrary.Infrastructure;
+@{
+    ViewBag.Title = SmartLibrary.Resources.General.Role;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    PageAccessRight currentPageAccessRight = (PageAccessRight)ViewData["CurrentPageAccessRight"];
+}
+
+<div class="wrapper">
+    <div class="card-container">
+        <div class="card normal profile-card" style="padding: 65px; text-align: center;">
+            <h3 class="title">
+                @if (Model.Id > 0)
+            {
+                    @SmartLibrary.Resources.General.Edit
+                }
+                else
+                {
+                    @SmartLibrary.Resources.General.AddNew
+                }
+                @SmartLibrary.Resources.General.Role
+            </h3>
+
+            @using (Html.SmartLibSecureForm(SmartLibrary.Admin.Pages.Actions.AddEditRole, SmartLibrary.Admin.Pages.Controllers.User, new { id = "formManageRole" }))
+            {
+                <div class="form-wrapper frmRole">
+                    @Html.HiddenFor(x => x.Id)
+                    <div class="form-group floating big-input">
+                        <label class="control-label">@General.Role</label>
+                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group big-input text-left">
+                        <label class="containercheckbox">
+                            <label class="control-label">@SmartLibrary.Resources.General.Active</label>
+                            @Html.CheckBox(SmartLibrary.Resources.General.Active, Model.Active.HasValue ? Model.Active.Value : false)
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+                    <br />
+                </div>
+                <h3 class="title">@SmartLibrary.Resources.General.PageAcess</h3>
+                <div class="row">
+                    <div class="col-sm-12 col-md-12">
+                        <div class="col-sm-2  col-md-2"></div>
+                        <div class="col-sm-8  col-md-8">
+                            <div class="table-responsive">
+                                <table class="table grid table-hover table-bordered" id="tblPages">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th class="text-left verticle-center font-bold">
+                                                <label for="all">@SmartLibrary.Resources.General.Page</label>
+                                            </th>
+                                            <th class="text-left action">
+                                                <div class="checkbox">
+                                                    <input type="checkbox" name="name" class="chkAll styled" id="all" />
+                                                    <label for="all">@SmartLibrary.Resources.General.All</label>
+                                                </div>
+                                            </th>
+                                            <th class="text-left action">
+                                                <div class="checkbox">
+                                                    <input type="checkbox" name="name" class="chkViewAll styled" id="viewAll" />
+                                                    <label for="viewAll">@SmartLibrary.Resources.General.View</label>
+                                                </div>
+                                            </th>
+                                            <th class="text-left action">
+                                                <div class="checkbox">
+                                                    <input type="checkbox" name="name" class="chkAddAll styled" id="addAll" />
+                                                    <label for="addAll">@SmartLibrary.Resources.General.Add</label>
+                                                </div>
+                                            </th>
+                                            <th class="text-left action">
+                                                <div class="checkbox">
+                                                    <input type="checkbox" name="name" class="chkDeleteAll styled" id="deleteAll" />
+                                                    <label for="deleteAll">@SmartLibrary.Resources.General.Delete</label>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.PageAccessList != null)
+                                        {
+                                            foreach (var item in Model.PageAccessList.ToList())
+                                            {
+                                                <tr class="chkRow" rolerightid="@item.Id" pageid="@item.PageId">
+                                                    <td class="verticle-center text-left verticalMiddle">
+                                                        <label class="font-bold">@item.PageName</label>
+                                                    </td>
+                                                    <td class="chk-center">
+                                                        <div class="checkbox">
+                                                            <input type="checkbox" name="name" value="@item.PageId" class="chksubAll styled" id="chksubAll_@item.PageId" />
+                                                            <label for="chksubAll_@item.PageId"></label>
+                                                        </div>
+                                                    </td>
+                                                    <td class="chk-center">
+                                                        @if (Convert.ToBoolean(item.IsView))
+                                                        {
+                                                            <div class="checkbox">
+                                                                <input type="checkbox" name="chkView" value="@item.PageId" checked class="chkView mapID-@item.PageId styled" id="chkView_@item.PageId" />
+                                                                <label for="chkView_@item.PageId"></label>
+                                                            </div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="checkbox checkbox-primary allcustom">
+                                                                <input type="checkbox" name="chkView" value="@item.PageId" class="chkView mapID-@item.PageId styled" id="chkView_@item.PageId" />
+                                                                <label for="chkView_@item.PageId"></label>
+                                                            </div>
+                                                        }
+                                                    </td>
+                                                    <td class="chk-center">
+                                                        @if (Convert.ToBoolean(item.IsAddUpdate))
+                                                        {
+                                                            <div class="checkbox">
+                                                                <input type="checkbox" name="chkAdd" value="@item.PageId" checked class="chkAdd styled" id="chkAdd_@item.PageId" />
+                                                                <label for="chkAdd_@item.PageId"></label>
+                                                            </div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="checkbox">
+                                                                <input type="checkbox" name="chkAdd" value="@item.PageId" class="chkAdd styled" id="chkAdd_@item.PageId" />
+                                                                <label for="chkAdd_@item.PageId"></label>
+                                                            </div>
+                                                        }
+                                                    </td>
+                                                    <td class="chk-center">
+                                                        @if (Convert.ToBoolean(item.IsDelete))
+                                                        {
+                                                            <div class="checkbox">
+                                                                <input type="checkbox" name="chkDelete" value="@item.PageId" checked class="chkDelete styled" id="chkDelete_@item.PageId" />
+                                                                <label for="chkDelete_@item.PageId"></label>
+                                                            </div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="checkbox">
+                                                                <input type="checkbox" name="chkDelete" value="@item.PageId" class="chkDelete styled" id="chkDelete_@item.PageId" />
+                                                                <label for="chkDelete_@item.PageId"></label>
+                                                            </div>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="2">No Page Available.</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
+                        <button type="button" value="Save" name="action" onclick="SaveData()" class="btn btn-primary btn-block btn-lg ">
+                            @if (Model.Id > 0)
+                            { <span>@SmartLibrary.Resources.General.Update @SmartLibrary.Resources.General.Role</span>}
+                            else
+                            {<span>@SmartLibrary.Resources.General.Add @SmartLibrary.Resources.General.Role</span> }
+                        </button>
+                    </div>
+                    <div class="col-sm-3">
+                        <button type="button" value="Save" name="action" onclick="Cancel()" class="btn btn-primary btn-block btn-lg">
+                            @SmartLibrary.Resources.General.Cancel
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".big-input:has(input[type=text])").addClass("has-value");
+            $('.table-responsive').scrollLeft(9999);
+            var activemenus = ["#liUserManage", "#liRoles"];
+            ActiveMenu(activemenus);
+
+            $('#Active').change(function(){
+                cb = $(this);
+                cb.val(cb.prop('checked'));
+            });
+            pageAccessList = [{
+                Id: '',
+                RoleId: '',
+                PageId: '',
+                IsView: '',
+                IsAddUpdate: '',
+                IsDelete: ''
+            }];
+            pageAccessList.length = 0;
+            var roleCount = 0;
+            AllrowsUpdate();
+            CheckBoxUpdateForColumn('chkAdd');
+            CheckBoxUpdateForColumn('chkDelete');
+            CheckBoxUpdateForColumn('chkView');
+            CheckBoxUpdateForColumn('chksubAll');
+
+
+
+            $(".chkAll").on('change', function (e) {
+                var table = $(e.target).closest('table');
+                $('th input:checkbox', table).prop('checked', this.checked);
+                $('td input:checkbox', table).prop('checked', this.checked);
+            })
+
+            $(".chkViewAll").on('change', function () {
+                $(".chkView").prop('checked', $(this).prop("checked"));
+                if (!$(this).is(':checked')) {
+                    $(".chkAll, .chksubAll, .chkAddAll, .chkUpdateAll, .chkDeleteAll, .chkAdd ,.chkUpdate, .chkDelete").prop('checked', $(this).prop("checked"));
+                }
+                CheckBoxUpdateForRow($(".chkView"));
+                AllrowsUpdate();
+
+            })
+
+            $(".chkAddAll").on('change', function () {
+                if($(this).prop("checked") == true){
+                    $(".chkViewAll").prop('checked', $(this).prop("checked"));
+                    $(".chkView").prop('checked', $(this).prop("checked"));
+                }
+
+                $(".chkAdd").prop('checked', $(this).prop("checked"));
+                AllrowsUpdate();
+                CheckBoxUpdateForColumn('chksubAll');
+            })
+
+            $(".chkUpdateAll").on('change', function () {
+                $(".chkViewAll").prop('checked', $(this).prop("checked"));
+                $(".chkView").prop('checked', $(this).prop("checked"));
+                $(".chkUpdate").prop('checked', $(this).prop("checked"));
+
+            })
+
+            $(".chkDeleteAll").on('change', function () {
+                if($(this).prop("checked") == true){
+                    $(".chkViewAll").prop('checked', $(this).prop("checked"));
+                    $(".chkView").prop('checked', $(this).prop("checked"));
+                }
+                $(".chkDelete").prop('checked', $(this).prop("checked"));
+                AllrowsUpdate();
+                CheckBoxUpdateForColumn('chksubAll');
+
+               
+              
+            })
+
+            $(".chkAdd, .chkUpdate, .chkDelete").on('change', function () {
+
+                if ($(this).is(':checked')) {
+                    $(".mapID-" + $(this).val()).prop('checked', $(this).prop("checked"));
+                }
+                CheckBoxUpdateForRow(this);
+            });
+
+
+            $(".chkDelete").on('change', function () {
+                CheckBoxUpdateForColumn('chkDelete');
+                CheckBoxUpdateForColumn('chkView');
+                CheckBoxUpdateForColumn('chksubAll');
+
+            });
+
+            $(".chkAdd").on('change', function () {
+                CheckBoxUpdateForColumn('chkAdd');
+                CheckBoxUpdateForColumn('chkView');
+                CheckBoxUpdateForColumn('chksubAll');
+
+            });
+
+            $(".chksubAll").on('change', function (e) {
+                var tr = $(e.target).closest('tr');
+                $('td input:checkbox', tr).prop('checked', this.checked);
+                CheckBoxUpdateForColumn('chksubAll');
+                CheckBoxUpdateForColumn('chkDelete');
+                CheckBoxUpdateForColumn('chkAdd');
+                CheckBoxUpdateForColumn('chkView');
+            })
+
+            $(".chkView").on('change', function (e) {
+                if (!$(this).is(':checked')) {
+                    var tr = $(e.target).closest('tr');
+                    $('td input:checkbox', tr).prop('checked', this.checked);
+                }
+                CheckBoxUpdateForColumn('chkView');
+                CheckBoxUpdateForColumn('chkAdd');
+                CheckBoxUpdateForColumn('chkDelete');
+                CheckBoxUpdateForColumn('chksubAll');
+            })
+        });
+
+
+        $("#Name").keydown(function (e)
+        {
+            if (e.keyCode == 13)
+            {
+                e.preventDefault();
+                if (!isValidSearchCriteria('Name')) { return false; }
+                SaveData();
+            }
+            else
+            {
+                return true;
+            }
+        });
+
+        function AllrowsUpdate(){
+            $(".chkAdd,.chkDelete,.chkView").each(function() {
+                CheckBoxUpdateForRow(this);
+            });
+        }
+
+        function CheckBoxUpdateForRow(control){
+            var rowFlag=false;
+            $(control).closest('tr').find('input[type="checkbox"]').each(function () {
+                if (!$(this).hasClass("chksubAll")) {
+                    if($(this).prop("checked") == false){
+                        rowFlag=true;
+                    }
+                }
+            });
+
+            if(!rowFlag){
+                $(control).closest('tr').find('.chksubAll').prop("checked",true);
+            }
+            else{
+                $(control).closest('tr').find('.chksubAll').prop("checked",false);
+            }
+        }
+        function CheckBoxUpdateForColumn(control){
+            var columnFlag=false;
+            $('.'+control).closest('#tblPages').find('.'+control).each(function () {
+                if($(this).prop("checked") == false){
+                    columnFlag=true;
+                }
+            });
+            if(control!='chksubAll'){
+                if(!columnFlag){
+                    $('.'+control+"All").prop("checked",true);
+                }
+                else{
+                    $('.'+control+"All").prop("checked",false);
+                }
+            }
+            else{
+                if(!columnFlag){
+                    $('.chkAll').prop("checked",true);
+                }
+                else{
+                    $('.chkAll').prop("checked",false);
+                }
+            }
+
+        }
+
+        function Cancel(){
+            window.location.href='@Url.Action(SmartLibrary.Admin.Pages.Actions.Role, SmartLibrary.Admin.Pages.Controllers.User)';
+        }
+
+        function SaveData() {
+            var $form = $('#formManageRole');
+            if (!$("#formManageRole").valid()) return;
+            else {
+                $(".chkRow").each(function () {
+                    var viewflag, addflag, updateflag, deleteflag;
+                    $(this).find('.chkView').each(function () {
+                        viewflag = $(this).is(':checked') ? true : false;
+                    });
+                    $(this).find('.chkAdd').each(function () {
+                        addflag = $(this).is(':checked') ? true : false;
+                    });
+                    $(this).find('.chkUpdate').each(function () {
+                        updateflag = $(this).is(':checked') ? true : false;
+                    });
+                    $(this).find('.chkDelete').each(function () {
+                        deleteflag = $(this).is(':checked') ? true : false;
+                    });
+
+                    var pageacess = { Id: $(this).attr("rolerightid"), pageId: $(this).attr('pageId'), RoleId: '@Model.Id', IsView: viewflag, IsAddUpdate: addflag, IsDelete: deleteflag };
+
+                    pageAccessList.push(pageacess);
+                })
+                if (checkRoleCount)
+                {
+                    var role = { Id: @Model.Id, Name: $("#Name").val(), Active:  $("#Active").val(), CreatedBy: '', CreatedDate: '', ModifiedBy: '', ModifiedDate: '', PageAccessList: pageAccessList};
+                    $.ajax({
+                        type: "Post",
+                        url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.AddEditRole, SmartLibrary.Admin.Pages.Controllers.User)",
+                        data: role,
+                        beforeSend: function (xhr) { xhr.setRequestHeader('__RequestVerificationToken', $('input[name="__RequestVerificationToken"]', $("#formManageRole")).val()); },
+                        success: function (response) {
+                            if (response.status == statusConstant.success) {
+                                window.location.href = '@Url.Action(SmartLibrary.Admin.Pages.Actions.Role, SmartLibrary.Admin.Pages.Controllers.User)';
+                            }
+                            else{
+                                ShowMessage(response.status, response.message, response.title, null, null);
+                                window.location.href = '@Url.Action(SmartLibrary.Admin.Pages.Actions.Role, SmartLibrary.Admin.Pages.Controllers.User)';
+                            }
+                        },
+                        failure: function (response) {
+                            window.location.href = '@Url.Action(SmartLibrary.Admin.Pages.Actions.Role, SmartLibrary.Admin.Pages.Controllers.User)';
+                        },
+                        error: function (response) {
+                            window.location.href = '@Url.Action(SmartLibrary.Admin.Pages.Actions.Role, SmartLibrary.Admin.Pages.Controllers.User)';
+                        }
+
+                    });
+                }
+                else {
+                    ShowMessage(statusConstant.error, 'No role permission selected', 'Error', null, null);
+                    window.location.href = '@Url.Action(SmartLibrary.Admin.Pages.Actions.Role, SmartLibrary.Admin.Pages.Controllers.User)';
+                }
+            }
+        }
+
+        function checkRoleCount() {
+            $('.chkView').each(function () {
+                if ($(this).is(':checked')) {
+                    roleCount++;
+                }
+            })
+            $('.chkAdd').each(function () {
+                if ($(this).is(':checked')) {
+                    roleCount++;
+                }
+            })
+            $('.chkUpdate').each(function () {
+                if ($(this).is(':checked')) {
+                    roleCount++;
+                }
+            })
+            $('.chkDelete').each(function () {
+                if ($(this).is(':checked')) {
+                    roleCount++;
+                }
+            })
+
+            if (roleCount > 0) {
+                return true
+            }
+            else {
+                return false
+            }
+        }
+    </script>
+}

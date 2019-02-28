@@ -1,0 +1,18 @@
+﻿@using SmartLibrary.Resources
+@{
+    Layout = Url.Content("~/Views/Shared/_LoginLayout.cshtml");
+    ViewBag.Title = @SmartLibrary.Resources.Messages.AccessDeniedMessage;
+}
+
+<div class="wrapper">
+    <div class="card-container">
+        <div class="card">
+            <div class="card-header">
+                <a href="#" class="brand" title="@SmartLibrary.Resources.General.ApplicationName"><img src="@Url.Content("~/Images/Forbidden-64.png")" /></a>
+                <h3 class="title">@SmartLibrary.Resources.General.Error</h3>
+                <div>@Html.Raw(@SmartLibrary.Resources.Messages.SomethingWentWrong)</div>
+            </div>
+        </div>
+    </div>
+</div>
+

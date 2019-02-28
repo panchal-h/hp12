@@ -1,0 +1,378 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AccessDeniedMessage" xml:space="preserve">
+    <value>Access Denied. Please contact the administrator.</value>
+  </data>
+  <data name="ChangePasswordError" xml:space="preserve">
+    <value>Error in changing password.</value>
+  </data>
+  <data name="DeleteErrorMessage" xml:space="preserve">
+    <value>{0} is already in use. You cannot delete this {0}.</value>
+  </data>
+  <data name="DeleteMessage" xml:space="preserve">
+    <value>{0} has been deleted successfully.</value>
+  </data>
+  <data name="DuplicateMessage" xml:space="preserve">
+    <value>Duplicate {0} is not allowed.</value>
+  </data>
+  <data name="EmailRequired" xml:space="preserve">
+    <value>Please Enter Email Addresss</value>
+  </data>
+  <data name="EmailSent" xml:space="preserve">
+    <value>Email successfully Sent</value>
+  </data>
+  <data name="ErrorMessage" xml:space="preserve">
+    <value>An error occurred while processing your request.</value>
+  </data>
+  <data name="InvalidFieldMessage" xml:space="preserve">
+    <value>{0} is not valid.</value>
+  </data>
+  <data name="InvalidInputMessage" xml:space="preserve">
+    <value>Input Not Valid</value>
+  </data>
+  <data name="InvalidISBNMessage" xml:space="preserve">
+    <value>Invalid ISBN.</value>
+  </data>
+  <data name="InvalidUrlMessage" xml:space="preserve">
+    <value>URL is not valid.</value>
+  </data>
+  <data name="NoRecordFound" xml:space="preserve">
+    <value>No Record Found</value>
+  </data>
+  <data name="NotAuthorizedMeesage" xml:space="preserve">
+    <value>You are not authorized to access this page.&lt;br&gt; If you require to access this page, Please contact system administrator.</value>
+  </data>
+  <data name="PasswordEmailSendFail" xml:space="preserve">
+    <value>Email Failed</value>
+  </data>
+  <data name="RequiredFieldMessage" xml:space="preserve">
+    <value>{0} is required.</value>
+  </data>
+  <data name="RestrictIllegalCharacters" xml:space="preserve">
+    <value>Illegal characters in string!</value>
+  </data>
+  <data name="SaveMessage" xml:space="preserve">
+    <value>{0} saved successfully.</value>
+  </data>
+  <data name="SessionExpiredMessage" xml:space="preserve">
+    <value>Your session has been expired, You will redirect to login page.</value>
+  </data>
+  <data name="StringLengthMessage" xml:space="preserve">
+    <value>Maximum length should be {1}</value>
+  </data>
+  <data name="SuccessMessage" xml:space="preserve">
+    <value>Your operation is successfully done.</value>
+  </data>
+  <data name="UpdateMessage" xml:space="preserve">
+    <value>{0} updated successfully.</value>
+  </data>
+  <data name="UrlExpiredMessage" xml:space="preserve">
+    <value>The URL is no longer valid.</value>
+  </data>
+  <data name="UserAccountNotmatched" xml:space="preserve">
+    <value>We couldn't find an account matching the user account you entered. Please check your detail and try again.</value>
+  </data>
+  <data name="NoInactiveMessage" xml:space="preserve">
+    <value>{0} is already in use so you cannot Inactive this.</value>
+  </data>
+  <data name="RequiredBookCoverImage" xml:space="preserve">
+    <value>Book Cover Image is required.</value>
+  </data>
+  <data name="MemberAlreadyRegistered" xml:space="preserve">
+    <value>Member is already register to the site</value>
+  </data>
+  <data name="InvalidBookTotalQuantityMessage" xml:space="preserve">
+    <value>{0} books are borrowed. {1} must be more than or equal to {0}.</value>
+  </data>
+  <data name="ISBNFetchSuccess" xml:space="preserve">
+    <value>Book Detail Fetch Successfully.</value>
+  </data>
+  <data name="AddBookInterest" xml:space="preserve">
+    <value>Book has been added to Favourite</value>
+  </data>
+  <data name="RemoveBookInterest" xml:space="preserve">
+    <value>Book has been removed from Favourite</value>
+  </data>
+  <data name="BookStatus" xml:space="preserve">
+    <value>Book Status</value>
+  </data>
+  <data name="InvalidImageMessage" xml:space="preserve">
+    <value>Please select valid image.</value>
+  </data>
+  <data name="PasswordLengthMessageMinMax" xml:space="preserve">
+    <value>Password length must be between {2} and {1}</value>
+  </data>
+  <data name="BookPeriodMessage" xml:space="preserve">
+    <value>Here is period for which you want to borrow the book.</value>
+  </data>
+  <data name="BorrowBookHeader" xml:space="preserve">
+    <value>Here you can request for the book which you want to borrow.</value>
+  </data>
+  <data name="BorrowBookAdd" xml:space="preserve">
+    <value>Your book is borrowed successfully. Waiting for administrator Approval.</value>
+  </data>
+  <data name="BorrowBookError" xml:space="preserve">
+    <value>Error in Borrowing Book.</value>
+  </data>
+  <data name="ApproveRejectBorrowedBook" xml:space="preserve">
+    <value>Borrowed Book is Successfully {0}.</value>
+  </data>
+  <data name="ErrorApproveRejectBorrowedBook" xml:space="preserve">
+    <value>Error in {0} Borrowed Book.</value>
+  </data>
+  <data name="BookNotAvailable" xml:space="preserve">
+    <value>Sorry, Book is not available.</value>
+  </data>
+  <data name="AllPasswordRequired" xml:space="preserve">
+    <value>Please fill all password details to change your password</value>
+  </data>
+  <data name="BookingAreaUnavailable" xml:space="preserve">
+    <value>Selected booking area is unavailable for selected time.</value>
+  </data>
+  <data name="NoOfAttendeeExceedCapacity" xml:space="preserve">
+    <value>Booking area capacity is {0}. {1} must be less than or equal to {0}.</value>
+  </data>
+  <data name="AddComment" xml:space="preserve">
+    <value>Your comment has added.</value>
+  </data>
+  <data name="InvalidRangeMessage" xml:space="preserve">
+    <value>{0} value must be between {1} and {2}.</value>
+  </data>
+  <data name="SpaceBookingTimeMessage" xml:space="preserve">
+    <value>Space booking period must be in future.</value>
+  </data>
+  <data name="TimeCompareMessage" xml:space="preserve">
+    <value>{0} must be greater than {1}.</value>
+  </data>
+  <data name="ApproveSpaceBookingStatus" xml:space="preserve">
+    <value>Space Booking has been {0}.</value>
+  </data>
+  <data name="AlreadyBookBorrowed" xml:space="preserve">
+    <value>This book is already Borrowed.</value>
+  </data>
+  <data name="SpaceBookingReschedule" xml:space="preserve">
+    <value>Space Booking has been Rescheduled.</value>
+  </data>
+  <data name="BorrowBookforCustomerHeader" xml:space="preserve">
+    <value>Here you can request for the book on behalf of member which he/she  want to borrow.</value>
+  </data>
+  <data name="AlreadyBookBorrowedforCustomer" xml:space="preserve">
+    <value>This book is already borrowed for this member.</value>
+  </data>
+  <data name="BorrowBookAddforCustomer" xml:space="preserve">
+    <value>This book is borrowed on behalf of this member.</value>
+  </data>
+  <data name="BlankComment" xml:space="preserve">
+    <value>You can not add Blank Comment</value>
+  </data>
+  <data name="NoUsersFound" xml:space="preserve">
+    <value>No Users Found</value>
+  </data>
+  <data name="CurrentQtyCannotbeMoreThanTotalQuantity" xml:space="preserve">
+    <value>Current Quantity  can not be more than Total Quantity .</value>
+  </data>
+  <data name="SendMessageError" xml:space="preserve">
+    <value>Error in sending the message.</value>
+  </data>
+  <data name="SendMessageSuccess" xml:space="preserve">
+    <value>Message sent successfully.</value>
+  </data>
+  <data name="NoMessage" xml:space="preserve">
+    <value>No message.</value>
+  </data>
+  <data name="SelectUserToSendMessage" xml:space="preserve">
+    <value>Select user to send message</value>
+  </data>
+  <data name="EmailSentFailed" xml:space="preserve">
+    <value>Email Sent Failed.</value>
+  </data>
+  <data name="BookInvalidCurrentQuantity" xml:space="preserve">
+    <value>Book's current quantity can not be less than  zero.</value>
+  </data>
+  <data name="BookReturnError" xml:space="preserve">
+    <value>Error in returning book.</value>
+  </data>
+  <data name="BookReturnSuccess" xml:space="preserve">
+    <value>Book is return successfully.</value>
+  </data>
+  <data name="NoDelayed" xml:space="preserve">
+    <value>No delayed books.</value>
+  </data>
+  <data name="NoEventRequests" xml:space="preserve">
+    <value>No event requests.</value>
+  </data>
+  <data name="NoNotifications" xml:space="preserve">
+    <value>No notifications.</value>
+  </data>
+  <data name="NoReturnToday" xml:space="preserve">
+    <value>No books to return for today.</value>
+  </data>
+  <data name="FileContentNull" xml:space="preserve">
+    <value>File Content cannot be null or empty.</value>
+  </data>
+  <data name="FileSizeError" xml:space="preserve">
+    <value>File size can't be more than {0} MB.</value>
+  </data>
+  <data name="InValidFileExtension" xml:space="preserve">
+    <value>Invalid file extension.</value>
+  </data>
+  <data name="ValidValueandExtension" xml:space="preserve">
+    <value>File Name must have a value and an extension.</value>
+  </data>
+  <data name="QuantityMustBeNumeric" xml:space="preserve">
+    <value>Quantity must be numeric.</value>
+  </data>
+  <data name="NoInactiveMessage1" xml:space="preserve">
+    <value>{0} is already in use so you cannot Inactive this.</value>
+  </data>
+  <data name="AlreadyBookIsPending" xml:space="preserve">
+    <value>This book is already pending for this member.</value>
+  </data>
+  <data name="InvalidPhoneNumber" xml:space="preserve">
+    <value>Invalid Phone Number</value>
+  </data>
+  <data name="NotifyMeMessage" xml:space="preserve">
+    <value>Notification will be sent to you once book is available</value>
+  </data>
+  <data name="FileSizeClient" xml:space="preserve">
+    <value>File size exceeds the maximum size allowed.</value>
+  </data>
+  <data name="FileTypeClient" xml:space="preserve">
+    <value>The file type of the attempted upload is invalid.</value>
+  </data>
+  <data name="NoBooksinFavourite" xml:space="preserve">
+    <value>There are no books in your favourite list</value>
+  </data>
+  <data name="NoRoomsBooked" xml:space="preserve">
+    <value>No Rooms Booked</value>
+  </data>
+  <data name="NoBorrowedBooks" xml:space="preserve">
+    <value>No Borrowed Books</value>
+  </data>
+  <data name="BookingAreaUnavailableTooltip" xml:space="preserve">
+    <value>Booking area is unavailable.</value>
+  </data>
+  <data name="EmailNotExistInAD" xml:space="preserve">
+    <value>Email not exist in Active Directory,Please Contact Administrator</value>
+  </data>
+  <data name="SomethingWentWrong" xml:space="preserve">
+    <value>Something went wrong. Please contact system administrator.</value>
+  </data>
+</root>

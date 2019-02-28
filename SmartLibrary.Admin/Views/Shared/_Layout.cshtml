@@ -1,0 +1,210 @@
+﻿<!DOCTYPE html>
+<html class="loading">
+@{
+    var language = ProjectSession.AdminPortalLanguageId == SystemEnumList.Language.Arabic.GetHashCode() ? "arabic" : "english";
+}
+<head>
+    <meta name="theme-color" content="#386FFF">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <title>@ViewBag.Title - @SmartLibrary.Resources.General.ApplicationName_BackOffice</title>
+    <link rel="shortcut icon" href="~/Images/favicon.ico" />
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i%7COpen+Sans:300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
+    <!--CSS-->
+    @*<link rel="stylesheet" type="text/css" href="@Url.Content("~/fonts/feather/style.min.css")" />
+        <link rel="stylesheet" type="text/css" href="@Url.Content("~/fonts/font-awesome/css/font-awesome.min.css")" />*@
+    <!-- CSS-->
+    @Styles.Render("~/Content/datatable")
+    <!-- BEGIN Custom CSS-->
+    @Styles.Render("~/Content/css")
+
+    <!-- END Custom CSS-->
+
+    <script type="text/javascript">
+        var isEnglish = '@SmartLibrary.Infrastructure.ProjectSession.AdminPortalLanguageId.Equals(SmartLibrary.Infrastructure.SystemEnumList.Language.English.GetHashCode()).ToString().ToLower()';
+        var qs = 'uid=@EncryptionDecryption.EncryptByTripleDES("userId=" + ProjectSession.UserId)&ia=@EncryptionDecryption.EncryptByTripleDES("1")';
+    </script>
+</head>
+<body id="@language">
+    <div class="blue-backdrop"><a href="#"></a></div>
+    <div id="pagebody">
+        @RenderBody()
+    </div>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/datatable")
+    @Scripts.Render("~/bundles/Vendor")
+    @Scripts.Render("~/bundles/highcharts")
+    @Scripts.Render("~/bundles/customgradientchart")
+    @*<script src="~/Scripts/jquery.signalR-2.3.0.min.js"></script>
+        <script src="~/signalr/hubs"></script>*@
+    <script src="~/Scripts/notifications.js"></script>
+    @Html.Partial("_Messages")
+    <div class="SideBarMenu">
+        @Html.Partial("_MenuSideBar")
+    </div>
+    <div class="notification-panel">
+        <div>
+            <h2 class="title" style="font-weight:bold;">@SmartLibrary.Resources.General.Notification</h2>
+            <div class="tab-pane custom-loading" id="notification-sidebar">
+                <div id="floatingBarsG">
+                    <div class="blockG" id="rotateG_01"></div>
+                    <div class="blockG" id="rotateG_02"></div>
+                    <div class="blockG" id="rotateG_03"></div>
+                    <div class="blockG" id="rotateG_04"></div>
+                    <div class="blockG" id="rotateG_05"></div>
+                    <div class="blockG" id="rotateG_06"></div>
+                    <div class="blockG" id="rotateG_07"></div>
+                    <div class="blockG" id="rotateG_08"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @RenderSection("scripts", required: false)
+    <script>
+        var IllegalCharMsg = '@SmartLibrary.Resources.Messages.RestrictIllegalCharacters';
+        var uploadFileLimitBytes = @Constants.MAXIMUM_FILE_UPLOAD_SIZE_BYTES;
+        var validExtensions = {};
+        validExtensions.validtypes = '@(string.Join(",", new String[] { SystemEnumList.FileExtension.Jpeg.GetDescription().ToLower(), SystemEnumList.FileExtension.Png.GetDescription().ToLower(), SystemEnumList.FileExtension.Jpg.GetDescription().ToLower() }))';
+        var FileSizeError = '@SmartLibrary.Resources.Messages.FileSizeClient';
+        var FileTypeError = '@SmartLibrary.Resources.Messages.FileTypeClient';
+        $(document).ready(function () {
+            //$.fn.datepicker.defaults.language = 'it';
+            @*$.fn.datetimepicker.defaults.locale = '@SmartLibrary.Admin.Classes.General.GetCultureName(SmartLibrary.Infrastructure.ProjectSession.AdminPortalLanguageId)';*@
+
+            if (!String.prototype.endsWith) {
+                String.prototype.endsWith = function (searchString, position) {
+                    var subjectString = this.toString();
+                    if (typeof position !== 'number' || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
+                        position = subjectString.length;
+                    }
+                    position -= searchString.length;
+                    var lastIndex = subjectString.indexOf(searchString, position);
+                    return lastIndex !== -1 && lastIndex === position;
+                };
+            }
+
+            if (!String.prototype.startsWith) {
+                String.prototype.startsWith = function (searchString, position) {
+                    position = position || 0;
+                    return this.indexOf(searchString, position) === position;
+                };
+            }
+
+            if (!String.prototype.includes) {
+                String.prototype.includes = function (search, start) {
+                    if (typeof start !== 'number') {
+                        start = 0;
+                    }
+
+                    if (start + search.length > this.length) {
+                        return false;
+                    } else {
+                        return this.indexOf(search, start) !== -1;
+                    }
+                };
+            }
+
+
+            $.xhrPool = [];
+            $.xhrPool.abortAll = function () {
+                $(this).each(function (i, jqXHR) {   //  cycle through list of recorded connection
+                    jqXHR.abort();  //  aborts connection
+                    $.xhrPool.splice(i, 1); //  removes from list by index
+                });
+            }
+            $.ajaxSetup({
+                cache: false,
+                beforeSend: function (jqXHR) {
+                    $.xhrPool.push(jqXHR);
+                    Pace.restart();
+                }, //  annd connection to list
+                complete: function (jqXHR) {
+                    if (jqXHR.status == 403) {
+                        window.location.reload();
+                    }
+                    var i = $.xhrPool.indexOf(jqXHR);   //  get index for current connection completed
+                    if (i > -1) $.xhrPool.splice(i, 1); //  removes from list by index
+                }
+            });
+
+        });
+
+        $.extend(true, $.fn.dataTable.defaults, {
+            "initComplete": function (settings, json) {
+                $('.dataTables_length').parent().append('<div class="clearfix"></div>');
+            },
+            //'dom': '<f<t><"grid-bottom"lip>>',
+            "dom": 'r<t><"grid-bottom"ilp>',
+            "language": {
+                "emptyTable": "@SmartLibrary.Resources.Messages.NoRecordFound",
+                "info": "@SmartLibrary.Resources.General.Records _START_ @SmartLibrary.Resources.General.To _END_ @SmartLibrary.Resources.General.Of (_TOTAL_)",
+                "infoEmpty": "@SmartLibrary.Resources.General.Showing 0 @SmartLibrary.Resources.General.To 0 @SmartLibrary.Resources.General.Of 0 @SmartLibrary.Resources.General.Entries",
+                "lengthMenu": "_MENU_",
+                "loadingRecords": "@SmartLibrary.Resources.General.Loading",
+                "processing": "@SmartLibrary.Resources.General.Processing",
+                "zeroRecords": "@SmartLibrary.Resources.Messages.NoRecordFound",
+                "paginate": {
+                    "first": "@SmartLibrary.Resources.General.First",
+                    "last": "@SmartLibrary.Resources.General.Last",
+                    "next": "@SmartLibrary.Resources.General.Next",
+                    "previous": "@SmartLibrary.Resources.General.Previous"
+                }
+            }
+        });
+
+        //check session Expired for ajax call
+        $(document).ajaxSend(function (event, request, opt) {
+            if (opt.type !== null && opt.type == "POST") {
+                if (opt.url !== "@Url.Action(SmartLibrary.Admin.Pages.Actions.IsSessionExpired, SmartLibrary.Admin.Pages.Controllers.Account)") {
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action(SmartLibrary.Admin.Pages.Actions.IsSessionExpired, SmartLibrary.Admin.Pages.Controllers.Account)',
+                        dataType: "json",
+                        async: false,
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            if (data.IsExpired) {
+                                if (opt.type === "POST") {
+                                    $.xhrPool.abortAll();
+                                }
+                                location.href = data.returnUrl + '?returnUrl=' + '@ProjectConfiguration.CurrentRawUrl';
+                            }
+                        },
+                        error: function (request, ajaxOptions, thrownError) { }
+                    });
+                }
+            }
+
+        });
+        @if (ProjectSession.AdminPortalLanguageId == SystemEnumList.Language.Arabic.GetHashCode())
+        {
+            <text>
+        $.extend($.validator.messages, {
+            required: "هذا الحقل إلزامي",
+            remote: "يرجى تصحيح هذا الحقل للمتابعة",
+            email: "رجاء إدخال عنوان بريد إلكتروني صحيح",
+            url: "رجاء إدخال عنوان موقع إلكتروني صحيح",
+            date: "رجاء إدخال تاريخ صحيح",
+            dateISO: "رجاء إدخال تاريخ صحيح (ISO)",
+            number: "رجاء إدخال عدد بطريقة صحيحة",
+            digits: "رجاء إدخال أرقام فقط",
+            creditcard: "رجاء إدخال رقم بطاقة ائتمان صحيح",
+            equalTo: "رجاء إدخال نفس القيمة",
+            extension: "رجاء إدخال ملف بامتداد موافق عليه",
+            maxlength: $.validator.format("الحد الأقصى لعدد الحروف هو {0}"),
+            minlength: $.validator.format("الحد الأدنى لعدد الحروف هو {0}"),
+            rangelength: $.validator.format("عدد الحروف يجب أن يكون بين {0} و {1}"),
+            range: $.validator.format("رجاء إدخال عدد قيمته بين {0} و {1}"),
+            max: $.validator.format("رجاء إدخال عدد أقل من أو يساوي {0}"),
+            min: $.validator.format("رجاء إدخال عدد أكبر من أو يساوي {0}")
+
+        });
+        </text>
+
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+﻿@using SmartLibrary.Infrastructure.Code
+@if (TempData.ContainsKey("SessionMessageList"))
+{
+    var toastr = TempData["SessionMessageList"] as SmartLibrary.Infrastructure.Code.Message;
+    @MessageBuilder.ShowToastMessages(toastr);
+    
+}

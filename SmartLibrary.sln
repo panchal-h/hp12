@@ -1,0 +1,91 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartLibrary.Admin", "SmartLibrary.Admin\SmartLibrary.Admin.csproj", "{7721BD87-798B-4B00-B91B-0C6B32D8230D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartLibrary.DataContext", "SmartLibrary.DataContext\SmartLibrary.DataContext.csproj", "{663B4632-FDBD-46C1-B0E8-DB96B1AF8B2F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartLibrary.Infrastructure", "SmartLibrary.Infrastructure\SmartLibrary.Infrastructure.csproj", "{C587B4BD-F027-475F-862F-C7814F081742}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartLibrary.EmailServices", "SmartLibrary.EmailServices\SmartLibrary.EmailServices.csproj", "{42FBF070-8E83-4ACB-9D4F-3F0F1178E921}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartLibrary.Models", "SmartLibrary.Models\SmartLibrary.Models.csproj", "{662498D2-85AA-4E2B-B461-4DBA03ACAFF6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartLibrary.Services", "SmartLibrary.Services\SmartLibrary.Services.csproj", "{1C6141E0-DEE0-42A6-9CE3-B389EB7DED6E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartLibrary.Resources", "SmartLibrary.Resources\SmartLibrary.Resources.csproj", "{97A23DAB-93C3-4589-A335-7DE5059104D3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Library", "Library", "{5D511E6E-BE6D-49C2-B41A-D81D676FF678}"
+	ProjectSection(SolutionItems) = preProject
+		SmartLibrary.ruleset = SmartLibrary.ruleset
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartLibrary.Site", "SmartLibrary.Site\SmartLibrary.Site.csproj", "{880CC493-44CB-47D5-8B60-774D78ECEE3F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartLibrary.SignalRHub", "SmartLibrary.SignalRHub\SmartLibrary.SignalRHub.csproj", "{FEF2A39E-3828-4B0F-A21F-DC2824D2909C}"
+EndProject
+Global
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7721BD87-798B-4B00-B91B-0C6B32D8230D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7721BD87-798B-4B00-B91B-0C6B32D8230D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7721BD87-798B-4B00-B91B-0C6B32D8230D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7721BD87-798B-4B00-B91B-0C6B32D8230D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{663B4632-FDBD-46C1-B0E8-DB96B1AF8B2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{663B4632-FDBD-46C1-B0E8-DB96B1AF8B2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{663B4632-FDBD-46C1-B0E8-DB96B1AF8B2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{663B4632-FDBD-46C1-B0E8-DB96B1AF8B2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C587B4BD-F027-475F-862F-C7814F081742}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C587B4BD-F027-475F-862F-C7814F081742}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C587B4BD-F027-475F-862F-C7814F081742}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C587B4BD-F027-475F-862F-C7814F081742}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42FBF070-8E83-4ACB-9D4F-3F0F1178E921}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42FBF070-8E83-4ACB-9D4F-3F0F1178E921}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42FBF070-8E83-4ACB-9D4F-3F0F1178E921}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42FBF070-8E83-4ACB-9D4F-3F0F1178E921}.Release|Any CPU.Build.0 = Release|Any CPU
+		{662498D2-85AA-4E2B-B461-4DBA03ACAFF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{662498D2-85AA-4E2B-B461-4DBA03ACAFF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{662498D2-85AA-4E2B-B461-4DBA03ACAFF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{662498D2-85AA-4E2B-B461-4DBA03ACAFF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C6141E0-DEE0-42A6-9CE3-B389EB7DED6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C6141E0-DEE0-42A6-9CE3-B389EB7DED6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C6141E0-DEE0-42A6-9CE3-B389EB7DED6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C6141E0-DEE0-42A6-9CE3-B389EB7DED6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97A23DAB-93C3-4589-A335-7DE5059104D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97A23DAB-93C3-4589-A335-7DE5059104D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97A23DAB-93C3-4589-A335-7DE5059104D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97A23DAB-93C3-4589-A335-7DE5059104D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{880CC493-44CB-47D5-8B60-774D78ECEE3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{880CC493-44CB-47D5-8B60-774D78ECEE3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{880CC493-44CB-47D5-8B60-774D78ECEE3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{880CC493-44CB-47D5-8B60-774D78ECEE3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEF2A39E-3828-4B0F-A21F-DC2824D2909C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEF2A39E-3828-4B0F-A21F-DC2824D2909C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEF2A39E-3828-4B0F-A21F-DC2824D2909C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEF2A39E-3828-4B0F-A21F-DC2824D2909C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{663B4632-FDBD-46C1-B0E8-DB96B1AF8B2F} = {5D511E6E-BE6D-49C2-B41A-D81D676FF678}
+		{C587B4BD-F027-475F-862F-C7814F081742} = {5D511E6E-BE6D-49C2-B41A-D81D676FF678}
+		{42FBF070-8E83-4ACB-9D4F-3F0F1178E921} = {5D511E6E-BE6D-49C2-B41A-D81D676FF678}
+		{662498D2-85AA-4E2B-B461-4DBA03ACAFF6} = {5D511E6E-BE6D-49C2-B41A-D81D676FF678}
+		{1C6141E0-DEE0-42A6-9CE3-B389EB7DED6E} = {5D511E6E-BE6D-49C2-B41A-D81D676FF678}
+		{97A23DAB-93C3-4589-A335-7DE5059104D3} = {5D511E6E-BE6D-49C2-B41A-D81D676FF678}
+		{FEF2A39E-3828-4B0F-A21F-DC2824D2909C} = {5D511E6E-BE6D-49C2-B41A-D81D676FF678}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		RESX_PrefixTranslations = False
+	EndGlobalSection
+EndGlobal

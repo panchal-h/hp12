@@ -1,0 +1,88 @@
+﻿@using SmartLibrary.Resources;
+@model SmartLibrary.Models.Customer
+@{
+    ViewBag.Title = "SignUp";
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+
+<div class="wrapper">
+    <div class="card-container">
+        <div class="card normal profile-card">
+            <div class="inner-wrapper">
+                <h2 class="title">@Account.CreateAccount</h2>
+
+                @using (Html.SmartLibSecureForm(SmartLibrary.Site.Pages.Actions.SignUp, SmartLibrary.Site.Pages.Controllers.Account, new { id = "formManageUserProfile", enctype = "multipart/form-data" }))
+                {                                        
+                    @Html.HiddenFor(x => x.Id)
+                    @Html.HiddenFor(x => x.ProfileImagePath)
+                    @Html.HiddenFor(x => x.LoginType)
+                    @Html.HiddenFor(x => x.PCNumber)
+                    <div class="user-image-section">
+                        <img src="@Url.Content("~/Images/default-user.png")" alt="Demo User" id="ProfileImage">
+                        <a href="#" class="btn-file-upload-trigger edit-btn" title="Change"><img src="@Url.Content("~/Images/settings.svg")" alt="Cog"></a>
+                        <input type="file" name="file" class="btn-file-upload" onchange="showProfileImage(event)">
+                    </div>
+                    <div class="form-group floating big-input">
+                        <label class="control-label">@General.FirstName</label>
+                        @Html.TextBoxFor(m => Model.FirstName, new { @class = "form-control grey" })
+                    </div>
+                    <div class="form-group floating big-input">
+                        <label class="control-label">@General.LastName</label>
+                        @Html.TextBoxFor(m => Model.LastName, new { @class = "form-control grey" })
+                    </div>
+                    <div class="form-group floating big-input">
+                        <label class="control-label">@General.Email</label>
+                        @Html.TextBoxFor(m => Model.Email, new { @class = "form-control grey no-Focus", @readonly = "readonly" })
+                    </div>
+                    <div class="form-group floating big-input">
+                        <label class="control-label">@Account.Password</label>
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control grey" })
+                    </div>
+                    <div class="form-group floating big-input">
+                        <label class="control-label">@General.Phone</label>
+                        @Html.TextBoxFor(m => Model.Phone, new { @class = "form-control grey" })
+                    </div>
+                    <div class="form-group floating has-value-fixed big-input">
+                        <label class="control-label">@General.Gender</label>
+                        <div class="btn-group bootstrap-select form-control">
+                            @Html.DropDownListFor(m => Model.Gender, SmartLibrary.Infrastructure.EnumHelper.GetItems(typeof(SmartLibrary.Infrastructure.SystemEnumList.Gender), General.Gender), new { @class = "form-control selectpicker" })
+                        </div>
+                    </div>
+                    <div class="form-group floating has-value-fixed big-input">
+                        <label class="control-label">@General.Language</label>
+                        <div class="btn-group bootstrap-select form-control">
+                            @Html.DropDownListFor(m => Model.Language, SmartLibrary.Infrastructure.EnumHelper.GetItems(typeof(SmartLibrary.Infrastructure.SystemEnumList.Language), General.Language), new { @class = "form-control selectpicker" })
+                        </div>
+                    </div>
+
+                    <button type="submit" value="update" name="action" class="btn btn-primary btn-block btn-lg">
+                        @General.SignUp
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(function () {
+            $(".big-input:has(input[type=text])").addClass("has-value");
+        })
+
+        function showProfileImage(event) {
+            var output = document.getElementById('ProfileImage');
+            if (!$.validator.methods.HttpPostedFileExtensionAndSizeAttribute("", $("input[name=file]")[0], validExtensions)) {
+                if ($.validator.messages.httppostedfileextension != undefined) {
+                    ShowMessage('error',$.validator.messages.httppostedfileextension,'@SmartLibrary.Resources.General.SignUp');
+                    $("input[name=file]").val('');
+                    output.src = '@Url.Content("~/Images/default-user.png")';
+                    return false;
+                }
+                return false;
+            }
+            output.src = URL.createObjectURL(event.target.files[0]);
+        }
+    </script>
+}
+

@@ -1,0 +1,137 @@
+﻿@model IEnumerable<SmartLibrary.Models.Book>
+
+
+@foreach (var item in Model)
+{
+
+    string status = item.StatusId == SystemEnumList.BorrowBookStatus.Approved.GetHashCode() ? ("<span class='status info'>" + SmartLibrary.Resources.General.Borrowed + "</span>") :
+                    item.StatusId == SystemEnumList.BorrowBookStatus.Pending.GetHashCode() ? ("<span class='status warning'>" + SmartLibrary.Resources.General.Pending + "</span>") :
+                    item.CurrentQuantity > 0 ? ("<span class='status success'>" + SmartLibrary.Resources.General.Available + "</span>") :
+                    item.IsNotify.HasValue && item.IsNotify.Value ? ($"<input type='button' value='{SmartLibrary.Resources.General.NotifyMe}' class='btn btn-sm btn-primary notifybtn pull-left' disabled>") :
+                    ($"<input type='button' value='{SmartLibrary.Resources.General.NotifyMe}' class='btn btn-sm btn-primary notifybtn pull-left' onclick='NotifyMe({item.ID},this)'>");
+
+
+    <div class="col-lg-2 col-md-4 col-sm-6 " id="@item.ID">
+        <div class="book-box">
+            <div class="upper">
+                <span class="">
+                    @if (item.CustomerInterest <= 0 || item.CustomerInterest == null)
+                    {
+                        <a href="#" class="star-icon" title="@SmartLibrary.Resources.General.Favourite" onclick="AddBookInterest(@item.ID)" id="starAnchor_@item.ID"><img src="@Url.Content("~/Images/star.svg")" alt="Star" id="star_@item.ID"></a>
+                    }
+                    else
+                    {
+                        <a href="#" class="star-icon" title="@SmartLibrary.Resources.General.Favourite" onclick="RemoveBookInterest(@item.ID)" id="starAnchor_@item.ID"><img class="" src="@Url.Content("~/Images/star-filled.svg")" alt="Star Filled" id="star_@item.ID"></a>
+
+                    }
+                </span>
+                <div class="book-image">
+                    <a href="#" class="book-quick-view-btn" title="@item.BookName" onclick="BookDetailSideBarLoad(@item.ID)">
+                        <img src=@Url.Content("~/" + ProjectConfiguration.BookImagesPath + "/" + item.ImagePath) alt="@item.BookName" onerror="this.src = '@Url.Content("~/Images/DefaultBookImage.jpg")'; " class="img-responsive"/>
+                    </a>
+                </div>
+                @Html.Raw(status)
+                <span class="interest">
+                    <span id="interested_@item.ID">
+                        @item.Interested
+                    </span>
+                    @SmartLibrary.Resources.Books.Interests
+                </span>
+            </div>
+            <a href="#" class="book-title book-quick-view-btn" title="@item.BookName" onclick="BookDetailSideBarLoad(@item.ID)">@item.BookName</a>
+            <span class="book-author fixed-width" title="@item.Authors">&nbsp;@item.Authors</span>
+        </div>
+    </div>
+}
+<script>
+    function NotifyMe(bookId, notify) {
+        var params = {};
+        params["bookId"] = bookId;
+        $.ajax({
+            type: "Post",
+            url: "@Url.Action(SmartLibrary.Site.Pages.Actions.AddNotifyMe, SmartLibrary.Site.Pages.Controllers.Book)",
+            traditional: true,
+            data: params,
+            beforeSend: function (xhr) { AddRequestHeader(xhr, $('#GetBookGrid')); },
+            success: function (response) {
+                ShowMessage(response.status, response.message, response.title, null, null)
+
+                if (response.status) {
+                    $(notify).removeAttr("onclick")
+                    $(notify).prop("disabled", true)
+                }
+            }
+        });
+    }
+
+    function BookDetailSideBarLoad(bookId) {
+        var params = {};
+        params["bookId"] = bookId;
+        params["statusId"] = '@SmartLibrary.Infrastructure.SystemEnumList.BorrowBookStatus.Approved';
+        $.ajax({
+            type: "Get",
+            url: "@Url.Action(SmartLibrary.Site.Pages.Actions.BookDetailSideBar, SmartLibrary.Site.Pages.Controllers.Book)",
+            traditional: true,
+            data: params,
+            success: function (response) {
+                $('#bookDetailSideBar').html(response);
+                GetScrollReset();
+            }
+        });
+    }
+    function AddBookInterest(bookId) {
+        var params = {};
+        params["bookId"] = bookId;
+        $.ajax({
+            type: "Post",
+            url: "@Url.Action(SmartLibrary.Site.Pages.Actions.AddBookInterest, SmartLibrary.Site.Pages.Controllers.Book)",
+            traditional: true,
+            data: params,
+            beforeSend: function (xhr) { AddRequestHeader(xhr, $('#GetBookGrid')); },
+            success: function (response) {
+                ShowMessage(response.status, response.message, response.title, null, null)
+                $("#tblDisplayBooks").DataTable().ajax.reload(null, false);
+                if (response.status) {
+                    var count = $("#interested_" + bookId).text();
+                    count++;
+                    $("#interested_" + bookId).text(count);
+                    $('#star_' + bookId + '').attr("src", "../images/star-filled.svg");
+                    $("#starAnchor_" + bookId).attr("onclick", "RemoveBookInterest(" + bookId + ")");
+                }
+            }
+        });
+    }
+
+    function RemoveBookInterest(bookId) {
+        var params = {};
+        params["bookId"] = bookId;
+        $.ajax({
+            type: "Post",
+            url: "@Url.Action(SmartLibrary.Site.Pages.Actions.RemoveBookInterest, SmartLibrary.Site.Pages.Controllers.Book)",
+            traditional: true,
+            data: params,
+            beforeSend: function (xhr) { AddRequestHeader(xhr, $('#GetBookGrid')); },
+            success: function (response) {
+                ShowMessage(response.status, response.message, response.title, null, null)
+                $("#tblDisplayBooks").DataTable().ajax.reload(null, false);
+                if (response.status) {
+                    var count = $("#interested_" + bookId).text();
+                    count--;
+                    $("#interested_" + bookId).text(count);
+                    $('#star_' + bookId + '').attr("src", "../images/star.svg");
+                    $("#starAnchor_" + bookId).attr("onclick", "AddBookInterest(" + bookId + ")");
+
+                    var src = $('#imgfav').attr('src');
+                    src = src.substring(src.lastIndexOf('/') + 1);
+                    if (src != "star.svg") {
+                        $('#' + bookId).hide();
+                    }
+                    var numItems = $('.book-box:visible').length;
+                    if (numItems == 0) {
+                        $('#noRecord').show();
+                    }
+                }
+            }
+        });
+    }
+</script>

@@ -1,0 +1,33 @@
+﻿@model IEnumerable<SmartLibrary.Models.SpaceBookingRequest>
+
+<div class="modal-header has-subtext">
+    <h2 style="font-size: 20px;line-height: 26px; padding: 20px 0px 10px;">
+        @SmartLibrary.Resources.General.RequestDetail
+    </h2>
+</div>
+<table class="list-table dataTable no-footer">
+    <thead>
+        <tr>
+            <th>@SmartLibrary.Resources.General.BookingDate</th>
+            <th>@SmartLibrary.Resources.General.BookingTime</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Count() > 0)
+        {
+            foreach (var spaceBooking in Model)
+            {
+                <tr>
+                    <td><span>@spaceBooking.FromDate.Value.Date.ToString(ProjectConfiguration.DateFormat, System.Globalization.CultureInfo.InvariantCulture)</span></td>
+                    <td><span>@spaceBooking.FromDate.Value.ToString(ProjectConfiguration.TimeFormat)-@spaceBooking.ToDate.Value.ToString(ProjectConfiguration.TimeFormat)</span></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="2" class="text-center lblNoRecord"><la>@SmartLibrary.Resources.Messages.NoRecordFound</la></td>
+            </tr>
+        }
+    </tbody>
+</table>

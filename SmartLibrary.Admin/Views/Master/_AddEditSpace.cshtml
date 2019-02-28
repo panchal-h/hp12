@@ -1,0 +1,85 @@
+﻿@model SmartLibrary.Models.Space
+<div class="modal fade cus-modal" id="space-modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="modal-close" data-dismiss="modal"><img src="@Url.Content("~/images/modal-close.svg")" alt="Close" /></a>
+                <img src="@Url.Content("~/images/space-color-2.svg")" alt="@SmartLibrary.Resources.General.Space" class="book-stack modal-intro-image" />
+                <h4 class="modal-title">
+                    @if (Model.ID > 0)
+                    {@SmartLibrary.Resources.General.Edit }
+                    else
+                    {@SmartLibrary.Resources.General.AddNew }
+                    @SmartLibrary.Resources.General.Space
+                </h4>
+            </div>
+            @using (Html.SmartLibSecureForm(SmartLibrary.Admin.Pages.Actions.AddEditSpace, SmartLibrary.Admin.Pages.Controllers.Master, new { id = "formManageSpace" }))
+            {
+                @Html.HiddenFor(x => x.ID)
+                <div class="modal-body">
+                    <div class="form-group floating big-input">
+                        <label class="control-label">@SmartLibrary.Resources.General.Name</label>
+                        @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group floating big-input">
+                        <label class="control-label">@SmartLibrary.Resources.General.Description</label>
+                        @Html.TextAreaFor(x => x.Description, new { @class = "form-control"  , rows = "3", maxLength = "500" })
+                    </div>
+                    <div class="form-group floating big-input">
+                        <label class="control-label">@SmartLibrary.Resources.General.Capacity</label>
+                        @Html.TextBoxFor(x => x.Capacity, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group big-input">
+                        <label class="containercheckbox">
+                            <label class="control-label">@SmartLibrary.Resources.General.Active</label>
+                            @Html.CheckBox(SmartLibrary.Resources.General.Active, Model.Active.HasValue ? Model.Active.Value : false)
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>               
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-block btn-lg" onclick="SaveData()">
+                        @if (Model.ID > 0)
+                        { <span>@SmartLibrary.Resources.General.Update @SmartLibrary.Resources.General.Space</span>}
+                        else
+                        {<span>@SmartLibrary.Resources.General.Add @SmartLibrary.Resources.General.Space</span> }
+                    </button>
+                </div> 
+            }
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        if ($("#ID").val() > 0) {
+            $(".big-input:has(input[type=text])").addClass("has-value");
+        }
+        $('#formManageSpace').on('keypress', function (e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+                return SaveData();
+            }
+        });
+    });
+    function SaveData() {
+        var $form = $('#formManageSpace');       
+        if (!$("#formManageSpace").valid()) return;
+        else {
+            $.ajax({
+                type: "Post",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.AddEditSpace, SmartLibrary.Admin.Pages.Controllers.Master)",
+                traditional: true,
+                data: $form.serialize(),
+                beforeSend: function (xhr) { AddRequestHeader(xhr, $form); },
+                success: function (response) {
+                    if (response.status == statusConstant.success) {
+                        $('#space-modal').modal('hide');
+                        $("#tblDisplaySpace").DataTable().ajax.reload(null, false);
+                    }
+                    ShowMessage(response.status, response.message, response.title, null, null)
+
+                }
+            });
+        }
+    }
+</script>

@@ -1,0 +1,313 @@
+﻿@{
+    ViewBag.Title = "Reporting";
+}
+
+<div class="wrapper">
+    <div class="card-container">
+        <div class="card">
+            <div class="card-header">
+                <span>
+                    <img src="@Url.Content("~/Images/chart-Title.svg")" alt="@SmartLibrary.Resources.General.Reporting" class="card-header-image"> &nbsp;
+                </span>
+                <h2 class="card-title card-title-img">@SmartLibrary.Resources.General.Reporting</h2>
+            </div>
+            <table class="reporting-table">
+                <tbody>
+                    <tr class="header">
+                        <td>
+                            <h4 class="title">@SmartLibrary.Resources.General.TotalBooksBorrowed</h4>
+                            <span class="count" id="TotalBooksBorrowedCount"></span>
+                        </td>
+                        <td>
+                            <h4 class="title">@SmartLibrary.Resources.General.TotalBooks</h4>
+                            <span class="count" id="TotalBooksCount"></span>
+                        </td>
+                        <td>
+                            <h4 class="title">@SmartLibrary.Resources.General.TotalRoomsBooked</h4>
+                            <span class="count" id="TotalEventsCount"></span>
+                        </td>
+                        <td>
+                            <h4 class="title">@SmartLibrary.Resources.General.TotalBooksBorrowedthroughLibrary</h4>
+                            <span class="count" id="TotalBooksBorrowedthroughLibCount"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4 class="title">@SmartLibrary.Resources.General.MostPopularBook</h4>
+                            <div class="book" id="MostPopularBook">
+                                <div class="image"><img src="" id="PopularBookImage" onerror="this.src = '@Url.Content("~/Images/DefaultBookImage.jpg")'; "/></div>
+                                <div class="link" id="PopularBookName"></div>
+                                <span id="PopularBookAuthor" class="fixed-width"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <h4 class="title">@SmartLibrary.Resources.General.MostActiveBorrower</h4>
+                            <div class="member" id="MostActiveBorrower">
+                                <img src="" id="ActiveBorrowerImage" onerror="this.src = '@Url.Content("~/Images/default-user.png")'; "/>
+                                <span class="name" id="BorrowerName"></span>
+                                <span class="detail" id="BorrowerEmail"></span>
+                                <span class="status info" id="TotalBooks"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <h4 class="title">@SmartLibrary.Resources.General.Mostpopularuserbookingrooms</h4>
+                            <div class="member" id="Mostpopularuserbookingrooms">
+                                <img src="" id="PopularUserProfileImage" onerror="this.src = '@Url.Content("~/Images/default-user.png")'; "/>
+                                <span class="name" id="PopularUserName"></span>
+                                <span class="detail" id="PopularUserEmail"></span>
+                                <span class="status info" id="PopularUserTotalEvents"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <h4 class="title">@SmartLibrary.Resources.General.MostPopularAuthor</h4>
+                            <div class="member" id="MostPopularAuthor">
+                                <span class="name" id="PopularAuthorName"></span>
+                                <span class="status info" id="PopularAuthorTotalbookBorrowed"></span>
+                            </div>
+                        </td>
+
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <h4 class="title">@SmartLibrary.Resources.General.MostPopularGenre</h4>
+                            <div class="chart" id="genreChart">
+                            </div>
+                        </td>
+                        <td>
+                            <h4 class="title">@SmartLibrary.Resources.General.Mostpopulartimeforborrowingbooks</h4>
+                            <div class="chart" id="popularTimeChart">
+                            </div>
+                        </td>
+                        <td>
+                            <h4 class="title">@SmartLibrary.Resources.General.ReturningBooksontime</h4>
+                            <div class="chart ReturningBookonTime" id="ReturningBookonTime" data-height="196" data-width="196">
+                            </div>
+                        </td>
+                        <td>
+                            <h4 class="title">@SmartLibrary.Resources.General.Bookreturndelayed</h4>
+                            <div class="chart BookReturnDelayed" id="BookReturnDelayed" data-height="196" data-width="196">
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+
+        $(function () {
+            ActiveMenu("#liReports");
+
+            $(".ReturningBookonTime").each(function (index, el) {
+                var transform = isEnglish == "true" ? "matrix(1, 0, 0, 1, -152.504, 430.925)" : "matrix(1, 0, 0, 1, -165.504, 430.925)";
+                var width = parseInt($(this).attr("data-width"));
+                var height = parseInt($(this).attr("data-height"));
+                var progress = parseInt($(this).attr("data-progress"));
+                if (isNaN(progress)) progress = 0;
+                $(this).append(chartTemplate);
+                $(this).find(".customLabel").text("@SmartLibrary.Resources.General.OnTime").attr("transform", transform);
+                if (!isNaN(width) && !isNaN(height)) {
+                    $(this).children('svg').attr({
+                        "height": height,
+                        "width": width
+                    });
+                }
+            });
+
+            $(".BookReturnDelayed").each(function (index, el) {
+                var width = parseInt($(this).attr("data-width"));
+                var height = parseInt($(this).attr("data-height"));
+                var progress = parseInt($(this).attr("data-progress"));
+                if (isNaN(progress)) progress = 0;
+                $(this).append(chartTemplate);
+                $(this).find(".customLabel").text("@SmartLibrary.Resources.General.Delayed");
+                if (!isNaN(width) && !isNaN(height)) {
+                    $(this).children('svg').attr({
+                        "height": height,
+                        "width": width
+                    });
+                }
+            });
+
+            $.ajax({
+                type: "Get",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.ReportCount, SmartLibrary.Admin.Pages.Controllers.Report)",
+                success: function (response) {
+                    var data = JSON.parse(response.list);
+                    $("#TotalBooksBorrowedCount").text(data.TotalBooksBorrowed);
+                    $("#TotalBooksCount").text(data.TotalBooks);
+                    $("#TotalEventsCount").text(data.TotalRoomsBooked);
+                    $("#TotalBooksBorrowedthroughLibCount").text(data.TotalBooksBorrowedThroughLibrary);
+                    if (data.PopularBook.length > 0) {
+                        $("#PopularBookImage").attr("src", data.PopularBook[0].ImagePath);
+                        $("#PopularBookName").text(data.PopularBook[0].BookName);
+                        $("#PopularBookAuthor").text(data.PopularBook[0].Authors);
+                    }
+                    else
+                    {
+                        $('#MostPopularBook').html("@SmartLibrary.Resources.General.NoDataFound");
+                    }
+
+                    if (data.ActiveBorrower.length > 0) {
+                        $("#ActiveBorrowerImage").attr("src", data.ActiveBorrower[0].ProfileImagePath);
+                        $("#BorrowerName").text(data.ActiveBorrower[0].CustomerName);
+                        $("#BorrowerEmail").text(data.ActiveBorrower[0].Email);
+                        $("#TotalBooks").text("@SmartLibrary.Resources.General.Borrowed " + data.ActiveBorrower[0].Totalbooks + " @SmartLibrary.Resources.General.Books");
+                    }
+                    else {
+                        $('#MostActiveBorrower').html("@SmartLibrary.Resources.General.NoDataFound");
+                    }
+
+                    if (data.PopularUserBookingRoom.length > 0) {
+                        $("#PopularUserProfileImage").attr("src", data.PopularUserBookingRoom[0].ProfileImagePath);
+                        $("#PopularUserName").text(data.PopularUserBookingRoom[0].CustomerName);
+                        $("#PopularUserEmail").text(data.PopularUserBookingRoom[0].Email);
+                        $("#PopularUserTotalEvents").text("@SmartLibrary.Resources.General.Booked " + data.PopularUserBookingRoom[0].Totalevents + " @SmartLibrary.Resources.General.Rooms");
+                    }
+                    else {
+                        $('#Mostpopularuserbookingrooms').html("@SmartLibrary.Resources.General.NoDataFound");
+                    }
+
+                    if (data.PopularAuthor.length > 0) {
+                        $("#PopularAuthorName").text(data.PopularAuthor[0].Authors);
+                        $("#PopularAuthorTotalbookBorrowed").text(data.PopularAuthor[0].count + " @SmartLibrary.Resources.General.Books @SmartLibrary.Resources.General.Borrowed");
+                    }
+                    else {
+                        $('#MostPopularAuthor').html("@SmartLibrary.Resources.General.NoDataFound");
+                    }
+
+
+
+                    if (data.PopularGenre.length > 0) {
+                        var processed_json = new Array();
+                        for (i = 0; i < data.PopularGenre.length; i++) {
+                            processed_json.push([data.PopularGenre[i].Name, data.PopularGenre[i].m]);
+                        }
+                        PopularGenreChart(processed_json);
+                    }
+                    else {
+                        $('#genreChart').html("@SmartLibrary.Resources.General.NoDataFound");
+                    }
+
+                    if (data.PopularTime.length > 0) {
+                        var processed_jsonTime = new Array();
+                        for (i = 0; i < data.PopularTime.length; i++) {
+                            processed_jsonTime.push([data.PopularTime[i].Time, data.PopularTime[i].count]);
+                        }
+                        PopularTimeChart(processed_jsonTime);
+                    }
+                    else {
+                        $('#popularTimeChart').html("@SmartLibrary.Resources.General.NoDataFound");
+                    }
+                    updateGradientChart($(".ReturningBookonTime"), data.ReturnedBookOnTime)
+                    updateGradientChart($(".BookReturnDelayed"), data.ReturnedBookDelay)
+                }
+            });
+
+            function PopularGenreChart(data) {
+                var lstcategories = new Array();
+                data.forEach(function (e) {
+                    lstcategories.push(e[0]);
+                });
+                var chart = new Highcharts.Chart({
+                    chart: {
+                        renderTo: 'genreChart',
+                        type: 'column'
+                    },
+                    title: {
+                        text: ''
+                    },                    
+                    xAxis: {
+                        categories: lstcategories,
+                        labels: {
+                            rotation: 270,
+                        }
+                    },
+                    yAxis: {
+                        visible: false,
+                        title: {
+                            text: ''
+                        },
+                        minorGridLineWidth: 0,
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    plotOptions: {
+                        series: {
+                            borderWidth: 0,
+                            dataLabels: {
+                                enabled: true,
+                                format: '{point.y}',
+                                crop: false,
+                                overflow: 'none'
+                            }
+                        }
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    series: [{
+                        name: "Total Count",
+                        data: data,
+                        color: '#006557'
+                    }]
+                });
+            };
+            function PopularTimeChart(data) {
+                var lstcategories = new Array();
+                data.forEach(function (e) {
+                    lstcategories.push(e[0]);
+                });
+                var chart = new Highcharts.Chart({
+                    chart: {
+                        renderTo: 'popularTimeChart',
+                        type: 'column'
+                    },
+                    title: {
+                        text: ''
+                    },
+                    xAxis: {
+                        categories: lstcategories,
+                        labels: {
+                            rotation: 270
+                        }
+                    },
+                    yAxis: {
+                        visible: false,
+                        title: {
+                            text: ''
+                        },
+                        minorGridLineWidth: 0,
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    plotOptions: {
+                        series: {
+                            borderWidth: 0,
+                            dataLabels: {
+                                enabled: true,
+                                format: '{point.y}',
+                                crop: false,
+                                overflow: 'none'
+                            }
+                        }
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    series: [{
+                        name: "Total Count",
+                        data: data,
+                        color: '#006557'
+                    }]
+                });
+            }
+        });
+    </script>
+}

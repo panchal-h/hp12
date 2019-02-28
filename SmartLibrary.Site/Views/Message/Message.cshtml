@@ -1,0 +1,170 @@
+﻿@model Message
+@using SmartLibrary.Models
+
+@{
+    ViewBag.Title = SmartLibrary.Resources.General.Messages;
+}
+
+@*<div class="wrapper">
+
+    </div>*@
+<div class="card-container no-padding">
+    <div class="card messages">
+
+        <div class="left-pane">
+            <div class="inner">
+                <div class="header">
+                    <h4 class="title">@SmartLibrary.Resources.General.Messages</h4>
+                    @*<div class="searchbox">
+                            <a href="#" title="@SmartLibrary.Resources.General.SearchUsers">
+                                <img src="~/images/search.svg" alt="@SmartLibrary.Resources.General.SearchUsers" />
+                            </a>
+                            <input type="text" class="form-control" placeholder="@SmartLibrary.Resources.General.SearchUsers" />
+                            <a href="#" title="Close" class="search-close">
+                                <img src="~/images/close-black.svg" alt="@SmartLibrary.Resources.General.Close" />
+                            </a>
+                        </div>*@
+                </div>
+                <div class="pane-body custom-scroll">
+                    <div class="scroller-inner">
+                        <ul id="chatlist" class="chat-list"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-pane">
+            <div class="header">
+                <a href="#" title="Back" class="back-to-messages visible-xs"><img src="@Url.Content("~/images/chevron-left-rounded.svg")" alt="" /></a>
+                <img src="@Url.Content("~/images/default-user.png")" alt="@SmartLibrary.Resources.General.Admin">
+                <span>@SmartLibrary.Resources.General.Admin</span>
+            </div>
+            <div id="message-list" class="pane-body custom-scroll">
+                <div id="message-list-inner" class="scroller-inner">
+                    <ul class="conversation-list"></ul>
+                </div>
+            </div>
+            <div class="footer">
+                @using (Html.SmartLibSecureForm(SmartLibrary.Site.Pages.Actions.SendMessage, SmartLibrary.Site.Pages.Controllers.Message, new { id = "formSendMessage" }))
+                {
+                    <div class="textbox-wrapper">
+                        @Html.TextAreaFor(x => x.Description, new { @class = "form-control", placeholder = SmartLibrary.Resources.General.EnterYourMessage, @data_val_required = SmartLibrary.Resources.General.EnterYourMessage, rows = "2", style = "height:100px;" })
+                        <a href="javascript:void(0);" onclick="sendMessage()" title="@SmartLibrary.Resources.General.Send">
+                            <img src="@Url.Content("~/images/send.svg")" alt="@SmartLibrary.Resources.General.Send" />
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="divModal"></div>
+
+@section scripts{
+    <script type="text/javascript">
+        var startRowIndex = 0, length = @ProjectConfiguration.PageSize, totalRecords = -1, lastMessageId = -1;
+
+        ActiveMenu("#liMessage");
+        getMessages();
+        getChatList();
+
+        $(document).ready(function () {
+            $("#pagebody").addClass('wrapper');
+        });
+
+        //$('#Description').on('keypress', function (e) {
+        //    if (e.keyCode == 13) {
+        //        e.preventDefault();
+        //        sendMessage();
+        //        return false;
+        //    }
+        //});
+
+        function getMessages() {
+            //if (startRowIndex > totalRecords && totalRecords != -1) {
+            //    return;
+            //}
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action(SmartLibrary.Site.Pages.Actions.GetMessages, SmartLibrary.Site.Pages.Controllers.Message)",
+                traditional: true,
+                data: { startIndex: startRowIndex, Length: length },
+                beforeSend: function (xhr) { AddRequestHeader(xhr, "#formSendMessage"); },
+                success: function (response) {
+                    if (response && $(response).find('li').length > 0) {
+                        $(".conversation-list").prepend($(response).html());
+                        $("#message-list").getNiceScroll().resize();
+                        //if($('#message-list').getNiceScroll(0)) $('#message-list').getNiceScroll(0).doScrollTop($('#message-list-inner').height() - $('#message-list').height(), 1);
+                        if ($('#message-list-inner').height() - $('#message-list').height() > 0) {
+                            $('#message-list').scrollTop($('#message-list-inner').height() - $('#message-list').height());
+                        }
+                        //startRowIndex += length;
+                        //totalRecords = $('li:first', $(response)).attr('data-totalRecords') || totalRecords;
+                        //lastMessageId = $('li:first', $(response)).attr('data-id') || lastMessageId;
+                    } else {
+                        //startRowIndex += length;
+                        //totalRecords = 0;
+                    }
+                }
+            });
+        }
+
+        function addNewMessage(id) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action(SmartLibrary.Site.Pages.Actions.GetMessages, SmartLibrary.Site.Pages.Controllers.Message)",
+                traditional: true,
+                data: { id: id, startIndex: startRowIndex, Length: length },
+                beforeSend: function (xhr) { AddRequestHeader(xhr, "#formSendMessage"); },
+                success: function (response) {
+                    if (response && $(response).find('li').length > 0) {
+                        $(".conversation-list").append($(response).html());
+                        $("#message-list").getNiceScroll().resize();
+                        //if($('#message-list').getNiceScroll(0)) $('#message-list').getNiceScroll(0).doScrollTop(-$("#message-list-inner").offset().top + 500, 1);
+                        if ($('#message-list-inner').height() - $('#message-list').height() > 0) {
+                            $('#message-list').scrollTop($('#message-list').scrollTop() + $('.conversation-list li:last').height());
+                        }
+                    }
+                }
+            });
+        }
+
+        function getChatList() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action(SmartLibrary.Site.Pages.Actions.GetChatList, SmartLibrary.Site.Pages.Controllers.Message)",
+                traditional: true,
+                success: function (response) {
+                    if (response && $(response).find('li').length > 0) {
+                        $("#chatlist").html($(response).html());
+                    }
+                }
+            });
+        }
+
+        function sendMessage() {
+            if ($('#Description').valid()) {
+                $.ajax({
+                    type: "Post",
+                    url: "@Url.Action(SmartLibrary.Site.Pages.Actions.SendMessage, SmartLibrary.Site.Pages.Controllers.Message)",
+                    traditional: true,
+                    data: { Description: $('#Description').val(), MessageTypeId: @SystemEnumList.MessageType.ChatMessage.GetHashCode() },
+                    beforeSend: function (xhr) { AddRequestHeader(xhr, "#formSendMessage"); },
+                    success: function (response) {
+                        if (response.status == statusConstant.success) {
+                            addNewMessage(response.resultData);
+                            $('#Description').val('');
+                        } else {
+                            ShowMessage(response.status, response.message, response.title, null, null);
+                        }
+                    }
+                });
+            }
+
+            return false;
+        }
+
+    </script>
+}

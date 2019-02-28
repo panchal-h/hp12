@@ -1,0 +1,74 @@
+﻿@using SmartLibrary.Site.Classes
+@using SmartLibrary.Site.Pages
+@{ 
+    var isArabic = ProjectSession.UserPortalLanguageId == SystemEnumList.Language.Arabic.GetHashCode();
+    var imagePath = isArabic ? Url.Content("~/Images/en.svg") : Url.Content("~/Images/ar.svg");
+    var altTitle = isArabic ? SmartLibrary.Resources.General.English : SmartLibrary.Resources.General.Arabic;
+}
+<div class="sidebar user-sidebar">
+    <a href="@Url.Action(SmartLibrary.Site.Pages.Actions.AllActivities, SmartLibrary.Site.Pages.Controllers.Home)" title="@SmartLibrary.Resources.General.Todaysactivities" class="brand" title="@SmartLibrary.Resources.General.ApplicationName"><img src="@Url.Content("~/Images/logo.png")" alt="@SmartLibrary.Resources.General.ApplicationName"></a>
+    <ul class="bottom-nav">
+        @*<li class="dropdown nav-link">
+            <a href="#" title="@SmartLibrary.Resources.General.Profile" data-toggle="dropdown" class="dropdown-toggle" data-target=".profile-dropdown"><img src="@Url.Content("~/Images/profile.svg")" alt="@SmartLibrary.Resources.General.User" /></a>
+        </li>*@
+        @if(ProjectSession.LoginType == SystemEnumList.LoginType.Guest.GetHashCode())
+        {
+        <li id="liChangePassword"><a href="@Url.Action(Actions.ChangePassword, Controllers.User)" title="@SmartLibrary.Resources.General.ChangePassword"><img src="~/Images/user.svg" alt="@SmartLibrary.Resources.General.ChangePassword" /></a></li>
+        }
+        <li class="dropdown nav-link">
+            <a href="javascript:void(0);" class="setLanguage" title="@altTitle" data-languageChangeUrl="@Url.Action(Actions.SetLanguage, Controllers.Account)"><img src="@imagePath" alt="@altTitle" /></a>
+        </li>
+        <li>
+            <a href="@Url.Action(SmartLibrary.Site.Pages.Actions.Logout, SmartLibrary.Site.Pages.Controllers.Account)" title="@SmartLibrary.Resources.General.Logout"><img src="@Url.Content("~/Images/logout.svg")" alt="@SmartLibrary.Resources.General.Logout" /></a>
+        </li>
+        <li>
+            <a href="#" class="notificationbtn" data-url="@Url.Action(Actions.GetNotifications, Controllers.Notification)" title="@SmartLibrary.Resources.General.Notification"><img src="@Url.Content("~/Images/notifications.svg")" alt="@SmartLibrary.Resources.General.Notification"></a>
+        </li>
+    </ul>
+    <div class="middle-nav-outer">
+        <div class="middle-nav-wrapper">
+            <ul class="middle-nav">
+                <li id="liBook" class="nav-link"><a href="@Url.Action(SmartLibrary.Site.Pages.Actions.BookGrid, SmartLibrary.Site.Pages.Controllers.Book)" title="@SmartLibrary.Resources.General.Books"><img src="@Url.Content("~/Images/books.svg")" alt="@SmartLibrary.Resources.General.Book"></a></li>
+                <li id="liTodayActivity" class="nav-link"><a href="@Url.Action(SmartLibrary.Site.Pages.Actions.AllActivities, SmartLibrary.Site.Pages.Controllers.Home)" title="@SmartLibrary.Resources.General.Todaysactivities"><img src="@Url.Content("~/Images/calendar.svg")" alt="Calendar"></a></li>
+                <li id="liRoomBooking" class="nav-link"><a href="@Url.Action(Actions.Index, Controllers.LibraryRoomBookings)" title="@SmartLibrary.Resources.General.LibraryRoomBooking"><img src="@Url.Content("~/Images/date-calendar.svg")" alt="@SmartLibrary.Resources.General.LibraryRoomBooking"></a></li>
+                <li id="liMessage" class="nav-link">
+                    <a class="messagebtn" href="@Url.Action(Actions.Index, Controllers.Message)" title="@SmartLibrary.Resources.General.Message" data-messagecount-url="@Url.Action(Actions.GetNewMessageCount, Controllers.Message)">
+                        <img src="@Url.Content("~/Images/email.svg")" alt="@SmartLibrary.Resources.General.Message">
+                    </a>
+                </li>
+                @*<li id="liBookProfile" class="nav-link"><a href="@Url.Action(Actions.BookProfile, Controllers.Book)" title="@SmartLibrary.Resources.General.BookProfile"><img src="@Url.Content("~/Images/BookProfile.png")" alt="@SmartLibrary.Resources.General.BookProfile"></a></li>*@
+            </ul>
+        </div>
+    </div>
+    <button class="nav-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+</div>
+<div class="dropdown fixed">
+    <ul class="dropdown-menu profile-dropdown">
+        <li id="liProfile"><a href="@Url.Action(SmartLibrary.Site.Pages.Actions.MyProfile, SmartLibrary.Site.Pages.Controllers.User)" title="@SmartLibrary.Resources.General.ViewProfile"><img class="submenu-icons" src="~/Images/user-profile.svg" alt="@SmartLibrary.Resources.General.ViewProfile" />@SmartLibrary.Resources.General.ViewProfile</a></li>
+    </ul>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        GetScrollReset();
+
+        $("body").on("click", ".setLanguage", function () {
+            $.ajax({
+                type: "POST",
+                url: $(this).data("languagechangeurl"),
+                dataType: 'json',
+                success: function (data, textStatus, XMLHttpRequest) {
+                    if (data.success) {
+                        window.location.reload();
+                    }
+                },
+                error: function (jqXHR, exception, errMsg) {
+                }
+            });
+        });
+    });
+</script>
+

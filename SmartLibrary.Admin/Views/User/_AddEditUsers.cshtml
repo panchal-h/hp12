@@ -1,0 +1,179 @@
+﻿@model SmartLibrary.Models.User
+<div class="modal fade cus-modal" id="user-modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="modal-close" data-dismiss="modal"><img src="@Url.Content("~/images/modal-close.svg")" alt="@SmartLibrary.Resources.General.Close" /></a>
+                <img src="@Url.Content("~/images/user-color.svg")" alt="@SmartLibrary.Resources.General.User" class="book-stack modal-intro-image" />
+                <h4 class="modal-title">
+                    @if (Model.Id > 0)
+                    {@SmartLibrary.Resources.General.Edit }
+                    else
+                    {@SmartLibrary.Resources.General.AddNew }
+                    @SmartLibrary.Resources.General.User
+                </h4>
+            </div>
+            @using (Html.SmartLibSecureForm(SmartLibrary.Admin.Pages.Actions.AddEditUser, SmartLibrary.Admin.Pages.Controllers.User, new { id = "formManageUser" }))
+            {
+                @Html.HiddenFor(x => x.Id)
+                @Html.HiddenFor(x => x.AGUserId)
+                <div class="modal-body">
+                    <div class="form-group floating has-value-fixed big-input">
+                        <label class="control-label">@SmartLibrary.Resources.General.UserType</label>
+                        @Html.DropDownList("LoginType", SmartLibrary.Infrastructure.EnumHelper.GetItems(typeof(SystemEnumList.LoginType), string.Empty, SmartLibrary.Resources.General.Select.SetArguments(SmartLibrary.Resources.General.UserType)), new { @class = "form-control selectpicker", @data_val_required = SmartLibrary.Resources.Messages.RequiredFieldMessage.SetArguments(SmartLibrary.Resources.General.User), @data_val = "true" })
+                    </div>
+                    @if (Model.Id <= 0)
+                    {
+                        <div class="form-group floating has-value-fixed big-input userBlock">
+                            <label class="control-label">@SmartLibrary.Resources.General.User</label>
+                            @Html.DropDownList("Users", SmartLibrary.Services.CommonBL.GetActiveDirectoryUserDropDown(SmartLibrary.Resources.General.Select.SetArguments(SmartLibrary.Resources.General.User)), new { @class = "form-control selectpicker", @data_val_required = SmartLibrary.Resources.Messages.RequiredFieldMessage.SetArguments(SmartLibrary.Resources.General.User), @data_val = "true" })
+                        </div>
+                    }
+                    <div class="form-group floating big-input">
+                        <label class="control-label">@SmartLibrary.Resources.General.Email</label>
+                        @Html.TextBoxFor(x => x.Email, new { @class = "form-control" })
+                    </div>
+                    @if (Model.Id <= 0)
+                    {
+
+                        <div class="form-group floating big-input PCNumberblock">
+                            <label class="control-label">@SmartLibrary.Resources.General.PCNumber</label>
+                            @Html.TextBoxFor(x => x.PCNumber, new { @class = "form-control" })
+                        </div>
+                        <div class="form-group floating big-input passwordBlock">
+                            <label class="control-label">@SmartLibrary.Resources.General.Password</label>
+                            @Html.TextBoxFor(x => x.Password, new { @class = "form-control", type = "Password" })
+                            @Html.HiddenFor(x => x.EncryptedPassword)
+                        </div>
+                    }
+                    else
+                    {
+                        @Html.HiddenFor(x => x.PCNumber)
+                        @Html.HiddenFor(x => x.LoginType)
+                        @Html.HiddenFor(x => x.Password)
+                    }
+                    <div class="form-group floating big-input">
+                        <label class="control-label">@SmartLibrary.Resources.General.FirstName</label>
+                        @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group floating big-input">
+                        <label class="control-label">@SmartLibrary.Resources.General.LastName</label>
+                        @Html.TextBoxFor(x => x.LastName, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group floating big-input has-value-fixed ">
+                        <label class="control-label">@SmartLibrary.Resources.General.Role</label>
+                        @Html.DropDownListFor(m => m.RoleId, SmartLibrary.Services.CommonBL.GetListForDropdown<SmartLibrary.Models.Role>(SmartLibrary.Resources.General.SelectRole, Model.RoleId.String(), Model.RoleName.String(), valueField: "Id"), new { @class = "form-control selectpicker", data_placeholder = @SmartLibrary.Resources.General.SelectRole, id = "ddlRole" })
+                    </div>
+                    <div class="form-group big-input">
+                        <label class="containercheckbox">
+                            <label class="control-label">@SmartLibrary.Resources.General.Active</label>
+                            @Html.CheckBox(SmartLibrary.Resources.General.Active, Model.Active.HasValue ? Model.Active.Value : false)
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-block btn-lg" onclick="SaveData()">
+                        @if (Model.Id > 0)
+                        { <span>@SmartLibrary.Resources.General.Update @SmartLibrary.Resources.General.User</span>}
+                        else
+                        {<span>@SmartLibrary.Resources.General.Add @SmartLibrary.Resources.General.User</span> }
+                    </button>
+                </div> }
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/jsencrypt.min.js"></script>
+<script>
+    var publickKey = '@ProjectConfiguration.RSAPublicKey';
+    $(document).ready(function () {
+        EncryptPassword($("#Password"), $("#EncryptedPassword"));
+        if(@Model.Id > 0)
+        {
+            $('#Email').attr('readonly', true);
+            $('#PCNumber').attr('readonly', true);
+            $("#LoginType").prop("disabled", true);
+        }
+        if ($("#Id").val() > 0) {
+            $(".big-input:has(input[type=text])").addClass("has-value");
+        }
+        $(".selectpicker").selectpicker({ 'liveSearch': true });
+        $('#formManageUser').on('keypress', function (e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+                return SaveData();
+            }
+        });
+
+        $("#Password").on("blur", function () {
+            EncryptPassword($("#Password"), $("#EncryptedPassword"));
+        });
+    });
+
+    $('#LoginType').on("change", function () {
+        if($(this).val() == '@SystemEnumList.LoginType.Guest.GetHashCode()' ){
+            $('.PCNumberblock').hide();
+            $('.passwordBlock').show();
+            $('.userBlock').hide();
+        }
+        if($(this).val() == '@SystemEnumList.LoginType.Staff.GetHashCode()' ){
+            $('.PCNumberblock').show();
+            $('.passwordBlock').hide();
+            $('.userBlock').show();
+        }
+        BindADData();
+    });
+
+    $('#Users').on("change", function () {
+        BindADData();
+    })
+
+    function BindADData()
+    {
+        $('#Email,#PCNumber,#Password').val("");
+        $('#Email').val("").attr("readonly", false);
+        $('#PCNumber').val("").attr("readonly", false);
+        var email = $('#Users option:selected').text().split('[')[1].split(']')[0].trim();
+        var pcnumber = $('#Users option:selected').val();
+        if ($('#LoginType').val() == '@SystemEnumList.LoginType.Staff.GetHashCode()' && $('#Users').val() != "" && email != "-") {
+            $('#Email').val(email).attr("readonly", true);
+        }
+        if ($('#LoginType').val() == '@SystemEnumList.LoginType.Staff.GetHashCode()')
+            $('#PCNumber').val(pcnumber).attr("readonly", true);
+        $('#Email').blur();
+        $('#PCNumber').blur();
+    }
+
+    function SaveData() {
+        var $form = $('#formManageUser');
+        if (!$("#formManageUser").valid()) return;
+        else {
+            $.ajax({
+                type: "Post",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.AddEditUser, SmartLibrary.Admin.Pages.Controllers.User)",
+                data: $form.serialize(),
+                beforeSend: function (xhr) { xhr.setRequestHeader('__RequestVerificationToken', $('input[name="__RequestVerificationToken"]', $("#formManageUser")).val()); },
+                success: function (response) {
+                    if (response.status == statusConstant.success) {
+                        $('#user-modal').modal('hide');
+                        $("#tblDisplayUser").DataTable().ajax.reload(null, false);
+                    }
+                    ShowMessage(response.status, response.message, response.title, null, null)
+
+                }
+            });
+        }
+    }
+
+    function EncryptPassword($source, $target) {
+        // Encrypt with the public key...
+        var encrypt = new JSEncrypt();
+        encrypt.setPublicKey(publickKey);
+
+        if ($source.val() != undefined && $source.val() != '') {
+            var encrypted = encrypt.encrypt($source.val());
+            $target.val('');
+            $target.val(encrypted);
+        }
+    }
+</script>

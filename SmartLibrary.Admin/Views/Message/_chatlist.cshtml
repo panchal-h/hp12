@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Message>
+
+<ul>
+    @if (Model != null && Model.Count() > 0)
+    {
+        @*<li class="empty-state">
+                @SmartLibrary.Resources.Messages.NoUsersFound
+            </li>*@
+        foreach (var message in Model)
+        {
+            <li class="@(message.IsRead.HasValue && message.IsRead.Value ? "active unread-msg" : "")">
+                <a href="#" title="@message.CustomerName" data-customerid="@message.CustomerId" onclick="getMessages(@message.CustomerId, this)">
+                    <div class="upper">
+                        @if (!string.IsNullOrEmpty(message.ProfileImagePath))
+                        {
+                            <img class="customerimage" src="@Url.Content("~/" + ProjectConfiguration.UserProfileImagePath + "/" + message.ProfileImagePath)" alt="" onerror="this.src = '@Url.Content("~/Images/default-user.png")'; "/>
+                        }
+                        else
+                        {
+                            <img class="customerimage" src="@Url.Content("~/images/default-user.png")" alt="" />
+                        }
+                        <span class="name customername">@message.CustomerName</span>
+                        <span class="time">@SmartLibrary.Services.CommonBL.GetSpentTime(message.CreatedDate)</span>
+                        @*<span class="time">Return Book</span>*@
+                    </div>
+                    <p>@(message.Description.Length < 100 ? message.Description : message.Description.Substring(0, 100))</p>
+                </a>
+            </li>
+        }
+    }
+    else
+    {
+        <li class="empty-state">
+            @SmartLibrary.Resources.Messages.NoUsersFound
+        </li>
+    }
+
+</ul>

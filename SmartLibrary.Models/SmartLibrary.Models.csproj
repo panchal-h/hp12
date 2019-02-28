@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{662498D2-85AA-4E2B-B461-4DBA03ACAFF6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SmartLibrary.Models</RootNamespace>
+    <AssemblyName>SmartLibrary.Models</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>..\SmartLibrary.ruleset</CodeAnalysisRuleSet>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>
+    </CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FoolproofValidation">
+      <HintPath>..\packages\foolproof.0.9.4518\lib\net45\FoolproofValidation.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DubSmeYec\bin\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Linq.Dynamic">
+      <HintPath>..\Additional Resources\System.Linq.Dynamic.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\TatvaProjects\MVC Project Architecture\SampleProject.Business.Models\bin\Debug\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\TatvaProjects\MVC Project Architecture\SampleProject.Business.Models\bin\Debug\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\TatvaProjects\MVC Project Architecture\SampleProject.Business.Models\bin\Debug\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ActiveDirectoryDeleteDataResponse.cs" />
+    <Compile Include="ActiveDirectoryDeleteResponse.cs" />
+    <Compile Include="ActiveDirectoryUserData.cs" />
+    <Compile Include="ActiveDirectoryRegister.cs" />
+    <Compile Include="ActiveDirectoryRegisterDataResponse.cs" />
+    <Compile Include="ActiveDirectoryRegisterResponse.cs" />
+    <Compile Include="ActiveDirectoryResponseBase.cs" />
+    <Compile Include="ActiveDirectoryUser.cs" />
+    <Compile Include="ActiveDirectoryUserApiResponse.cs" />
+    <Compile Include="ActiveDirectoryUserDetailsResponse.cs" />
+    <Compile Include="AGModels\RegisterAPIModel.cs" />
+    <Compile Include="AGModels\SmartLibraryAPIData.cs" />
+    <Compile Include="APIResponse.cs" />
+    <Compile Include="BaseModel.cs" />
+    <Compile Include="BaseViewModel.cs" />
+    <Compile Include="BookDiscussion.cs" />
+    <Compile Include="BookGenre.cs" />
+    <Compile Include="BookInterest.cs" />
+    <Compile Include="BookLocation.cs" />
+    <Compile Include="Book.cs" />
+    <Compile Include="BookNotification.cs" />
+    <Compile Include="BorrowedBook.cs" />
+    <Compile Include="ChangePassword.cs" />
+    <Compile Include="Customer.cs" />
+    <Compile Include="EmailViewModel.cs" />
+    <Compile Include="ForgotPassword.cs" />
+    <Compile Include="Login.cs" />
+    <Compile Include="MasterDropdown.cs" />
+    <Compile Include="Message.cs" />
+    <Compile Include="Notification.cs" />
+    <Compile Include="Page.cs" />
+    <Compile Include="PageAccess.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegularExpressions.cs" />
+    <Compile Include="ResetPassword.cs" />
+    <Compile Include="Role.cs" />
+    <Compile Include="Space.cs" />
+    <Compile Include="SpaceBooking.cs" />
+    <Compile Include="SpaceBookingRequest.cs" />
+    <Compile Include="Statuses.cs" />
+    <Compile Include="StatusGroups.cs" />
+    <Compile Include="User.cs" />
+    <Compile Include="ActiveDirectoryLoginResponse.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SmartLibrary.Infrastructure\SmartLibrary.Infrastructure.csproj">
+      <Project>{c587b4bd-f027-475f-862f-c7814f081742}</Project>
+      <Name>SmartLibrary.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SmartLibrary.Resources\SmartLibrary.Resources.csproj">
+      <Project>{97a23dab-93c3-4589-a335-7de5059104d3}</Project>
+      <Name>SmartLibrary.Resources</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="stylecop.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta009\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta009\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

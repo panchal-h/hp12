@@ -1,0 +1,28 @@
+﻿@using SmartLibrary.Infrastructure.Code;
+
+@helper ShowToastMessages(Message message)
+{
+if (message != null)
+{
+        <script>
+      $(document).ready(function () {
+        toastr.options.closeButton = @message.ShowCloseButton.ToString().ToLower();
+        toastr.options.newestOnTop = @message.ShowNewestOnTop.ToString().ToLower();
+
+        @foreach (ResponseMessages responseMessage in message.ResponseMessages)
+        {
+          string toastTypeValue = responseMessage.MessageType.ToString("F").ToLower();
+          @: var optionsOverride = {};
+          if (responseMessage.IsSticky)
+          {
+            @:optionsOverride.timeOut = 0;
+            @:optionsOverride.extendedTimeout = 0;
+          }
+          @:optionsOverride.positionClass = (isEnglish || 'true') == 'true' ? 'toast-top-right' : 'toast-top-left';
+          @:toastr['@toastTypeValue']('@responseMessage.Message', '@responseMessage.Title', optionsOverride);
+        }
+          ShowMessage();
+      });
+        </script>
+}
+}

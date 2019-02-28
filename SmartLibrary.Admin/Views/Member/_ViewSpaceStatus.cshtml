@@ -1,0 +1,68 @@
+﻿@model SmartLibrary.Models.SpaceBooking
+<div class="modal fade cus-modal cus-user-modal" id="view-status-modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="modal-close" data-dismiss="modal"><img src="@Url.Content("~/images/modal-close.svg")" alt="Close" /></a>
+                <img src=@Url.Content("~/" + ProjectConfiguration.UserProfileImagePath + "/" + Model.ProfileImagePath) alt="@Model.CustomerName" class="modal-intro-image" />
+                <h4 class="modal-title">@Model.CustomerName wants to rent the @Model.SpaceName</h4>
+            </div>
+            <div class="modal-body">
+                <ul class="date-time-viewer">
+                    <li>
+                        <label>@SmartLibrary.Resources.General.BookDate</label>
+                        <span>
+
+                            @Html.Raw(Model.FromDate.ToDate().ToShortDateString())
+
+                        </span>
+                    </li>
+                    <li>
+                        <label>@SmartLibrary.Resources.General.Period</label>
+                        <span>@Model.FromDate.ToDate().ToShortTimeString()  -  @Model.ToDate.ToDate().ToShortTimeString()</span>
+                    </li>
+                </ul>
+            </div>
+            @using (Html.SmartLibSecureForm(SmartLibrary.Admin.Pages.Actions.ApproveCancelSpaceBooking, SmartLibrary.Admin.Pages.Controllers.Member, new { id = "formstatus" }))
+            {
+                <div class="modal-footer text-center actionbuttons">
+                    <div class="row small-gutter">
+                        <div class="col-xs-6">
+                            @if (Model.StatusId == @ConvertTo.ToInteger(@SystemEnumList.SpaceBookingStatus.Pending.GetHashCode()) || Model.StatusId == @ConvertTo.ToInteger(@SystemEnumList.SpaceBookingStatus.Approved.GetHashCode()))
+                            {
+                                <a href="#" class="btn btn-grey btn-lg btn-block" onclick="showHideComment(1)">@SmartLibrary.Resources.General.Decline </a>
+                            }
+                        </div>
+                        @if (Model.StatusId == @ConvertTo.ToInteger(@SystemEnumList.SpaceBookingStatus.Pending.GetHashCode()))
+                        {
+                            <div class="col-xs-6">
+                                <a href="#" class="btn btn-primary btn-lg btn-block" onclick="ApproveCancelSpace(@Model.ID,@SystemEnumList.SpaceBookingStatus.Approved.GetHashCode())">@SmartLibrary.Resources.General.Accept </a>
+                            </div>
+                        }
+                    </div>
+                    @if (Model.StatusId == @ConvertTo.ToInteger(@SystemEnumList.SpaceBookingStatus.Pending.GetHashCode()) || Model.StatusId == @ConvertTo.ToInteger(@SystemEnumList.SpaceBookingStatus.Cancel.GetHashCode()))
+                    {
+                        <a href="#" data-target="#request-reschedule-modal" class="bold-link inner-modal-btn" title="@SmartLibrary.Resources.General.Rescheduleevent" onclick="LoadModal(@Model.ID)">@SmartLibrary.Resources.General.Rescheduleevent</a>
+                    }
+                </div>
+                if (Model.StatusId == @ConvertTo.ToInteger(@SystemEnumList.SpaceBookingStatus.Pending.GetHashCode()) || Model.StatusId == @ConvertTo.ToInteger(@SystemEnumList.SpaceBookingStatus.Approved.GetHashCode()))
+                {
+                    <div class="modal-footer text-center cancelcomment" style="display:none;">
+                        <div class="row small-gutter">
+                            <div class="form-group floating big-input has-value">
+                                @Html.LabelFor(x => x.Comment, new { @class = "control-label" })
+                                @Html.TextBoxFor(x => x.Comment, new { @class = "form-control" })
+                            </div>
+                            <div class="col-xs-6">
+                                <a href="#" class="btn btn-primary btn-lg btn-block" onclick="ApproveCancelSpace(@Model.ID,@SystemEnumList.SpaceBookingStatus.Cancel.GetHashCode())">@SmartLibrary.Resources.General.Submit </a>
+                            </div>
+                            <div class="col-xs-6">
+                                <a href="#" class="btn btn-grey btn-lg btn-block" onclick="showHideComment(0)">@SmartLibrary.Resources.General.Cancel</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>

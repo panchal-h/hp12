@@ -1,0 +1,102 @@
+﻿@model SmartLibrary.Models.BorrowedBook
+<div class="modal fade cus-modal book-modal" id="return-book-modal" tabindex="-1" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="modal-close" data-dismiss="modal">
+                    <img src="@Url.Content("~/Images/modal-close.svg")" alt="@SmartLibrary.Resources.General.Close" />
+                </a>
+                <h4 class="modal-title has-icon">
+                    <span>
+                        <img src="@Url.Content("~/Images/book-stack.svg")" alt="@SmartLibrary.Resources.Books.BookStack" />
+                        @SmartLibrary.Resources.Books.Return
+                        @SmartLibrary.Resources.General.Book
+                    </span>
+                </h4>
+            </div>
+            @using (Html.SmartLibSecureForm(SmartLibrary.Admin.Pages.Actions.ReturnBook, SmartLibrary.Admin.Pages.Controllers.Book, new { id = "formReturnBook" }))
+            {
+                @Html.HiddenFor(x => x.ID)
+                <div class="modal-body">
+                    <div class="row small-gutter">
+                        <div class="col-md-6 col-sm-12 demo-wrap">
+                            <div class="img-uploaded-wrapper">
+                                <div class="img-uploaded-viewer">                                                                                                
+                                    <div class="image-wrapper-div cover-img-viewer form-group" @(Model.ID > 0 ? "style='display:none;'" : "")>
+                                        <div class="image-wrapper">
+                                            <img class="book-image-custom"  src="@Url.Content("~/" + ProjectConfiguration.BookImagesPath + "/" + Model.ImagePath)" alt="" onerror="this.src = '@Url.Content("~/Images/DefaultBookImage.jpg")'; " />    
+                                        </div>
+                                    </div>
+                                    <div class="loader"></div>
+                                </div>
+                            </div>
+                            <div class="form-group floating big-input">
+                                <label class="control-label">@SmartLibrary.Resources.Books.BookTitle</label>
+                                @Html.TextBoxFor(x => x.BookName, new { @class = "form-control", disabled = "disabled" })
+                            </div>
+                            <div class="form-group floating big-input has-icon">
+                                <label class="control-label">@SmartLibrary.Resources.Books.ISBN</label>
+                                @Html.HiddenFor(x => x.ISBNNo)
+                                @Html.TextBox("ISBNNoDisabled", Model.ISBNNo, new { @class = "form-control", disabled = "disabled" })
+                            </div>                            
+                            <div class="form-group floating big-input">
+                                <label class="control-label">@SmartLibrary.Resources.Books.Return @SmartLibrary.Resources.General.Notes</label>
+                                @Html.TextAreaFor(x => x.ReturnNotes, new { @class = "form-control", rows = "8" })
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">   
+                            <div class="text-center">                                
+                                <img src="../@ProjectConfiguration.UserProfileImagePath/@Model.ProfileImagePath" class="member-image-custom">
+                            </div>                                                                               
+                            <div class="form-group floating big-input has-icon">
+                                <label class="control-label">@SmartLibrary.Resources.General.Member</label>                              
+                                @Html.TextBox("CustomerName", Model.CustomerName, new { @class = "form-control", disabled = "disabled" })
+                            </div>  
+                            <div class="inline-calendar form-group">
+                                <div class="form-group floating has-value big-input">
+                                    <label class="control-label">@SmartLibrary.Resources.Books.ReturnDate</label>
+                                    <input type="text" class="form-control date-holder" readonly="" id="bookReturnDate" />
+                                </div>
+                                <div class="calendar-body"></div>
+                            </div>                       
+                        </div>
+                        <div class="modal-footer">
+                            <div class="row">
+                                <div class="col-sm-6 col-sm-offset-3">
+                                    <a href="javascript:void(0);" class="btn btn-primary btn-block btn-lg" onclick="ReturnBook('@Model.ID','@Model.BookId',$('#ReturnNotes').val(),$('#bookReturnDate').val())">
+                                        @SmartLibrary.Resources.Books.Return  @SmartLibrary.Resources.Books.Book
+                                    </a>
+                                </div>
+                            </div>
+                        </div> 
+                    </div>                 
+                </div>
+            }
+        </div>
+    </div>  
+</div>
+<script>
+
+    $(document).ready(function () {      
+        var pickupDate = new Date('@(Model.PickUpDate.Value.ToString(ProjectConfiguration.DateFormat, System.Globalization.CultureInfo.InvariantCulture))');        
+        $(".big-input:has(input[type=text])").addClass("has-value");       
+        $(".inline-calendar").each(function () {
+            var target = $(this).find(".calendar-body");
+            var dateHolder = $(this).find(".date-holder");
+            pickmeup(target[0], {
+                flat: true,
+                mode: 'single',
+                format: 'd b Y',
+                max: new Date(),
+                min: pickupDate
+            });
+            target.on("pickmeup-change", function () {
+                var selectedValue = pickmeup(target[0]).get_date(true);
+                dateHolder.val(selectedValue);
+            });
+            var selectedValue = pickmeup(target[0]).get_date(true);
+            dateHolder.val(selectedValue);
+         });
+
+    });  
+</script>

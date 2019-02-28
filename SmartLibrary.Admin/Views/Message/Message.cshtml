@@ -1,0 +1,232 @@
+﻿@model Message
+@using SmartLibrary.Models
+
+@{
+    ViewBag.Title = SmartLibrary.Resources.General.Messages;
+}
+
+@*<div class="wrapper">
+
+    </div>*@
+<div class="card-container no-padding">
+    <div class="card messages">
+
+        <div class="left-pane">
+            <div class="inner">
+                <div class="header">
+                    <h4 class="title">@SmartLibrary.Resources.General.Messages</h4>
+                    <div class="searchbox">
+                        <a id="searchBtn" href="#" title="@SmartLibrary.Resources.General.SearchUsers">
+                            <img src="~/images/search.svg" alt="@SmartLibrary.Resources.General.SearchUsers" />
+                        </a>
+                        <input id="searchUsers" type="text" class="form-control" placeholder="@SmartLibrary.Resources.General.SearchUsers" />
+                        <a href="#" title="@SmartLibrary.Resources.General.Close" class="search-close">
+                            <img src="~/images/close-black.svg" alt="@SmartLibrary.Resources.General.Close" />
+                        </a>
+                    </div>
+                </div>
+                <div class="pane-body custom-scroll">
+                    <div class="scroller-inner">
+                        <ul id="chatlist" class="chat-list"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-pane">
+            <div class="header">
+                <a href="#" title="Back" class="back-to-messages visible-xs"><img src="@Url.Content("~/images/chevron-left-rounded.svg")" alt="" /></a>
+                <img id="customer-image" src="" alt="" onerror="this.src = '@Url.Content("~/Images/default-user.png")'; "/>
+                <span id="customer-name"></span>
+            </div>
+            <div id="message-list" class="pane-body custom-scroll">
+                <div id="message-list-inner" class="scroller-inner">
+                    <ul class="conversation-list"></ul>
+                </div>
+            </div>
+            <div class="footer">
+                @using (Html.SmartLibSecureForm(SmartLibrary.Admin.Pages.Actions.SendMessage, SmartLibrary.Admin.Pages.Controllers.Message, new { id = "formSendMessage" }))
+                {
+                    @Html.HiddenFor(x => x.CustomerId)
+                    <div class="textbox-wrapper">
+                        @Html.TextAreaFor(x => x.Description, new { @class = "form-control", placeholder = SmartLibrary.Resources.General.EnterYourMessage, @data_val_required = SmartLibrary.Resources.General.EnterYourMessage, rows = "2", style = "height:100px;" })
+                        <a href="javascript:void(0);" onclick="sendMessage()" title="@SmartLibrary.Resources.General.Send">
+                            <img src="@Url.Content("~/images/send.svg")" alt="@SmartLibrary.Resources.General.Send" />
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@*<div id="loaderDiv" style="display:none;">
+    <div id="floatingBarsG">
+        <div class="blockG" id="rotateG_01"></div>
+        <div class="blockG" id="rotateG_02"></div>
+        <div class="blockG" id="rotateG_03"></div>
+        <div class="blockG" id="rotateG_04"></div>
+        <div class="blockG" id="rotateG_05"></div>
+        <div class="blockG" id="rotateG_06"></div>
+        <div class="blockG" id="rotateG_07"></div>
+        <div class="blockG" id="rotateG_08"></div>
+    </div>
+</div>*@
+<div id="divModal"></div>
+
+@section scripts{
+    <script type="text/javascript">
+        var prevSearchText = null, startRowIndex = 0, length = @ProjectConfiguration.PageSize, totalRecords = -1, lastMessageId = -1;
+        //var loaderHtml = $('#loaderDiv').html();
+        //$('#loaderDiv').remove();
+        //$("#chatlist").html(loaderHtml).parent().addClass('custom-loading');
+
+        ActiveMenu("#liMessage");
+        getChatList('');
+
+        $(document).ready(function () {
+            $("#pagebody").addClass('wrapper');
+        });
+
+        //$('#Description').on('keypress', function (e) {
+        //    if (e.keyCode == 13) {
+        //        e.preventDefault();
+        //        sendMessage();
+        //        return false;
+        //    }
+        //});
+
+        $("#searchUsers").keydown(function (e) {
+            if (e.keyCode == 13) {
+                if (!isValidSearchCriteria('searchUsers')) { return false; }
+                getChatList($('#searchUsers').val().trim());
+            }
+        });
+        $('#searchBtn').click(function(){
+            if (!isValidSearchCriteria('searchUsers')) { return false; }
+            getChatList($('#searchUsers').val().trim());
+        });
+        $('.search-close').click(function(){
+            $('#searchUsers').val('');
+            getChatList('');
+        });
+
+        function getMessages(customerId, div) {
+            if ($(div).closest('li').hasClass('chat-active')) {
+                return;
+            }
+
+            $('#chatlist > li.chat-active').removeClass('chat-active');
+            $('#chatlist > li.active:not(.unread-msg)').removeClass('active');
+            $(div).closest('li').addClass('active chat-active');
+            $('#Description').val('').removeAttr('aria-describedby').removeClass("input-validation-error has-error");
+            $(".conversation-list").html('');
+            $('#CustomerId').val(0);
+            $('#customer-name').text($(div).find('.customername').text());
+            $('#customer-image').attr('src', $(div).find('.customerimage').attr('src'));
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.GetMessages, SmartLibrary.Admin.Pages.Controllers.Message)",
+                traditional: true,
+                data: { startIndex: startRowIndex, Length: length, customerId: customerId },
+                beforeSend: function (xhr) { AddRequestHeader(xhr, "#formSendMessage"); },
+                success: function (response) {
+                    $('#CustomerId').val(customerId);
+                    if (response && $(response).find('li').length > 0) {
+                        $(".conversation-list").html($(response).html());
+                        $(window).trigger("resize");
+                        if ($('#message-list-inner').height() - $('#message-list').height() > 0) {
+                            $('#message-list').scrollTop($('#message-list-inner').height() - $('#message-list').height());
+                        }
+                        //setTimeout(function() { $('#message-list').getNiceScroll(0).doScrollTop($('#message-list-inner').height() - $('#message-list').height(), 1); }, 1000);
+                        //startRowIndex += length;
+                        //totalRecords = $('li:first', $(response)).attr('data-totalRecords') || totalRecords;
+                        //lastMessageId = $('li:first', $(response)).attr('data-id') || lastMessageId;
+                    } else {
+                        //startRowIndex += length;
+                        //totalRecords = 0;
+                    }
+
+                    if ($(div).closest('li').hasClass('unread-msg')) {
+                        $(div).closest('li').removeClass('unread-msg');
+                        GetNewMessageCount();
+                    }
+                }
+            });
+        }
+
+        function addNewMessage(id) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.GetMessages, SmartLibrary.Admin.Pages.Controllers.Message)",
+                traditional: true,
+                data: { id: id, startIndex: startRowIndex, Length: length },
+                beforeSend: function (xhr) { AddRequestHeader(xhr, "#formSendMessage"); },
+                success: function (response) {
+                    if (response && $(response).find('li').length > 0 && !$(response).find('li').hasClass('empty-state')) {
+                        $(".conversation-list").append($(response).html());
+                        $("#message-list").getNiceScroll().resize();
+                        //if($('#message-list').getNiceScroll(0)) $('#message-list').getNiceScroll(0).doScrollTop(-$("#message-list-inner").offset().top + 500, 1);
+                        if ($('#message-list-inner').height() - $('#message-list').height() > 0) {
+                            $('#message-list').scrollTop($('#message-list').scrollTop() + $('.conversation-list li:last').height());
+                        }
+                    }
+                }
+            });
+        }
+
+        function getChatList(customerName) {
+            if (prevSearchText != null && prevSearchText.toLowerCase().trim() == customerName.toLowerCase().trim()) {
+                return;
+            }
+            prevSearchText = customerName.toLowerCase().trim();
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.GetChatList, SmartLibrary.Admin.Pages.Controllers.Message)",
+                data: { customerName: customerName },
+                traditional: true,
+                success: function (response) {
+                    if (response && $(response).find('li').length > 0) {
+                        //$("#chatlist").closest('.custom-loading').removeClass('custom-loading')
+                        $("#chatlist").html($(response).html());
+                        $(".custom-scroll").getNiceScroll().resize();
+                        if($('#CustomerId').val() > 0) {
+                            $('#chatlist>li>a[data-customerid=' + $('#CustomerId').val() + ']').parent().addClass('active');
+                        }
+                    }
+                }
+            });
+        }
+
+        function sendMessage() {
+            if ($('#CustomerId').val() == 0) {
+                ShowMessage("error", '@SmartLibrary.Resources.Messages.SelectUserToSendMessage', null, null, null);
+                return;
+            }
+
+            if ($('#Description').valid()) {
+                $.ajax({
+                    type: "Post",
+                    url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.SendMessage, SmartLibrary.Admin.Pages.Controllers.Message)",
+                    traditional: true,
+                    data: { Description: $('#Description').val(), customerId: $('#CustomerId').val(), MessageTypeId: @SystemEnumList.MessageType.ChatMessage.GetHashCode() },
+                    beforeSend: function (xhr) { AddRequestHeader(xhr, "#formSendMessage"); },
+                    success: function (response) {
+                        if (response.status == statusConstant.success) {
+                            addNewMessage(response.resultData);
+                            $('#Description').val('');
+                        } else {
+                            ShowMessage(response.status, response.message, response.title, null, null);
+                        }
+                    }
+                });
+            }
+
+            return false;
+        }
+
+    </script>
+}

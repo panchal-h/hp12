@@ -1,0 +1,27 @@
+﻿@using SmartLibrary.Site;
+@using SmartLibrary.Infrastructure;
+@using SmartLibrary.Resources;
+@{
+    Layout = "";
+}
+
+<div class="wrapper">
+    <div class="row coverbox m-0">
+        <div class="left left_brand_penal col-md-4 p-0">
+            <div class="center-page text-center">
+                <img src="@Url.Content("~/Images/logo.png")" alt="@General.ApplicationName" class="master-logo">
+                <br><br>
+                <h3>@General.Welcome</h3>               
+            </div>
+        </div>
+        <div class="col-md-8 right_brand_penal p-0">
+            <div class="auto-page">
+                <div class="box-block pass-success">
+                    <div class="p-3">
+                        <h4 class="font-18">@General.PageNotFound</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

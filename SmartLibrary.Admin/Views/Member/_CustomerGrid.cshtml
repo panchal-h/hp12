@@ -1,0 +1,44 @@
+﻿@model IEnumerable<SmartLibrary.Models.Customer>
+
+@foreach (var item in Model)
+{
+    <div class="col-sm-6 col-md-4 col-lg-3" id="@item.Id">
+        <div class="member-box has-action">           
+            <a class="" href="#" onclick="OpenHistoryPage('@item.IdEncrypted')">
+                <img src=@Url.Content("~/" + ProjectConfiguration.UserProfileImagePath + "/" + item.ProfileImagePath) alt='@item.FirstName @item.LastName' onerror="this.src = '@Url.Content("~/Images/default-user.png")'; "/>
+            </a>
+            <a href="#" class="book-title" onclick="OpenHistoryPage('@item.IdEncrypted')"><h3 id="customerName">@item.FirstName  @item.LastName</h3></a>
+            <span class="email" id="customerEmail">@item.Email</span>
+
+            <ul class="actions">
+                <li>
+                    <a onclick="LoadSendMessageModal(@item.Id)" href="javascript:void(0);" title="@SmartLibrary.Resources.General.Message">
+                        <img src="../Images/comment.svg" alt="">
+                    </a>
+                </li>
+                <li onclick="EditCustomer(@item.Id)"><a href="#" title="@SmartLibrary.Resources.General.Edit"><img src="../Images/edit.svg" alt="Edit"></a></li>
+            </ul>
+        </div>
+    </div>
+}
+<script>
+
+    function OpenHistoryPage(id) {
+        window.location.href = "@Url.Action(SmartLibrary.Admin.Pages.Actions.HistoryOfMember, SmartLibrary.Admin.Pages.Controllers.Member)?data=" + id;
+    }
+
+    function EditCustomer(id) {
+        $.ajax({
+            type: "Get",
+            url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.EditCustomer, SmartLibrary.Admin.Pages.Controllers.Member)",
+            data: { id: id },
+            success: function (response) {
+                $("#divModal").html(response);
+                $("#customer-modal").modal('show');
+                $(".selectpicker").selectpicker();
+                EnableClientSideValidation($('#formEditCustomer'));
+            }
+        });
+    }
+
+</script>

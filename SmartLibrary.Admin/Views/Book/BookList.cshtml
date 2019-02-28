@@ -1,0 +1,304 @@
+﻿@using SmartLibrary.Infrastructure;
+@*@model IEnumerable<SmartLibrary.Models.Business.Models.Book>*@
+
+@{
+    ViewBag.Title = SmartLibrary.Resources.General.Books;
+    //PageAccessRight currentPageAccessRight = (PageAccessRight)ViewData["CurrentPageAccessRight"];
+}
+
+<div class="wrapper">
+    <div class="card-container">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">@SmartLibrary.Resources.General.Books</h2>
+                <ul class="filter-panel">
+                    <li class="dropdown-wrapper">
+                        <select class="selectpicker filter-select" multiple>
+                            <option value="Genre" selected="selected">Genre</option>
+                            <option value="Genre 1">Genre 1</option>
+                            <option value="Genre 2">Genre 2</option>
+                            <option value="Genre 3">Genre 3</option>
+                            <option value="Genre 4">Genre 4</option>
+                            <option value="Genre 5">Genre 5</option>
+                        </select>
+                    </li>
+                    <li class="dropdown-wrapper">
+                        <select class="selectpicker filter-select" multiple>
+                            <option value="Section" selected="selected">Section</option>
+                            <option value="Section 1">Section 1</option>
+                            <option value="Section 2">Section 2</option>
+                            <option value="Section 3">Section 3</option>
+                            <option value="Section 4">Section 4</option>
+                            <option value="Section 5">Section 5</option>
+                        </select>
+                    </li>
+                    <li class="searchbox">
+                        <input type="text" class="form-control" placeholder="@SmartLibrary.Resources.General.Search">
+                        <img src="@Url.Content("~/Images/search.svg")" alt="@SmartLibrary.Resources.General.Search">
+                    </li>
+                    <li>
+                        <a href="admin-books-grid-view.html" class="btn btn-default btn-icon btn-inactive" title="@SmartLibrary.Resources.General.GridView">
+                            <img src="@Url.Content("~/Images/grid-view.svg")" alt="@SmartLibrary.Resources.General.GridView">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin-books-list-view.html" class="btn btn-default btn-icon" title="@SmartLibrary.Resources.General.ListView">
+                            <img src="@Url.Content("~/Images/list-view.svg")" alt="@SmartLibrary.Resources.General.ListView">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="btn btn-default btn-icon" title="@SmartLibrary.Resources.General.Download">
+                            <img src="@Url.Content("~/Images/download.svg")" alt="@SmartLibrary.Resources.General.Download">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" class="btn btn-primary btn-icon btn-raised" title="@SmartLibrary.Resources.General.Add" onclick="LoadModal(0)">
+                            <img src="@Url.Content("~/Images/plus-white.svg")" alt="@SmartLibrary.Resources.General.Add" class="small">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="table-responsive custom">
+                <table class="list-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>@SmartLibrary.Resources.Books.BookTitle</th>
+                            <th>@SmartLibrary.Resources.Books.Author</th>
+                            <th>@SmartLibrary.Resources.Books.Genre</th>
+                            <th>@SmartLibrary.Resources.Books.Section</th>
+                            <th>@SmartLibrary.Resources.Books.Location</th>
+                            <th>@SmartLibrary.Resources.Books.Qt</th>
+                            <th>@SmartLibrary.Resources.Books.Interests</th>
+                            <th>@SmartLibrary.Resources.Books.Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <a href="#" title="Demo Book" class="book-link book-quick-view-btn"><img src="@Url.Content("~/Images/demo-book-small.png")" alt="Demo Book"></a>
+                            </td>
+                            <td><a href="#" class="book-quick-view-btn">Creative Business Startup</a></td>
+                            <td><span class="fixed-width">Jen Brazeal</span></td>
+                            <td class="text-dark-blue">Entrepreneurship</td>
+                            <td><span class="fixed-width">Business / self development</span></td>
+                            <td>A56</td>
+                            <td class="qty">1 / 3</td>
+                            <td><span class="interest">6</span></td>
+                            <td><span class="status success">Available</span></td>
+                            <td class="action-icons"><a href="#"><img src="@Url.Content("~/Images/eye-banned.svg")" alt="Eye Banned"></a></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <a href="#" title="Demo Book" class="book-link book-quick-view-btn"><img src="@Url.Content("~/Images/demo-book-small.png")" alt="Demo Book"></a>
+                            </td>
+                            <td><a href="#" class="book-quick-view-btn">A World Of Infinite Opportunities</a></td>
+                            <td><span class="fixed-width">Ryan Garcia</span></td>
+                            <td class="text-dark-blue">Entrepreneurship</td>
+                            <td><span class="fixed-width">Business / self development</span></td>
+                            <td>A56</td>
+                            <td class="qty">1 / 3</td>
+                            <td><span class="interest">6</span></td>
+                            <td><span class="status warning">Borrowed</span></td>
+                            <td class="action-icons"><a href="#"><img src="@Url.Content("~/Images/eye-banned.svg")" alt="Eye Banned"></a></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <a href="#" title="Demo Book" class="book-link book-quick-view-btn"><img src="@Url.Content("~/Images/demo-book-small.png")" alt="Demo Book"></a>
+                            </td>
+                            <td><a href="#" class="book-quick-view-btn">Survival</a></td>
+                            <td><span class="fixed-width">Lottie Diaz</span></td>
+                            <td class="text-dark-blue">Entrepreneurship</td>
+                            <td><span class="fixed-width">Business / self development</span></td>
+                            <td>A56</td>
+                            <td class="qty">1 / 3</td>
+                            <td><span class="interest">6</span></td>
+                            <td><span class="status success">Available</span></td>
+                            <td class="action-icons"><a href="#"><img src="@Url.Content("~/Images/eye-banned.svg")" alt="Eye Banned"></a></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <a href="#" title="Demo Book" class="book-link book-quick-view-btn"><img src="@Url.Content("~/Images/demo-book-small.png")" alt="Demo Book"></a>
+                            </td>
+                            <td><a href="#" class="book-quick-view-btn">5 Tips To Supercharge Your Motivation</a></td>
+                            <td><span class="fixed-width">Catherine Undiago</span></td>
+                            <td class="text-dark-blue">Entrepreneurship</td>
+                            <td><span class="fixed-width">Business / self development</span></td>
+                            <td>A56</td>
+                            <td class="qty">1 / 3</td>
+                            <td><span class="interest">6</span></td>
+                            <td><span class="status success">Available</span></td>
+                            <td class="action-icons"><a href="#"><img src="@Url.Content("~/Images/eye-banned.svg")" alt="Eye Banned"></a></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <a href="#" title="Demo Book" class="book-link book-quick-view-btn"><img src="@Url.Content("~/Images/demo-book-small.png")" alt="Demo Book"></a>
+                            </td>
+                            <td><a href="#" class="book-quick-view-btn">Hypnotherapy For Motivation Getting The Drive Back</a></td>
+                            <td><span class="fixed-width">Jeremiah Haynes</span></td>
+                            <td class="text-dark-blue">Entrepreneurship</td>
+                            <td><span class="fixed-width">Business / self development</span></td>
+                            <td>A56</td>
+                            <td class="qty">1 / 3</td>
+                            <td><span class="interest">6</span></td>
+                            <td><span class="status warning">Borrowed</span></td>
+                            <td class="action-icons"><a href="#"><img src="@Url.Content("~/Images/eye-banned.svg")" alt="Eye Banned"></a></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <a href="#" title="Demo Book" class="book-link book-quick-view-btn"><img src="@Url.Content("~/Images/demo-book-small.png")" alt="Demo Book"></a>
+                            </td>
+                            <td><a href="#" class="book-quick-view-btn">How I Lost The Secret Of Dazzling Success For 20 Years</a></td>
+                            <td><span class="fixed-width">Estella Ingram</span></td>
+                            <td class="text-dark-blue">Entrepreneurship</td>
+                            <td><span class="fixed-width">Business / self development</span></td>
+                            <td>A56</td>
+                            <td class="qty">1 / 3</td>
+                            <td><span class="interest">6</span></td>
+                            <td><span class="status success">Available</span></td>
+                            <td class="action-icons"><a href="#"><img src="@Url.Content("~/Images/eye-banned.svg")" alt="Eye Banned"></a></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <a href="#" title="Demo Book" class="book-link book-quick-view-btn"><img src="@Url.Content("~/Images/demo-book-small.png")" alt="Demo Book"></a>
+                            </td>
+                            <td><a href="#" class="book-quick-view-btn">Are You Struggling In Life</a></td>
+                            <td><span class="fixed-width">Elsie Sandoval</span></td>
+                            <td class="text-dark-blue">Entrepreneurship</td>
+                            <td><span class="fixed-width">Business / self development</span></td>
+                            <td>A56</td>
+                            <td class="qty">1 / 3</td>
+                            <td><span class="interest">6</span></td>
+                            <td><span class="status warning">Borrowed</span></td>
+                            <td class="action-icons"><a href="#"><img src="@Url.Content("~/Images/eye-banned.svg")" alt="Eye Banned"></a></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <a href="#" title="Demo Book" class="book-link book-quick-view-btn"><img src="@Url.Content("~/Images/demo-book-small.png")" alt="Demo Book"></a>
+                            </td>
+                            <td><a href="#" class="book-quick-view-btn">Creative Business Startup</a></td>
+                            <td><span class="fixed-width">Jen Brazeal</span></td>
+                            <td class="text-dark-blue">Entrepreneurship</td>
+                            <td><span class="fixed-width">Business / self development</span></td>
+                            <td>A56</td>
+                            <td class="qty">1 / 3</td>
+                            <td><span class="interest">6</span></td>
+                            <td><span class="status success">Available</span></td>
+                            <td class="action-icons"><a href="#"><img src="@Url.Content("~/Images/eye-banned.svg")" alt="Eye Banned"></a></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <a href="#" title="Demo Book" class="book-link book-quick-view-btn"><img src="@Url.Content("~/Images/demo-book-small.png")" alt="Demo Book"></a>
+                            </td>
+                            <td><a href="#" class="book-quick-view-btn">A World Of Infinite Opportunities</a></td>
+                            <td><span class="fixed-width">Ryan Garcia</span></td>
+                            <td class="text-dark-blue">Entrepreneurship</td>
+                            <td><span class="fixed-width">Business / self development</span></td>
+                            <td>A56</td>
+                            <td class="qty">1 / 3</td>
+                            <td><span class="interest">6</span></td>
+                            <td><span class="status warning">Borrowed</span></td>
+                            <td class="action-icons"><a href="#"><img src="@Url.Content("~/Images/eye-banned.svg")" alt="Eye Banned"></a></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <a href="#" title="Demo Book" class="book-link book-quick-view-btn"><img src="@Url.Content("~/Images/demo-book-small.png")" alt="Demo Book"></a>
+                            </td>
+                            <td><a href="#" class="book-quick-view-btn">Survival</a></td>
+                            <td><span class="fixed-width">Lottie Diaz</span></td>
+                            <td class="text-dark-blue">Entrepreneurship</td>
+                            <td><span class="fixed-width">Business / self development</span></td>
+                            <td>A56</td>
+                            <td class="qty">1 / 3</td>
+                            <td><span class="interest">6</span></td>
+                            <td><span class="status success">Available</span></td>
+                            <td class="action-icons"><a href="#"><img src="@Url.Content("~/Images/eye-banned.svg")" alt="Eye Banned"></a></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <a href="#" title="Demo Book" class="book-link book-quick-view-btn"><img src="@Url.Content("~/Images/demo-book-small.png")" alt="Demo Book"></a>
+                            </td>
+                            <td><a href="#" class="book-quick-view-btn">5 Tips To Supercharge Your Motivation</a></td>
+                            <td><span class="fixed-width">Catherine Undiago</span></td>
+                            <td class="text-dark-blue">Entrepreneurship</td>
+                            <td><span class="fixed-width">Business / self development</span></td>
+                            <td>A56</td>
+                            <td class="qty">1 / 3</td>
+                            <td><span class="interest">6</span></td>
+                            <td><span class="status success">Available</span></td>
+                            <td class="action-icons"><a href="#"><img src="@Url.Content("~/Images/eye-banned.svg")" alt="Eye Banned"></a></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <a href="#" title="Demo Book" class="book-link book-quick-view-btn"><img src="@Url.Content("~/Images/demo-book-small.png")" alt="Demo Book"></a>
+                            </td>
+                            <td><a href="#" class="book-quick-view-btn">Hypnotherapy For Motivation Getting The Drive Back</a></td>
+                            <td><span class="fixed-width">Jeremiah Haynes</span></td>
+                            <td class="text-dark-blue">Entrepreneurship</td>
+                            <td><span class="fixed-width">Business / self development</span></td>
+                            <td>A56</td>
+                            <td class="qty">1 / 3</td>
+                            <td><span class="interest">6</span></td>
+                            <td><span class="status warning">Borrowed</span></td>
+                            <td class="action-icons"><a href="#"><img src="@Url.Content("~/Images/eye-banned.svg")" alt="Eye Banned"></a></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <a href="#" title="Demo Book" class="book-link book-quick-view-btn"><img src="@Url.Content("~/Images/demo-book-small.png")" alt="Demo Book"></a>
+                            </td>
+                            <td><a href="#" class="book-quick-view-btn">How I Lost The Secret Of Dazzling Success For 20 Years</a></td>
+                            <td><span class="fixed-width">Estella Ingram</span></td>
+                            <td class="text-dark-blue">Entrepreneurship</td>
+                            <td><span class="fixed-width">Business / self development</span></td>
+                            <td>A56</td>
+                            <td class="qty">1 / 3</td>
+                            <td><span class="interest">6</span></td>
+                            <td><span class="status success">Available</span></td>
+                            <td class="action-icons"><a href="#"><img src="@Url.Content("~/Images/eye-banned.svg")" alt="Eye Banned"></a></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <a href="#" title="Demo Book" class="book-link book-quick-view-btn"><img src="@Url.Content("~/Images/demo-book-small.png")" alt="Demo Book"></a>
+                            </td>
+                            <td><a href="#" class="book-quick-view-btn">Are You Struggling In Life</a></td>
+                            <td><span class="fixed-width">Elsie Sandoval</span></td>
+                            <td class="text-dark-blue">Entrepreneurship</td>
+                            <td><span class="fixed-width">Business / self development</span></td>
+                            <td>A56</td>
+                            <td class="qty">1 / 3</td>
+                            <td><span class="interest">6</span></td>
+                            <td><span class="status warning">Borrowed</span></td>
+                            <td class="action-icons"><a href="#"><img src="@Url.Content("~/Images/eye-banned.svg")" alt="Eye Banned"></a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="divModal"></div>
+
+@section scripts{
+    <script>
+        function LoadModal(id) {
+            $.ajax({
+                type: "Get",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.AddEditBook, SmartLibrary.Admin.Pages.Controllers.Book)",
+                traditional: true,
+                data: { id: id },
+                success: function (response) {
+                    $("#divModal").html(response);
+                    $("#book-modal").modal('show');
+                    EnableClientSideValidation($('#formManageBook'));
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+    </script>
+}

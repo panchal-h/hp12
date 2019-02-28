@@ -1,0 +1,188 @@
+﻿@using SmartLibrary.Resources;
+@model SmartLibrary.Models.Customer
+
+<head>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/AD/style.css" rel="stylesheet" />
+</head>
+<style>
+    .form-group.floating .bootstrap-select .filter-option {
+        font-size: 14px;
+    }
+
+    .form-group.floating .control-label {
+        font-size: 14px;
+    }
+    .InviteMember {
+        text-align:center;
+    }
+    .InviteMember .user-image-section {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 55px;
+    }
+
+        .InviteMember .user-image-section img {
+            height: 117px;
+            width: 117px;
+            border-radius: 500px;
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .InviteMember .user-image-section .edit-btn {
+            display: block;
+            position: absolute;
+            padding: 9px;
+            background: #fff;
+            border-radius: 500px;
+            bottom: -5px;
+            right: 6px;
+        }
+
+            .InviteMember .user-image-section .edit-btn > img {
+                display: block;
+                height: 12px;
+                width: 12px;
+                vertical-align: top;
+            }
+            .login-outer .loginbox>h3+p {
+    font-size: 12px;
+    line-height: 16px;
+    opacity: 0.5;
+    font-weight: 700;
+    padding-bottom: 24px;
+}
+</style>
+@{
+    ViewBag.Title = @General.ApplicationName;
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+<body id="english" class="register-page">
+    <div class="login-outer register-outer-block">
+        <!-- Login Left Side Start -->
+        <div class="login-left">
+            <div class="loginbox">
+                <img src="~/images/ic-login.svg" alt=""><br />
+                <h3 class="title">Create Account as <b>DED GUEST</b></h3>
+                <p>Enter your details below.</p>
+                <div class="InviteMember">
+                    @using (Html.SmartLibSecureForm(SmartLibrary.Site.Pages.Actions.SignUp, SmartLibrary.Site.Pages.Controllers.ActiveDirectory, new { id = "formManageUserProfile", enctype = "multipart/form-data" }))
+            {
+                @Html.HiddenFor(x => x.Id)
+                @Html.HiddenFor(x => x.ProfileImagePath)
+                @Html.HiddenFor(x => x.LoginType)
+                @Html.HiddenFor(x => x.PCNumber)
+                <div class="user-image-section">
+                    <img src="@Url.Content("~/Images/default-user.png")" alt="Demo User" id="ProfileImage">
+                    <a href="#" class="btn-file-upload-trigger edit-btn" title="Change"><img src="@Url.Content("~/Images/settings.svg")" alt="Cog"></a>
+                    <input type="file" name="file" class="btn-file-upload" onchange="showProfileImage(event)">
+                </div>
+                <div class="form-group big-input floating">
+                    <label class="control-label">@General.FirstName</label>
+                    @Html.TextBoxFor(m => Model.FirstName, new { @class = "form-control cus-control" })
+                </div>
+                <div class="form-group floating big-input">
+                    <label class="control-label">@General.LastName</label>
+                    @Html.TextBoxFor(m => Model.LastName, new { @class = "form-control cus-control" })
+                </div>
+                <div class="form-group floating big-input">
+                    <label class="control-label">@General.Email</label>
+                    @Html.TextBoxFor(m => Model.Email, new { @class = "form-control cus-control no-Focus", @readonly = "readonly" })
+                </div>
+                <div class="form-group floating big-input">
+                    <label class="control-label">@Account.Password</label>
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control cus-control" })
+                    @Html.HiddenFor(m => m.EncryptedPassword)
+                </div>
+                <div class="form-group floating big-input">
+                    <label class="control-label">@General.Phone</label>
+                    @Html.TextBoxFor(m => Model.Phone, new { @class = "form-control cus-control" })
+                </div>
+                <div class="form-group floating has-value-fixed big-input">
+                    <label class="control-label" style="left: 23px;">@General.Gender</label>
+                    <div class="btn-group bootstrap-select form-control">
+                        @Html.DropDownListFor(m => Model.Gender, SmartLibrary.Infrastructure.EnumHelper.GetItems(typeof(SmartLibrary.Infrastructure.SystemEnumList.Gender), General.Gender), new { @class = "form-control selectpicker" })
+                    </div>
+                </div>
+                <div class="form-group floating has-value-fixed big-input">
+                    <label class="control-label" style="left: 23px;">@General.Language</label>
+                    <div class="btn-group bootstrap-select form-control">
+                        @Html.DropDownListFor(m => Model.Language, SmartLibrary.Infrastructure.EnumHelper.GetItems(typeof(SmartLibrary.Infrastructure.SystemEnumList.Language), General.Language), new { @class = "form-control selectpicker" })
+                    </div>
+                </div>
+
+                <button type="submit" value="update" name="action" class="btn btn-primary btn-lg btn-block btn-raised">
+                    @General.SignUp
+                </button>
+                }
+                </div>
+            </div>
+        </div>
+        <!-- Login Left Side End -->
+        <!-- Login Right Side Start -->
+        <div class="right login-right">
+            <p class="welcome-msg">Welcome to the new Smart Library smart system</p>
+            <img src="~/images/ic-agreement-white.png" alt="Agreement" class="system-icon" />
+            <h3>Smart Library Management</h3>
+            <p class="system-info">Configure the frequency in which comments are sent to your inbox. You can also permanently unsubscribe from any prototype below.</p>
+            <img src="~/images/handshake-illustration.png" alt="Handshake" class="handshake" />
+            <p class="copyright">Copyright  2018. All Rights Reserved.</p>
+        </div>
+        <!-- Login Right Side End -->
+    </div>
+    <!-- Login End -->
+    <!-- Login Footer Start -->
+    <div class="loginfooter">
+        <div>
+            <div class="lff">
+                <div><a href="#">Terms &amp; Conditions</a> &nbsp;/&nbsp; <a href="#">Privacy Policy</a></div>
+            </div>
+            <div class="lfr">
+                <div></div>
+            </div>
+        </div>
+    </div>
+    <!-- Login Footer End -->
+</body>
+    @section Scripts{
+<script src="~/Scripts/jsencrypt.min.js"></script>
+        <script type="text/javascript">
+            var publickKey = '@ProjectConfiguration.RSAPublicKey';
+            $(function () {
+                EncryptPassword($("#Password"), $("#EncryptedPassword"));
+                $(".big-input:has(#Email)").addClass("has-value");
+
+                $("#Password").on("blur", function () {
+                    EncryptPassword($("#Password"), $("#EncryptedPassword"));
+                });
+            })
+
+            function showProfileImage(event) {
+                var output = document.getElementById('ProfileImage');
+                if (!$.validator.methods.HttpPostedFileExtensionAndSizeAttribute("", $("input[name=file]")[0], validExtensions)) {
+                    if ($.validator.messages.httppostedfileextension != undefined) {
+                        ShowMessage('error', $.validator.messages.httppostedfileextension, '@SmartLibrary.Resources.General.SignUp');
+                        $("input[name=file]").val('');
+                        output.src = '@Url.Content("~/Images/default-user.png")';
+                        return false;
+                    }
+                    return false;
+                }
+                output.src = URL.createObjectURL(event.target.files[0]);
+            }
+
+            function EncryptPassword($source, $target) {
+                // Encrypt with the public key...
+                var encrypt = new JSEncrypt();
+                encrypt.setPublicKey(publickKey);
+
+                if ($source.val() != undefined && $source.val() != '') {
+                    var encrypted = encrypt.encrypt($source.val());
+                    $target.val('');
+                    $target.val(encrypted);
+                }
+            }
+        </script>
+    }
+

@@ -1,0 +1,194 @@
+﻿@model IEnumerable<SmartLibrary.Models.Customer>
+@{
+    ViewBag.Title = SmartLibrary.Resources.General.Member;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    PageAccessRight currentPageAccessRight = (PageAccessRight)ViewData["CurrentPageAccessRight"];
+}
+
+<div class="wrapper">
+    <div class="card-container">
+        <div class="card">
+            <div class="card-header members">
+                <span>
+                    <img src="@Url.Content("~/Images/members-Title.svg")" alt="@SmartLibrary.Resources.General.Member" class="card-header-image"> &nbsp;
+                </span>
+                <h2 class="card-title card-title-img"><b>@SmartLibrary.Resources.General.Member</b></h2>
+                <ul class="filter-panel">
+                    <li class="searchbox">
+                        <input type="text" class="form-control" placeholder="@SmartLibrary.Resources.General.Search" id="searchText" />
+                        <img src="@Url.Content("~/Images/search.svg")" alt="@SmartLibrary.Resources.General.Search" id="SearchBtn" />
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" class="btn btn-primary btn-icon btn-raised resetIcon" title="@SmartLibrary.Resources.General.Reset" onclick="resetSearch()">
+                            <img src="@Url.Content("~/Images/close-white.svg")" >
+                        </a>
+                    </li>
+
+                    <li><a href="@Url.Action(SmartLibrary.Admin.Pages.Actions.CustomerGrid, SmartLibrary.Admin.Pages.Controllers.Member)" class="btn btn-default btn-icon disabled" title="@SmartLibrary.Resources.General.GridView" style="background-color: #006557"><img src="@Url.Content("~/images/grid-view-selected.svg")" alt="@SmartLibrary.Resources.General.GridView"></a></li>
+                    <li><a href="@Url.Action(SmartLibrary.Admin.Pages.Actions.CustomerList, SmartLibrary.Admin.Pages.Controllers.Member)" class="btn btn-default btn-icon btn-inactive" title="@SmartLibrary.Resources.General.ListView"><img src="@Url.Content("~/images/list-view.svg")" alt="@SmartLibrary.Resources.General.ListView"></a></li>
+                    <li><a href="#" class="btn btn-default btn-icon" title="@SmartLibrary.Resources.General.Download" onclick="Download()"><img src="@Url.Content("~/Images/download.svg")" alt="@SmartLibrary.Resources.General.Download" /></a></li>
+                    <li class="@(currentPageAccessRight.AddUpdate ? "visible-item":"hidden-item")"><a onclick="LoadModal(0)" data-toggle="modal" class="btn btn-primary btn-icon btn-raised" title="@SmartLibrary.Resources.General.InviteNewMember"><img src="@Url.Content("~/Images/plus-white.svg")" alt="@SmartLibrary.Resources.General.Add" class="small"></a></li>
+                </ul>
+            </div>
+            <hr>
+            <div id="noRecord">
+                
+                <center style="padding-top:30px;font-weight:bold">
+                    @SmartLibrary.Resources.Messages.NoRecordFound
+                </center>
+            </div>
+
+            @using (Html.SmartLibSecureForm(SmartLibrary.Admin.Pages.Actions.CustomerGrid, SmartLibrary.Admin.Pages.Controllers.Member, new { id = "GetCustomerList" }))
+            {
+                <div class="member-grid">
+                    <div class="row" id="memberList">
+                        @Html.Partial(SmartLibrary.Admin.Pages.PartialViews.CustomerGrid)
+                    </div>
+                </div>
+                <div id="memberloader" class="text-center" style="visibility:hidden">
+                    <img src="~/Images/Loader-square.gif" />
+                </div>
+            }
+        </div>
+    </div>
+    <div id="divModal"></div>
+    <div id="div-send-message-modal"></div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+
+        $(function() {
+            ActiveMenu("#liMember");
+            CheckforNorecord();
+        });
+
+        function CheckforNorecord()
+        {
+            if ($('.member-box','#memberList').length == 0)
+            {
+                $('#noRecord').show();
+            }
+            else
+            {
+                $('#noRecord').hide();
+            }
+        }
+        function resetSearch(){
+            $("#searchText").val('');
+            FilterCustomer();
+        }
+        function BindSearch() {
+            var param = {};
+            param["searchData"] = $('#searchText').val();
+            return param;
+        }
+        $("#searchText").keydown(function (e) {
+            if (e.keyCode == 13) {
+                FilterCustomer();
+            }
+        });
+
+        $('#SearchBtn').click(function(){
+            FilterCustomer();
+        })
+
+        function FilterCustomer()
+        {
+            if (!isValidSearchCriteria('searchText')) { return false; }
+            currentPage = 1;
+            var model = {
+                SearchText: $("#searchText").val(),
+                CurrentPage: 1,
+                SortExpression: 'FirstName',
+                SortDirection: 'Ascending',
+                PageSize: @ProjectConfiguration.PageSizeGrid,
+            };
+            $.ajax({
+                type: "Post",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.CustomerGrid, SmartLibrary.Admin.Pages.Controllers.Member)",
+                traditional: true,
+                data: model,
+                beforeSend: function (xhr) { xhr.setRequestHeader('__RequestVerificationToken', $('input[name="__RequestVerificationToken"]', $("#GetCustomerList")).val()); },
+                success: function (response) {
+                    $('#memberList').html(response);
+                    CheckforNorecord();
+                }
+            });
+        }
+
+
+        var currentPage = 1;
+        var totalPage = @ViewBag.TotalPage;
+        var isScrollLoading = false;
+        $(window).scroll(function () {
+
+            if (!isScrollLoading && (Math.abs($(window).scrollTop() - $(document).height() + $(window).height())) < 100)
+            {
+                currentPage++;
+                if (currentPage > totalPage)
+                { return; }
+                //loader show
+                $("#memberloader").css("visibility","visible")
+                var model = {
+                    SearchText: $("#searchText").val(),
+                    CurrentPage: currentPage > 1 ? currentPage : '1',
+                    SortExpression: 'FirstName',
+                    SortDirection: 'Ascending',
+                    PageSize: @ProjectConfiguration.PageSizeGrid,
+                };
+                isScrollLoading = true;
+                $.ajax({
+                    type: "Post",
+                    url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.CustomerGrid, SmartLibrary.Admin.Pages.Controllers.Member)",
+                    traditional: true,
+                    data: model,
+                    beforeSend: function (xhr) { xhr.setRequestHeader('__RequestVerificationToken', $('input[name="__RequestVerificationToken"]', $("#GetCustomerList")).val()); },
+                    success: function (response) {
+                        //loader hide
+                        $("#memberloader").css("visibility","hidden")
+                        $('#memberList').append(response);
+                    },
+                    complete: function() {
+                        setTimeout(function(){ isScrollLoading = false; }, 100);                    
+                    }
+                });
+            }
+        });
+
+        function LoadModal(id) {
+            $.ajax({
+                type: "Get",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.InviteCustomer, SmartLibrary.Admin.Pages.Controllers.Member)",
+                traditional: true,
+                data: { id: id },
+                success: function (response) {
+                    $("#divModal").html(response);
+                    $("#invite-member-modal").modal('show');
+                    EnableClientSideValidation($('#formAddNewMember'));
+                }
+            });
+        }
+       function Download() {
+            var searchdata="";
+            if( $('#searchText').val()!=undefined){
+                searchdata= $('#searchText').val();
+            }
+            location.href = '@Url.Action(SmartLibrary.Admin.Pages.Actions.CustomersExportToExcel, SmartLibrary.Admin.Pages.Controllers.Member)?searchData=' + searchdata ;
+       }
+
+        function LoadSendMessageModal(id) {
+            $.ajax({
+                type: "Get",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.SendMessageModal, SmartLibrary.Admin.Pages.Controllers.Message)",
+                traditional: true,
+                data: { id: id },
+                success: function (response) {
+                    $("#div-send-message-modal").html(response);
+                    $("#send-message-modal").modal('show');
+                    EnableClientSideValidation($('#formSendMessageModal'));
+                }
+            });
+        }
+    </script>
+}

@@ -1,0 +1,337 @@
+﻿@using SmartLibrary.Infrastructure;
+@using SmartLibrary.Services;
+@using SmartLibrary.Models;
+
+@model IEnumerable<SmartLibrary.Models.Book>
+@{
+    ViewBag.Title = SmartLibrary.Resources.General.Books;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    PageAccessRight currentPageAccessRight = (PageAccessRight)ViewData["CurrentPageAccessRight"];
+}
+<div class="wrapper">
+    <div class="card-container">
+        <div class="card">
+            <div class="card-header">
+                <span>
+                    <img src="@Url.Content("~/Images/books-Title.svg")" alt="@SmartLibrary.Resources.General.Book" class="card-header-image"> &nbsp;
+                </span>
+                <h2 class="card-title card-title-img">
+                    @SmartLibrary.Resources.General.Books
+                </h2>
+                <ul class="filter-panel">
+                    <li class="dropdown-wrapper">
+                        <div class="btn-group bootstrap-select show-tick filter-select">
+                            @Html.DropDownList("genre", SmartLibrary.Services.CommonBL.GetListForDropdown<SmartLibrary.Models.BookGenre>(), new { @class = "selectpickergenre filter-select", @multiple = "multiple" })
+                        </div>
+                    </li>
+                    <li class="searchbox">
+                        <input type="text" class="form-control" placeholder="@SmartLibrary.Resources.General.Search" id="searchText">
+                        <img src="@Url.Content("~/Images/search.svg")" alt="@SmartLibrary.Resources.General.Search" id="SearchBtnForList">
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" class="btn btn-primary btn-icon btn-raised resetIcon" title="@SmartLibrary.Resources.General.Reset" onclick="resetSearch()">
+                            <img src="@Url.Content("~/Images/close-white.svg")">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action(SmartLibrary.Site.Pages.Actions.BookGrid, SmartLibrary.Site.Pages.Controllers.Book)" class="btn btn-default btn-icon btn-inactive" title="@SmartLibrary.Resources.General.GridView">
+                            <img src="@Url.Content("~/Images/grid-view.svg")" alt="@SmartLibrary.Resources.General.GridView">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action(SmartLibrary.Site.Pages.Actions.BookList, SmartLibrary.Site.Pages.Controllers.Book)" class="btn btn-default btn-icon disabled" title="@SmartLibrary.Resources.General.ListView" style="background-color: #006557">
+                            <img src="@Url.Content("~/Images/list-view-selected.svg")" alt="@SmartLibrary.Resources.General.ListView">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="btn btn-default btn-icon" title="@SmartLibrary.Resources.General.Favourite" onclick="BindFavourite()">
+                            <img src="@Url.Content("~/Images/star.svg")" alt="@SmartLibrary.Resources.General.Favourite" id="imgfav">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            @using (Html.SmartLibSecureForm(SmartLibrary.Site.Pages.Actions.BookList, SmartLibrary.Site.Pages.Controllers.Book, new { id = "formManageBook" }))
+            {
+                <div class="table-responsive custom custom-datatable">
+                    <table class="list-table" id="tblDisplayBooks"></table>
+                </div>
+
+            }
+        </div>
+    </div>
+</div>
+<div id="divModal"></div>
+
+<div id="bookDetailSideBar">
+</div>
+
+@section scripts{
+    <script>
+            var favourite=null;
+        $(document).ready(function () {
+            BindTable();
+            $('.filter-select').on('change', function (e) {
+                var foo = $(this).val();
+                BindTable();
+            });
+            ActiveMenu("#liBook");
+
+            $(".selectpickergenre").selectpicker({ 'noneSelectedText': '@SmartLibrary.Resources.General.SelectGenre', 'liveSearch': true });
+            $(".selectpickerLocation").selectpicker({ 'noneSelectedText': '@SmartLibrary.Resources.General.SelectLocation', 'liveSearch': true });
+        });
+        function resetSearch(){
+            $(".selectpickergenre").val('default');
+            $(".selectpickergenre").selectpicker("refresh");
+            $("#searchText").val('');
+            $('#imgfav').attr("src","../Images/star-filled.svg");
+            BindFavourite();
+        }
+
+        function BindFavourite(){
+            var src=$('#imgfav').attr('src');
+            src=src.substring(src.lastIndexOf('/')+1);
+            if(src=="star.svg"){
+                $('#imgfav').attr("src","../images/star-filled.svg");
+                $('.card-title').text( '@SmartLibrary.Resources.General.MyFavourites');
+                favourite=true;
+            }
+            else{
+                $('#imgfav').attr("src","../images/star.svg");
+                $('.card-title').text(' @SmartLibrary.Resources.General.Books');
+                favourite=null;
+            }
+            BindTable();
+        }
+
+        function BindSearch() {
+            var genre, sector, location;
+            genre = $('#genre').val();
+            if (genre != null) {
+                genre = genre.toString();
+            }
+            sector = $('#sector').val();
+            if (sector != null) {
+                sector = sector.toString();
+            }
+            location = $('#location').val();
+            if (location != null) {
+                location = location.toString();
+            }
+
+            var param = {};
+            param["searchData"] = $('#searchText').val();
+            param["genre"] = genre;
+            param["sector"] = sector;
+            param["location"] = location;
+            param["favourite"]=favourite;
+            return param;
+        }
+        $("#searchText").keydown(function (e) {
+            if (e.keyCode == 13) {
+                if (!isValidSearchCriteria('searchText')) { return false; }
+                BindTable();
+            }
+        });
+        function BindTable() {
+
+            if ($.fn.DataTable.isDataTable("#tblDisplayBooks")) {
+                $('#tblDisplayBooks').dataTable().fnDestroy();
+                $('#tblDisplayBooks').html('<table id="tblDisplayBooks" class="table table-hover table-bordered"></table>');
+            }
+
+            table = $("#tblDisplayBooks").DataTable({
+                "lengthChange": true,
+                "processing": true,
+                "oLanguage": {
+                    sProcessing: "<img src='../Images/Loader-Spinner.svg' class='datatable-loadingbar'>"
+                },
+                "serverSide": true,
+                "orderMulti": false,
+                "pageLength": @SmartLibrary.Infrastructure.ProjectConfiguration.PageSize,
+                'autoWidth': false,
+                'searching': false,
+                "order": [[2, 'desc']],
+                "ajax": {
+                    url: '@Url.Action(SmartLibrary.Site.Pages.Actions.BookList, SmartLibrary.Site.Pages.Controllers.Book)',
+                    type: "POST",
+                    data: BindSearch()
+                },
+                'rowId': 'Id',
+                "columns": [
+
+                    {
+                        "title": "&nbsp;", "data": "ImagePath", width: "2%",
+                        "render": function (data, type, row) {
+                            var str = "";
+                            var imagePath = '../' + '@ProjectConfiguration.BookImagesPath';
+                            var defaultBookImage= '@Url.Content("~/Images/DefaultBookImage.jpg")';
+                            str += '<a href="#" onclick="BookDetailSideBarLoad(' + row["ID"] + ')" class="book-link book-quick-view-btn " ><img src="'+imagePath+'/s-' + data+'" width="40" height="40" onerror="this.src = \''+defaultBookImage +'\'; "/></a>';
+                            return str;
+                        },
+                        "orderable": false
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.BookTitle", "data": "BookName", width: "21%",
+                        "render": function (data, type, row) {
+                            var str = '<a href="javascript:void(0);" onclick="BookDetailSideBarLoad(' + row["ID"] + ')"  class="book-link book-quick-view-btn book_name ">' + data + '</a>';
+                            return str;
+                        }
+                    },
+                    {
+                        "title": "", "data": "ImagePath", width: "0%","class": "hidden-item",
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.CreatedDate", "data": "CreatedDate",
+                        "class": "hidden",
+                        "render": function (data, type, row) {
+                            return DataTableCustomDateTimeFormat(data, '@SmartLibrary.Infrastructure.ProjectConfiguration.DateFormat.ToUpper()');
+                        }
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.Author", "data": "Authors", width: "15%",
+                        "render": function (data, type, row) {
+                            if (data == null)
+                            {
+                                var str = '<label class="fixed-width" title=""></label>';
+                            }
+                            else
+                            {
+                            var str = '<label class="fixed-width" title="' + data + '">' + data + '</label>';
+                            }
+                            return str;
+                        },
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.Genre", "data": "BookGenre", width: "10%",
+                        "render": function (data, type, row) {
+                            var str = '<label class="interest fixed-width" title="' + data + '">' + data + '</label>';
+                            return str;
+                        }
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.Location", "data": "BookLocation", width: "10%",
+                        "render": function (data, type, row) {
+                            var str = '<label>' + data + '</label>';
+                            return str;
+                        },
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.Qty", "data": "Quantity", width: "5%",
+                        "render": function (data, type, row) {
+                            var str = '<label>' + data + '</label>';
+                            return str;
+                        },
+                        "orderable": false
+                    },
+                    @*{
+                        "title": "@SmartLibrary.Resources.General.Interests", "data": "Interested", width: "5%",
+                        "render": function (data, type, row) {
+                            var str = '<label class="interest">' + data + '</label>';
+                            return str;
+                        },
+                    },*@
+                    {
+                        "title": "@SmartLibrary.Resources.General.Status", "data": "Status", width: "10%",
+                        "render": function (data, type, row) {
+                            if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Available.GetHashCode())') {
+                                str = '<label class = "status success">' + '@SystemEnumList.BorrowBookStatus.Available.GetDescription()' + '</label>';
+                            }
+                            else {
+                                str = '<label class = "status warning">' + '@SystemEnumList.BorrowBookStatus.Borrowed.GetDescription()' + '</label>';
+                            }
+                            return str;
+                        },
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.Interests", width: "7%",
+                        "data": "CustomerInterest",
+                        "class": "text-center action-icons action-hide",
+                        "render": function (data, type, row) {
+                            var appendstring = '';
+                            if (data <=0 || data == null)
+                                appendstring += '<a href="#" class="star-icon book-interest" title="@SmartLibrary.Resources.General.Favourite" onclick="AddBookInterest(' + row["ID"] + ')" id="starAnchor_' + row["ID"] + '"><img src="@Url.Content("~/Images/star.svg")" alt="Star" id="star_' + row["ID"] + '"></a>'
+                            else
+                                appendstring += '<a href="#" class="star-icon book-interest" title="@SmartLibrary.Resources.General.Favourite" onclick="RemoveBookInterest(' + row["ID"] + ')" id="starAnchor_' + row["ID"] + '"><img src="@Url.Content("~/Images/star-filled.svg")" alt="Star Filled" id="star_' + row["ID"] + '"></a>'
+                            appendstring+='<label class="star-interest">/ ' + row["Interested"] + '</label>';
+                            return appendstring;
+                        },
+                        "orderable": false
+                    }
+                ],
+                "drawCallback": function (settings, json) {
+                    RemoveGridBottom("tblDisplayBooks");
+                }
+            });
+        }
+
+        function BookDetailSideBarLoad(bookId) {
+            var params = {};
+            params["bookId"] = bookId;
+            params["statusId"] = '@SmartLibrary.Infrastructure.SystemEnumList.BorrowBookStatus.Returned.GetHashCode()';
+            $.ajax({
+                type: "Get",
+                url: "@Url.Action(SmartLibrary.Site.Pages.Actions.BookDetailSideBar, SmartLibrary.Site.Pages.Controllers.Book)",
+                traditional: true,
+                data: params,
+                success: function (response) {
+                    $('#bookDetailSideBar').html(response);
+                    $(".selectpicker", "#formDetailSideBar").selectpicker({ 'liveSearch': true });
+                    GetScrollReset();
+                }
+            });
+        }
+
+        function AddBookInterest(bookId) {
+            var params = {};
+            params["bookId"] = bookId;
+            $.ajax({
+                type: "Post",
+                url: "@Url.Action(SmartLibrary.Site.Pages.Actions.AddBookInterest, SmartLibrary.Site.Pages.Controllers.Book)",
+                traditional: true,
+                data: params,
+                beforeSend: function (xhr) { AddRequestHeader(xhr, $('#formManageBook')); },
+                success: function (response) {
+                    ShowMessage(response.status, response.message, response.title, null, null)
+                    $("#tblDisplayBooks").DataTable().ajax.reload(null, false);
+                    if (response.status) {
+                        var count = $("#interested_" + bookId).text();
+                        count++;
+                        $("#interested_" + bookId).text(count);
+                        $('#star_' + bookId + '').attr("src", "../images/star-filled.svg");
+                        $("#starAnchor_" + bookId).attr("onclick", "RemoveBookInterest(" + bookId + ")");
+                    }
+                }
+            });
+        }
+
+        function RemoveBookInterest(bookId) {
+            var params = {};
+            params["bookId"] = bookId;
+            $.ajax({
+                type: "Post",
+                url: "@Url.Action(SmartLibrary.Site.Pages.Actions.RemoveBookInterest, SmartLibrary.Site.Pages.Controllers.Book)",
+                traditional: true,
+                data: params,
+                beforeSend: function (xhr) { AddRequestHeader(xhr, $('#formManageBook')); },
+                success: function (response) {
+                    ShowMessage(response.status, response.message, response.title, null, null)
+                    $("#tblDisplayBooks").DataTable().ajax.reload(null, false);
+                    if (response.status) {
+                        var count = $("#interested_" + bookId).text();
+                        count--;
+                        $("#interested_" + bookId).text(count);
+                        $('#star_' + bookId + '').attr("src", "../images/star.svg");
+                        $("#starAnchor_" + bookId).attr("onclick", "AddBookInterest(" + bookId + ")");
+
+                        var src = $('#imgfav').attr('src');
+                        src = src.substring(src.lastIndexOf('/') + 1);
+                        if (src != "star.svg") {
+                            $('#' + bookId).hide();
+                        }
+                    }
+                }
+            });
+        }
+
+    </script>
+}

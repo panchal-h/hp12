@@ -1,0 +1,581 @@
+﻿@using SmartLibrary.Infrastructure;
+@{
+    ViewBag.Title = SmartLibrary.Resources.General.MemberHistory;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    PageAccessRight currentPageAccessRight = (PageAccessRight)ViewData["CurrentPageAccessRight"];
+}
+<div class="wrapper">
+    <div class="card-container">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title"><b>@SmartLibrary.Resources.General.MemberHistory [@ViewBag.MemberName]</b></h2>
+                <ul class="filter-panel no-padding clearfix">
+                    <li>
+                        <div class="btn-group toggle">
+                            <a href="javascript:void(0);" class="btn btn-default active" onclick="ChangeHistoryType(1)" id="btnBookHistory">@SmartLibrary.Resources.General.BookHistory</a>
+                            <a href="javascript:void(0);" class="btn btn-default" onclick="ChangeHistoryType(2)" id="btnSpaceHistory">@SmartLibrary.Resources.General.SpaceHistory</a>
+                        </div>
+                    </li>
+                    <li class="searchbox">
+                        <input type="text" class="form-control" placeholder="Search" id="searchText" />
+                        <img src="@Url.Content("~/Images/search.svg")" alt="Search" id="SearchBtnForList" />
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" class="btn btn-primary btn-icon btn-raised resetIcon" title="@SmartLibrary.Resources.General.Reset" onclick="resetSearch()">
+                            <img src="@Url.Content("~/Images/close-white.svg")" >
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+            @using (Html.SmartLibSecureForm(SmartLibrary.Admin.Pages.Actions.Space, SmartLibrary.Admin.Pages.Controllers.Master, new { id = "formSpace" }))
+            {
+                <div class="table-responsive custom custom-datatable">
+                    <table class="list-table" id="tblDisplayHistory"></table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<div id="divModal"></div>
+<div id="divModalStatus"></div>
+<div id="returnModal"></div>
+@section scripts{
+    <script type="text/javascript">
+        var ID='@ViewData["ID"]';
+        var historyType;
+        $(document).ready(function () {
+            ActiveMenu("#liMember");
+            historyType=1;
+            BindTable();
+        });
+        function resetSearch(){
+            $("#searchText").val('');
+            BindTable();
+        }
+        function ApproveRejectBorrowedBook(borrowId,statusId,bookId,bookperiod)
+        {
+            var param = {};
+            param["borrowid"] = borrowId;
+            param["statusId"] = statusId;
+            param["bookId"] = bookId;
+            param["bookperiod"] = bookperiod;
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.ApproveRejectBorrowedBook, SmartLibrary.Admin.Pages.Controllers.Book)",
+                traditional: true,
+                data: param,
+                success: function (response)
+                {
+                    if (response.success) {
+                        $("#tblDisplayHistory").DataTable().ajax.reload(null, false);
+                        ShowMessage(response.status, response.message, response.title, null, null)
+                    }
+                    else {
+                        ShowMessage(response.status, response.message, response.title, null, null)
+                    }
+                }
+            });
+        }
+
+        function ReturnBookModalLoad(borrowId)
+        {
+            var param = {};
+            param["borrowid"] = borrowId;
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.ReturnBook, SmartLibrary.Admin.Pages.Controllers.Book)",
+                traditional: true,
+                data: param,
+                success: function (response)
+                {
+                    $('#returnModal').html(response);
+                    $('#return-book-modal').modal('show');
+                }
+            });
+        }
+
+
+        function ReturnBook(borrowId,bookId,returnNotes,returnDate)
+        {
+            var param = {};
+            param["borrowid"] = borrowId;
+            param["bookId"] = bookId;
+            param["returnNotes"] = returnNotes;
+            param["returnDate"] = returnDate;
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.ReturnBook, SmartLibrary.Admin.Pages.Controllers.Book)",
+                traditional: true,
+                data: param,
+                success: function (response)
+                {
+                    if (response.success)
+                    {
+                        $('#return-book-modal').modal('hide');
+                        $("#tblDisplayHistory").DataTable().ajax.reload(null, false);
+                        ShowMessage(response.status, response.message, response.title, null, null)
+                    }
+                    else {
+                        ShowMessage(response.status, response.message, response.title, null, null)
+                    }
+                }
+            });
+        }
+
+        function OverDueMail(borrowId)
+        {
+            var param = {};
+            param["borrowerId"] = borrowId;
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.OverDueMail, SmartLibrary.Admin.Pages.Controllers.Book)",
+                data: param,
+                success: function (response)
+                {
+                    if (response.success) {
+                        ShowMessage(response.status, response.message, response.title, null, null)
+                    }
+                    else {
+                        ShowMessage(response.status, response.message, response.title, null, null)
+                    }
+                }
+            });
+        }
+
+        function ApproveCancelSpace(spaceBookingId,statusId)
+        {
+            var param = {};
+            param["spaceBookingId"] = spaceBookingId;
+            param["statusId"] = statusId;
+            param["Comment"] = $("#Comment", "#formstatus").val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.ApproveCancelSpaceBooking, SmartLibrary.Admin.Pages.Controllers.Member)",
+                traditional: true,
+                data: param,
+                success: function (response)
+                {
+                    $("#view-status-modal").modal("hide");
+                    if (response.success) {
+                        $("#tblDisplayHistory").DataTable().ajax.reload(null, false);
+                        ShowMessage(response.status, response.message, response.title, null, null)
+                    }
+                    else {
+                        ShowMessage(response.status, response.message, response.title, null, null)
+                    }
+                }
+            });
+        }
+
+        function ViewDetails(returnNotes)
+        {
+            $("#returnNotes").val($(returnNotes).siblings('.comment-div:first').text());
+            $("#view-notes").modal('show');
+        }
+
+        function ChangeHistoryType(type){
+            historyType=type;
+            BindTable();
+        }
+        function bindSearch() {
+            var param = {};
+            param["searchdata"] = $('#searchText').val();
+            param["data"] =ID;
+            param["historyType"] =historyType;
+            return param;
+        }
+        $("#searchText").keydown(function (e) {
+            if (e.keyCode == 13) {
+                if (!isValidSearchCriteria('searchText')) { return false; }
+                BindTable();
+            }
+        });
+
+        function BindTable(){
+            if(historyType==1){
+                BindBookTable();
+            }
+            else{
+                BindSpaceTable();
+            }
+        }
+        function BindBookTable() {
+
+            if ($.fn.DataTable.isDataTable("#tblDisplayHistory")) {
+                $('#tblDisplayHistory').dataTable().fnDestroy();
+                $('#tblDisplayHistory').html('<table id="tblDisplayHistory" class="table table-hover table-bordered"></table>');
+            }
+
+            table = $("#tblDisplayHistory").DataTable({
+                "lengthChange": true,
+                "processing": true,
+                "oLanguage": {
+                    sProcessing: "<img src='../Images/Loader-Spinner.svg' class='datatable-loadingbar'>"
+                },
+                "serverSide": true,
+                "orderMulti": false,
+                "pageLength": @SmartLibrary.Infrastructure.ProjectConfiguration.PageSize,
+                'autoWidth': false,
+                'searching': false,
+                "order": [[4, 'desc']],
+                "ajax": {
+                    url: '@Url.Action(SmartLibrary.Admin.Pages.Actions.HistoryOfMember, SmartLibrary.Admin.Pages.Controllers.Member)',
+                    type: "POST",
+                    data: bindSearch()
+                },
+                "columns": [
+                    {
+                        "title": "@SmartLibrary.Resources.General.Book", "data": "BookName", width: "20%",
+                        "render": function (data, type, row) {
+                            var str = '<span>' + data + '</span>';
+                            return str;
+                        }
+                    },
+                     {
+                         "title": "@SmartLibrary.Resources.Books.SKUCode", "data": "SKUCode", width: "15%",
+                         "class": "text-center",
+                         "render": function (data, type, row) {
+                             if(data != null && data != "")
+                             {
+                                 var str = '<span>' + data + '</span>';
+                                 return str;
+                             }
+                             else{
+                                 var str = '<span>@SmartLibrary.Resources.General.NotAssign</span>';
+                                 return str;
+                             }
+
+                         }
+                     },
+                      {
+                          "title": "@SmartLibrary.Resources.Books.BookPeriod", "data": "BookPeriod", width: "13%",
+                          "class": "text-center",
+                          "orderable": false,
+                          "render": function (data, type, row) {
+                              var str = '';
+                              if (data.toString() == '@SystemEnumList.BookPeriod.OneWeek.GetDescription()')
+                              {
+                                  str = '<span>@SmartLibrary.Resources.General.OneWeek</span>';
+                              }
+                              else if (data.toString() == '@SystemEnumList.BookPeriod.TwoWeek.GetDescription()')
+                              {
+                                  str = '<span>@SmartLibrary.Resources.General.TwoWeeks</span>';
+                              }
+                              else if (data.toString() == '@SystemEnumList.BookPeriod.OneMonth.GetDescription()')
+                              {
+                                  str = '<span>@SmartLibrary.Resources.General.OneMonth</span>';
+                              }
+                              return str;
+                          }
+
+                      },
+                    {
+                        "title": "@SmartLibrary.Resources.General.PickUpDate", "data": "PickUpDate", width: "15%",
+                        "class": "text-center",
+                        "orderable": false,
+                        "render": function (data, type, row) {
+                            var str= DataTableCustomDateTimeFormat(data, '@SmartLibrary.Infrastructure.ProjectConfiguration.DateFormat.ToUpper()');
+                            str = '<span>' + str + '</span>';
+                            return str;
+                        }
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.ReturnDate", "data": "ReturnDate", width: "15%",
+                        "orderable": false,
+                        "class": "text-center",
+                        "render": function (data, type, row) {
+                            var str= DataTableCustomDateTimeFormat(data, '@SmartLibrary.Infrastructure.ProjectConfiguration.DateFormat.ToUpper()');
+                            str = '<span>' + str + '</span>';
+                            return str;
+                        }
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.CreatedDate", "data": "CreatedDate",
+                        "class": "hidden",
+                        "render": function (data, type, row) {
+                            return '<span>' + DataTableCustomDateTimeFormat(data, '@ProjectConfiguration.DateFormat.ToUpper()') + '</span>' ;
+                        }
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.Status", "data": "StatusId", width: "15%", "orderable": false,
+                        "class": "text-center status_padding",
+                        "render": function (data, type, row) {
+                            var dtPickup = new Date(DataTableCustomDateTimeFormat(row["PickUpDate"], '@SmartLibrary.Infrastructure.ProjectConfiguration.DateFormat.ToUpper()'));
+                            var dtReturn= new Date(DataTableCustomDateTimeFormat(row["ReturnDate"], '@SmartLibrary.Infrastructure.ProjectConfiguration.DateFormat.ToUpper()'));
+                            var dtCurrent =  new Date();
+                            dtCurrent = new Date(dtCurrent.getFullYear(),dtCurrent.getMonth(),dtCurrent.getDate(),0,0,0);
+                            var str="";
+                            if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Approved.GetHashCode())')
+                            {
+                                if(dtCurrent >= dtPickup && dtCurrent <=dtReturn)
+                                {
+                                    str = '<label class = "status info">' + '@SystemEnumList.BorrowBookStatus.Borrowed.GetDescription()' + '</label>';
+                                }
+                                if(dtCurrent > dtReturn)
+                                {
+                                    str = '<label class = "status error">' + '@SystemEnumList.BorrowBookStatus.OverDue.GetDescription()' + '</label>';
+                                }
+                                if(dtCurrent < dtPickup)
+                                {
+                                    str = '<label class = "status success">' + '@SystemEnumList.BorrowBookStatus.Approved.GetDescription()' + '</label>';
+                                }
+                            }
+                            if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Pending.GetHashCode())'){
+                                str = '<label class = "status warning">' + '@SystemEnumList.BorrowBookStatus.Pending.GetDescription()' + '</label>';
+                            }
+                            if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Returned.GetHashCode())'){
+                                str = '<label class = "status success ">' + '@SystemEnumList.BorrowBookStatus.Returned.GetDescription()' + '</label>';
+                            }
+                            if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Cancel.GetHashCode())'){
+                                str = '<label class = "status error ">' + '@SystemEnumList.BorrowBookStatus.Cancel.GetDescription()' + '</label>';
+                            }
+                            return str;
+                        },
+                    },
+                    {
+                        "title": "&nbsp;", "data": "StatusId",
+                        "class": "text-center action-icons",
+                        "orderable": false,
+                        "render": function (data, type, row) {
+                            var dtPickup = new Date(DataTableCustomDateTimeFormat(row["PickUpDate"], '@SmartLibrary.Infrastructure.ProjectConfiguration.DateFormat.ToUpper()'));
+                            var dtReturn= new Date(DataTableCustomDateTimeFormat(row["ReturnDate"], '@SmartLibrary.Infrastructure.ProjectConfiguration.DateFormat.ToUpper()'));
+                            var dtCurrent =  new Date();
+                            dtCurrent = new Date(dtCurrent.getFullYear(),dtCurrent.getMonth(),dtCurrent.getDate(),0,0,0);
+                            var bookperiod = "'" + row["BookPeriod"].toString() + "'";
+                            var str= '';
+                            if ((data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Pending.GetHashCode())' || data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Cancel.GetHashCode())') && dtCurrent > dtReturn)
+                            {
+                                //todo When Status is Pending and the return date has been passed
+                            }
+                            else if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Pending.GetHashCode())' && dtCurrent <= dtReturn )
+                            {
+                                str= '<a  href="javascript:void(0);"  onclick="ApproveRejectBorrowedBook('+row["ID"]+',@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Approved.GetHashCode()),'+row["BookId"]+','+ bookperiod +')"  title="@SmartLibrary.Resources.Account.Approve"><img src="@Url.Content("~/Images/approve-icon.svg")" /></a>';
+                                str= str +'&nbsp;&nbsp;'+'<a href="javascript:void(0);" title="@SmartLibrary.Resources.Account.Reject" onclick="ApproveRejectBorrowedBook('+row["ID"]+',@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Cancel.GetHashCode()),'+row["BookId"]+','+bookperiod+')"><img src="@Url.Content("~/Images/close-black-sm.svg")" /></a>';
+                            }
+                            else if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Cancel.GetHashCode())' && dtCurrent <= dtReturn)
+                            {
+                                str= '<a href="javascript:void(0);" title="@SmartLibrary.Resources.Account.Approve" onclick="ApproveRejectBorrowedBook('+row["ID"]+',@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Approved.GetHashCode()),'+row["BookId"]+','+bookperiod+')" ><img src="@Url.Content("~/Images/approve-icon.svg")" /></a>';
+                                str= str +'&nbsp;&nbsp;'+'<a href="javascript:void(0);" title="@SmartLibrary.Resources.Account.Pending" onclick="ApproveRejectBorrowedBook('+row["ID"]+',@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Pending.GetHashCode()),'+row["BookId"]+','+bookperiod+')"><img src="@Url.Content("~/Images/pending.svg")" /></a>';
+                            }
+                            else if(dtCurrent > dtReturn && (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Approved.GetHashCode())'))
+                            {
+                                str= '<a href="javascript:void(0);" title="@SmartLibrary.Resources.Account.SendReminder" onclick="OverDueMail('+row["ID"]+')"><img src="@Url.Content("~/Images/send-reminder.svg")" /></a>';
+                                str+= '<a href="javascript:void(0);" title="@SmartLibrary.Resources.Account.BookReturn" onclick="ReturnBookModalLoad('+row["ID"]+')"><img src="@Url.Content("~/Images/return-book.svg")" /></a>';
+                            }
+                            else if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Approved.GetHashCode())')
+                            {
+                                str= '<a href="javascript:void(0);" title="@SmartLibrary.Resources.Account.Pending"  onclick="ApproveRejectBorrowedBook('+row["ID"]+',@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Pending.GetHashCode()),'+row["BookId"]+','+bookperiod+')"><img src="@Url.Content("~/Images/pending.svg")" /></a>';
+                                str= str +'&nbsp;&nbsp;'+'<a href="javascript:void(0);" title="@SmartLibrary.Resources.Account.Reject" onclick="ApproveRejectBorrowedBook('+row["ID"]+',@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Cancel.GetHashCode()),'+row["BookId"]+','+bookperiod+')"><img src="@Url.Content("~/Images/close-black-sm.svg")" /></a>';
+                                if(dtCurrent >= dtPickup && dtCurrent <=dtReturn)
+                                {
+                                    str+= '<a href="javascript:void(0);" title="@SmartLibrary.Resources.Account.BookReturn" onclick="ReturnBookModalLoad('+row["ID"]+')"><img src="@Url.Content("~/Images/return-book.svg")" /></a>';
+                                }
+                            }
+                            if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Returned.GetHashCode())' && row["ReturnNotes"] != null && row["ReturnNotes"] != "" ){
+                                str += '<a href="javascript:void(0);" onclick="ViewDetails(this)" title="@SmartLibrary.Resources.General.View"><img src="@Url.Content("~/Images/view.svg")"/></a>';
+                                str += '<div class="comment-div" style="display:none;">' + row["ReturnNotes"] + '</div>';
+                            }
+                            return str;
+                        }
+                    },
+                ],
+                "drawCallback": function (settings, json) {
+                    RemoveGridBottom("tblDisplayHistory");
+                }
+            });
+        }
+        function BindSpaceTable() {
+
+            if ($.fn.DataTable.isDataTable("#tblDisplayHistory")) {
+                $('#tblDisplayHistory').dataTable().fnDestroy();
+                $('#tblDisplayHistory').html('<table id="tblDisplayHistory" class="table table-hover table-bordered"></table>');
+            }
+
+            table = $("#tblDisplayHistory").DataTable({
+                "lengthChange": true,
+                "processing": true,
+                "oLanguage": {
+                    sProcessing: "<img src='../Images/Loader-Spinner.svg' class='datatable-loadingbar'>"
+                },
+                "serverSide": true,
+                "orderMulti": false,
+                "pageLength": @SmartLibrary.Infrastructure.ProjectConfiguration.PageSize,
+                'autoWidth': false,
+                'searching': false,
+                "order": [[6, 'desc']],
+                "ajax": {
+                    url: '@Url.Action(SmartLibrary.Admin.Pages.Actions.HistoryOfMember, SmartLibrary.Admin.Pages.Controllers.Member)',
+                    type: "POST",
+                    data: bindSearch()
+                },
+                "columns": [
+                    {
+                        "title": "@SmartLibrary.Resources.General.BookingTime", "data": "Bookingtime", width: "15%", "orderable": false,
+                        "render": function (data, type, row) {
+                            var str = '<span>' + data + '</span>';
+                            return str;
+                        }
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.BookingDate", "data": "FromDate", width: "10%",
+                        "render": function (data, type, row) {
+                            var str= DataTableCustomDateTimeFormat(data, '@SmartLibrary.Infrastructure.ProjectConfiguration.DateFormat.ToUpper()');
+                            str = '<span>' + str + '</span>';
+                            return str;
+                        }
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.DaysLeft", "data": "DaysLeft", width: "7%",
+                        "class": "text-center",
+                        "render": function (data, type, row) {
+                            if(data<0){
+                                data=0;
+                            }
+                            var str = '<span>' + data + '</span>';
+                            return str;
+                        }
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.Area", "data": "SpaceName", width: "10%",
+                        "render": function (data, type, row) {
+                            var str = '<span>' + data + '</span>';
+                            return str;
+                        }
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.BookingTitle", "data": "BookingTitle", width: "12%",
+                        "render": function (data, type, row) {
+                            var str = '<span>' + data + '</span>';
+                            return str;
+                        }
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.NoOfPeople", "data": "NoOfPeople", width: "12%",
+                        "class": "text-center",
+                        "render": function (data, type, row) {
+                            var str = '<span>' + data + '</span>';
+                            return str;
+                        }
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.CreatedDate", "data": "CreatedDate",
+                        "class": "hidden",
+                        "render": function (data, type, row) {
+                            return '<span>' + DataTableCustomDateTimeFormat(data, '@ProjectConfiguration.DateFormat.ToUpper()') + '</span>' ;
+                        }
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.Status", "data": "StatusId", width: "10%", "orderable": false,
+                        "class": "text-center status_padding",
+                        "render": function (data, type, row) {
+                            var str="";
+                            if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.SpaceBookingStatus.Approved.GetHashCode())') {
+                                str = '<label class = "status success">' + '@SystemEnumList.SpaceBookingStatus.Approved.GetDescription()' + '</label>';
+                            }
+                            if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.SpaceBookingStatus.Pending.GetHashCode())') {
+                                str = '<label class = "status warning">' + '@SystemEnumList.SpaceBookingStatus.Pending.GetDescription()' + '</label>';
+                            }
+                            if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.SpaceBookingStatus.Cancel.GetHashCode())') {
+                                str = '<label class = "status error">' + '@SystemEnumList.SpaceBookingStatus.Cancel.GetDescription()' + '</label>';
+                            }
+                            if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.SpaceBookingStatus.Available.GetHashCode())') {
+                                str = '<label class = "status success">' + '@SystemEnumList.SpaceBookingStatus.Available.GetDescription()' + '</label>';
+                            }
+                            if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.SpaceBookingStatus.Confirmed.GetHashCode())') {
+                                str = '<label class = "status success">' + '@SystemEnumList.SpaceBookingStatus.Confirmed.GetDescription()' + '</label>';
+                            }
+                            if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.SpaceBookingStatus.Rescheduled.GetHashCode())') {
+                                str = '<label class = "status warning">' + '@SystemEnumList.SpaceBookingStatus.Rescheduled.GetDescription()' + '</label>';
+                            }
+                            return str;
+                        },
+                    },
+                    {
+                        "title": "&nbsp;", "data": null, width: "10%",
+                        "class": "action-icons",
+                        "orderable": false,
+                        "render": function (data, type, row) {
+                            var str= '';
+                            if (row["StatusId"] != '@ConvertTo.ToInteger(@SystemEnumList.SpaceBookingStatus.Rescheduled.GetHashCode())'){
+                                str= '<a href="javascript:void(0);" class="view-icon" onclick="LoadModalForStatus('+row["ID"]+')" title="@SmartLibrary.Resources.General.View" ><img src="@Url.Content("~/Images/view.svg")" alt="@SmartLibrary.Resources.General.View" id="eye_43" title="@SmartLibrary.Resources.General.View" /></a>';
+                            }
+                            if (row["Comment"] && (row["StatusId"] == '@ConvertTo.ToInteger(@SystemEnumList.SpaceBookingStatus.Rescheduled.GetHashCode())' || row["StatusId"] == '@ConvertTo.ToInteger(@SystemEnumList.SpaceBookingStatus.Cancel.GetHashCode())')) {
+                                str += '<a href="javascript:void(0);" onclick="ViewSpaceBookingComment(this)" title="@SmartLibrary.Resources.General.Comment"><img src="@Url.Content("~/Images/comment.svg")"/></a>';
+                                str += '<div class="comment-div" style="display:none;">' + row["Comment"] + '</div>';
+                            }
+                            return str
+                        }
+                    },
+                ],
+                "drawCallback": function (settings, json) {
+                    RemoveGridBottom("tblDisplayHistory");
+                }
+            });
+        }
+        function showHideComment(isShow) {
+            if (isShow) {
+                $('.actionbuttons').hide();
+                $('.cancelcomment').show();
+            } else {
+                $('.cancelcomment').hide();
+                $('.actionbuttons').show();
+            }
+        }
+        function ViewSpaceBookingComment(aComment)
+        {
+            $("#returnNotes").val($(aComment).siblings('.comment-div:first').text());
+            $("#view-notes").modal('show');
+        }
+        function LoadModalForStatus(id) {
+            $.ajax({
+                type: "Get",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.ViewSpaceStatus, SmartLibrary.Admin.Pages.Controllers.Member)",
+                traditional: true,
+                data: { id: id },
+                success: function (response) {
+                    $("#divModalStatus").html(response);
+                    $("#view-status-modal").modal('show');
+                    EnableClientSideValidation($('#formBookSpace'));
+                }
+            });
+        }
+
+        function LoadModal(id) {
+            $("#view-status-modal").modal("hide");
+            $.ajax({
+                type: "Get",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.RescheduleBookSpace, SmartLibrary.Admin.Pages.Controllers.Member)",
+                traditional: true,
+                data: { id: id },
+                success: function (response) {
+                    $("#divModal").html(response);
+                    $("#book-space-modal").modal('show');
+                    EnableClientSideValidation($('#formBookSpace'));
+                    setTimeout(function() { $('body').addClass('modal-open') }, 500);
+                }
+            });
+        }
+    </script>
+
+}
+
+<div class="modal fade cus-modal cus-user-modal" id="view-notes" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="modal-close" data-dismiss="modal"><img src="@Url.Content("~/images/modal-close.svg")" alt="Close" /></a>
+                <h4 class="modal-title">@SmartLibrary.Resources.Books.Return @SmartLibrary.Resources.General.Notes</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row small-gutter">
+                    <div class="col-md-12 col-sm-12">
+                        <div class="form-group floating big-input has-icon">
+                            <textarea id="returnNotes" class="form-control" rows="8" disabled></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

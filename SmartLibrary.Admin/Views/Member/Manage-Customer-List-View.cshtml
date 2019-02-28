@@ -1,0 +1,180 @@
+﻿@using SmartLibrary.Infrastructure;
+@model IEnumerable<SmartLibrary.Models.Customer>
+@{
+    ViewBag.Title = SmartLibrary.Resources.General.Member;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    PageAccessRight currentPageAccessRight = (PageAccessRight)ViewData["CurrentPageAccessRight"];
+}
+<div class="wrapper">
+    <div class="card-container">
+        <div class="card">
+            <div class="card-header">
+                <span>
+                    <img src="@Url.Content("~/Images/members-Title.svg")" alt="@SmartLibrary.Resources.General.Member" class="card-header-image"> &nbsp;
+                </span>
+                <h2 class="card-title card-title-img"><b>@SmartLibrary.Resources.General.Member</b></h2>
+                <ul class="filter-panel">
+                    <li class="searchbox">
+                        <input type="text" class="form-control" placeholder="@SmartLibrary.Resources.General.Search" id="searchText" />
+                        <img src="@Url.Content("~/Images/search.svg")" alt="@SmartLibrary.Resources.General.Search" id="SearchBtnForList" />
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" class="btn btn-primary btn-icon btn-raised resetIcon" title="@SmartLibrary.Resources.General.Reset" onclick="resetSearch()">
+                            <img src="@Url.Content("~/Images/close-white.svg")" >
+                        </a>
+                    </li>
+
+                    <li><a href="@Url.Action(SmartLibrary.Admin.Pages.Actions.CustomerGrid, SmartLibrary.Admin.Pages.Controllers.Member)" class="btn btn-default btn-icon btn-inactive" title="@SmartLibrary.Resources.General.GridView"><img src="@Url.Content("~/images/grid-view.svg")" alt="@SmartLibrary.Resources.General.GridView"></a></li>
+                    <li><a href="@Url.Action(SmartLibrary.Admin.Pages.Actions.CustomerList, SmartLibrary.Admin.Pages.Controllers.Member)" class="btn btn-default btn-icon disabled" title="@SmartLibrary.Resources.General.ListView" style="background-color: #006557"><img src="@Url.Content("~/images/list-view-selected.svg")" alt="@SmartLibrary.Resources.General.ListView"></a></li>
+                    <li><a href="#" class="btn btn-default btn-icon" title="@SmartLibrary.Resources.General.Download"><img src="@Url.Content("~/Images/download.svg")" alt="@SmartLibrary.Resources.General.Download" onclick="Download()" /></a></li>
+                    <li class="@(currentPageAccessRight.AddUpdate ? "visible-item":"hidden-item")"><a onclick="LoadModal()" data-toggle="modal" class="btn btn-primary btn-icon btn-raised" title="@SmartLibrary.Resources.General.InviteNewMember"><img src="@Url.Content("~/Images/plus-white.svg")" alt="@SmartLibrary.Resources.General.Add" class="small"></a></li>
+                </ul>
+            </div>
+            @using (Html.SmartLibSecureForm(SmartLibrary.Admin.Pages.Actions.CustomerList, SmartLibrary.Admin.Pages.Controllers.Member, new { id = "formMember" }))
+            {
+                <div class="table-responsive custom custom-datatable">
+                    <table class="list-table" id="tblDisplayMembers"></table>
+                </div>
+
+            }
+        </div>
+    </div>
+</div>
+<div id="divModal"></div>
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            BindTable();
+            ActiveMenu("#liMember");
+        });
+        function bindSearch() {
+            var param = {};
+            param["searchdata"] = $('#searchText').val();
+            return param;
+        }
+        function resetSearch(){
+            $("#searchText").val('');
+            BindTable();
+        }
+        $("#searchText").keydown(function (e) {
+            if (e.keyCode == 13) {
+                if (!isValidSearchCriteria('searchText')) { return false; }
+                BindTable();
+            }
+        });
+
+        function BindTable() {
+
+            if ($.fn.DataTable.isDataTable("#tblDisplayMembers")) {
+                $('#tblDisplayMembers').dataTable().fnDestroy();
+                $('#tblDisplayMembers').html('<table id="tblDisplayMembers" class="table table-hover table-bordered"></table>');
+            }
+
+            table = $("#tblDisplayMembers").DataTable({
+                "lengthChange": true,
+                "processing": true,
+                "oLanguage": {
+                    sProcessing: "<img src='../Images/Loader-Spinner.svg' class='datatable-loadingbar'>"
+                },
+                "serverSide": true,
+                "orderMulti": false,
+                "pageLength": @SmartLibrary.Infrastructure.ProjectConfiguration.PageSize,
+                'autoWidth': false,
+                'searching': false,
+                "order": [[1, 'asc']],
+                "ajax": {
+                    url: '@Url.Action(SmartLibrary.Admin.Pages.Actions.CustomerList, SmartLibrary.Admin.Pages.Controllers.Member)',
+                    type: "POST",
+                    data: bindSearch()
+                },
+                "columns": [
+                    {
+                        "title": "&nbsp;", "data": "ProfileImagePath", width: "2%",
+                        "render": function (data, type, row) {
+                            var str = "";
+                            var imagePath = '../' + '@ProjectConfiguration.UserProfileImagePath';
+                            var defaultuserImage= '@Url.Content("~/Images/default-user.png")';
+                            str += '<a href="@Url.Action(SmartLibrary.Admin.Pages.Actions.HistoryOfMember, SmartLibrary.Admin.Pages.Controllers.Member)?data=' + row["IdEncrypted"] + '"  class="book-link "><img src="'+imagePath+'/' + data+'" width="40" height="40" onerror="this.src = \''+defaultuserImage +'\'; "/></a>';
+
+                            return str;
+                        },
+                        "orderable": false
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.Name", "data": "Name", width: "20%",
+                        "render": function (data, type, row) {
+
+                            var str = '';
+                            str = '<a href="@Url.Action(SmartLibrary.Admin.Pages.Actions.HistoryOfMember, SmartLibrary.Admin.Pages.Controllers.Member)?data=' + row["IdEncrypted"] + '" >'+'<span class="txtBlur">' + data + '</span>'+'</a>';
+                            return str;
+                        }
+                    },
+                     {
+                         "title": "@SmartLibrary.Resources.General.Email", "data": "Email", width: "20%",
+                         "render": function (data, type, row) {
+                             var str = '<span>' + data + '</span>';
+                             return str;
+                         }
+                     },
+
+                    {
+                        "title": "@SmartLibrary.Resources.General.CreatedDate", "data": "CreatedDate",width: "18%",
+                        "render": function (data, type, row) {
+                            var str= DataTableCustomDateTimeFormat(data, '@SmartLibrary.Infrastructure.ProjectConfiguration.DateFormat.ToUpper()');
+                            str = '<span>' + str + '</span>';
+                            return str;
+                        }
+                    },
+                     {
+                         "title": "@SmartLibrary.Resources.General.Phone", "data": "Phone", width: "10%",
+                         "class": " action-icons ",
+                         "render": function (data, type, row) {
+                             var str = '<span>' + data + '</span>';
+                             return str;
+                         },
+                         "orderable": false
+                     },
+                    {
+                        "title": "@SmartLibrary.Resources.General.LoginType", "data": "LoginType", width: "7%",
+                        "render": function (data, type, row) {
+                            var str=''
+                            if('@SystemEnumList.LoginType.Guest.GetHashCode()' ==data){
+                                str = '<span>' +'@SystemEnumList.LoginType.Guest.GetDescription()' + '</span>';
+                            }
+                            else if('@SystemEnumList.LoginType.Staff.GetHashCode()' ==data)
+                            {
+                                str = '<span>' +'@SystemEnumList.LoginType.Staff.GetDescription()'  + '</span>';
+                            }
+                            return str;
+                        }
+                            ,"orderable": false
+                    }
+                ],
+                "drawCallback": function (settings, json) {
+                    RemoveGridBottom("tblDisplayMembers");
+                }
+            });
+        }
+        function LoadModal() {
+            $.ajax({
+                type: "Get",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.InviteCustomer, SmartLibrary.Admin.Pages.Controllers.Member)",
+                traditional: true,
+                success: function (response) {
+                    $("#divModal").html(response);
+                    $("#invite-member-modal").modal('show');
+                    EnableClientSideValidation($('#formAddNewMember'));
+                }
+            });
+        }
+
+        function Download() {
+            var searchdata="";
+            if( $('#searchText').val()!=undefined){
+                searchdata= $('#searchText').val();
+            }
+            location.href = '@Url.Action(SmartLibrary.Admin.Pages.Actions.CustomersExportToExcel, SmartLibrary.Admin.Pages.Controllers.Member)?searchData=' + searchdata ;
+        }
+    </script>
+
+}

@@ -1,0 +1,31 @@
+﻿@using SmartLibrary.Admin.Classes
+@using SmartLibrary.Admin.Pages
+@model IEnumerable<Notification>
+<div class="custom-scroll">
+    <div class="scroller-inner">
+        <ul class="notification-list with-btn">
+            @if (Model != null && Model.Count() > 0)
+            {
+                foreach (var notification in Model)
+                {
+                    <li>
+                        <div class="image-wrapper">
+                            <img src="@Url.Content("~/images/bookmark2.svg")" alt="" />
+                        </div>
+                        <span> @notification.Title </span>
+                        <p> @notification.Description </p>
+                        <a href="@(Rights.HasAccess(Controllers.Home, Actions.AllActivities) ? Url.Action(Actions.AllActivities, Controllers.Home, new { BorrowedBookId = notification.BorrowedBookId.HasValue ? EncryptionDecryption.EncryptByTripleDES(notification.BorrowedBookId.Value.ToString()) : null, SpaceBookingId = notification.SpaceBookingId.HasValue ? EncryptionDecryption.EncryptByTripleDES(notification.SpaceBookingId.Value.ToString()) : null }) : "#")" title="">
+                            <img src="@Url.Content("~/images/correct-black.svg")" alt="" />
+                        </a>
+                    </li>
+                }
+            }
+            else
+            {
+                <li>
+                    @SmartLibrary.Resources.Messages.NoEventRequests
+                </li>
+            }
+        </ul>
+    </div>
+</div>

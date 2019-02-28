@@ -1,0 +1,723 @@
+﻿@model SmartLibrary.Models.Book
+@{
+    ViewBag.Title = SmartLibrary.Resources.General.Books;
+    Layout = "~/Views/Shared/_BookDetailLayout.cshtml";
+    PageAccessRight currentPageAccessRight = (PageAccessRight)ViewData["CurrentPageAccessRight"];
+}
+<body id="english">
+    <div class="blue-backdrop"><a href="#"></a></div>
+    <div class="bottom-bar">
+        <a href="@Model.ReturnUrl" class="back-btn"><img src="@Url.Content("~/Images/chevron-left-rounded.svg")" alt="Chevron Left" /></a>
+        <div class="dropdown dropup">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <span></span>
+                <span></span>
+                <span></span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-right">
+                <li class="active liActionLink" id="liDescription"><a href="#" onclick="ActionDetailType('@SmartLibrary.Resources.General.Description')" title="@SmartLibrary.Resources.General.Description">@SmartLibrary.Resources.General.Description</a></li>
+                <li class="liActionLink" id="liBorrowers"><a href="#" onclick="ActionDetailType('@SmartLibrary.Resources.Books.Borrowers')" title="@SmartLibrary.Resources.Books.Borrowers">@SmartLibrary.Resources.Books.Borrowers</a></li>
+                <li class="liActionLink" id="liComments"><a href="#" onclick="ActionDetailType('@SmartLibrary.Resources.General.Comments')" title="@SmartLibrary.Resources.General.Comments">@SmartLibrary.Resources.General.Comments</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="wrapper no-sidebar has-bottom-bar">
+        <div class="card-container">
+            <div class="card book-details clearfix eqHeight-abs">
+                <div class="left abs-target">
+                    <div id="book-display-data-reload">
+                        <div class="brief">
+                            <div class="upper">
+                                <img src="@Url.Content("~/" + ProjectConfiguration.BookImagesPath + "/" + Model.ImagePath)" alt="@SmartLibrary.Resources.Books.BookTitle" onerror="this.src = '@Url.Content("~/Images/DefaultBookImage.jpg")';eqHeightAbs();" />
+                                <div>
+                                    @if (Model.CurrentBookStatus == @ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Available.GetHashCode()))
+                                    {
+                                        <span class="status success">@SystemEnumList.BorrowBookStatus.Available.GetDescription()</span>
+                                    }
+                                    else if (Model.CurrentBookStatus == @ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Borrowed.GetHashCode()))
+                                    {
+                                        <span class="status warning">@SystemEnumList.BorrowBookStatus.Borrowed.GetDescription()</span>
+                                    }
+
+                                    <span class="interest">@Model.Interested @SmartLibrary.Resources.Books.Interests</span>
+                                </div>
+                            </div>
+                            <span class="book-title title-pointer" title="@Model.BookName">@Model.BookName</span>
+                        </div>
+                        <ul class="specs">
+                            <li>
+                                <label>@SmartLibrary.Resources.Books.Authors</label>
+                                <span>@Model.Authors</span>
+                            </li>
+                            <li>
+                                <label>@SmartLibrary.Resources.Books.Quantity</label>
+                                <span>@Model.CurrentQuantity / @Model.TotalQuantity</span>
+                            </li>
+                            <li>
+                                <label>@SmartLibrary.Resources.Books.Genre</label>
+                                <span>@Model.BookGenre</span>
+                            </li>
+                            <li>
+                                <label>@SmartLibrary.Resources.Books.Location</label>
+                                <span>@Model.BookLocation</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="right" id="divDescription">
+                    <div class="labeled-text">
+                        <h2 class="card-title">@SmartLibrary.Resources.General.Description</h2>
+                        <p> @Html.Raw(HttpUtility.HtmlDecode(Model.Description))</p>
+                    </div>
+                </div>
+                <div class="right customMultiselect" id="divBorrowers">
+                    <div class="card-header">
+                        <h2 class="card-title">@SmartLibrary.Resources.General.Book @SmartLibrary.Resources.Books.Borrower @SmartLibrary.Resources.General.History</h2>
+                        <ul class="filter-panel">
+                            <li class="dropdown-wrapper">
+                                <div class="btn-group show-tick filter-select">
+                                    @Html.DropDownList("status", SmartLibrary.Services.CommonBL.GetBorrowBookStatusDropdown(true), new { @class = "selectpickerStatus selectpicker filter-select select-dropdown" })
+                                </div>
+                            </li>
+                            @*<li class="dropdown-wrapper">
+                                    <div class="btn-group show-tick filter-select">
+                                        @Html.DropDownList("active", new SelectList(ViewBag.ActiveList, "Value", "Text", "1"), new { @class = "selectpickerActive selectpicker filter-select select-dropdown" })
+                                    </div>
+                                </li>*@
+                            <li class="searchbox">
+                                <input type="text" class="form-control" placeholder="@SmartLibrary.Resources.General.Search" id="searchTextBorrow">
+                                <img src="@Url.Content("~/Images/search.svg")" alt="@SmartLibrary.Resources.General.Search" id="SearchBtnForBorrow">
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" class="btn btn-primary btn-icon btn-raised resetIcon" title="@SmartLibrary.Resources.General.Reset" onclick="resetSearchForBorrow()">
+                                    <img src="@Url.Content("~/Images/close-white.svg")">
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <br />
+                        @using (Html.SmartLibSecureForm(SmartLibrary.Admin.Pages.Actions.BorrowerDetails, SmartLibrary.Admin.Pages.Controllers.Book, new { id = "formBorrowDetail" }))
+                        {
+                            <div class="table-responsive custom custom-datatable">
+                                <table class="list-table" id="tblBorrowDetails"></table>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="right" id="divComments">
+                    <div class="card-header">
+                        <h2 class="card-title">@SmartLibrary.Resources.General.Book @SmartLibrary.Resources.General.Comments </h2>
+                        <ul class="filter-panel">
+                            <li class="searchbox">
+                                <input type="text" class="form-control" placeholder="@SmartLibrary.Resources.General.Search" id="searchTextComments">
+                                <img src="@Url.Content("~/Images/search.svg")" alt="@SmartLibrary.Resources.General.Search" id="SearchBtnForComments">
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" class="btn btn-primary btn-icon btn-raised resetIcon" title="@SmartLibrary.Resources.General.Reset" onclick="resetSearchForComments()">
+                                    <img src="@Url.Content("~/Images/close-white.svg")" >
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <br />
+                        @using (Html.SmartLibSecureForm(SmartLibrary.Admin.Pages.Actions.BookComments, SmartLibrary.Admin.Pages.Controllers.Book, new { id = "formCommentDetail" }))
+                        {
+                            <div class="table-responsive custom custom-datatable">
+                                <table class="list-table" id="tblCommentDetails"></table>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<div id="returnModal"></div>
+
+
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var emailFilter = '@Html.Raw(ViewBag.query)';
+            if (emailFilter && emailFilter.split('&').length > 1) {
+                $('#searchTextBorrow').val(emailFilter.split('&')[0]);
+                $('#status').val(emailFilter.split('&')[1]);
+                ActionDetailType('@SmartLibrary.Resources.Books.Borrowers');
+            } else if (emailFilter && emailFilter.split('&').length == 1 && emailFilter.toLowerCase() == 'comments') {
+                ActionDetailType('@SmartLibrary.Resources.General.Comments');
+            } else {
+                ActionDetailType('@SmartLibrary.Resources.General.Description');
+            }
+            $(".selectpickerActive").selectpicker({ 'noneSelectedText': 'Select Active', 'liveSearch': true });
+            $(".selectpickerStatus").selectpicker({ 'noneSelectedText': 'Select Status', 'liveSearch': true });
+
+            $("#searchTextBorrow").keydown(function (e) {
+                if (e.keyCode == 13) {
+                    if (!isValidSearchCriteria('searchTextBorrow')) { return false; }
+                    BindBorrowTable();
+                }
+            });
+            $('#SearchBtnForBorrow').click(function(){
+                if (!isValidSearchCriteria('SearchBtnForBorrow')) { return false; }
+                BindBorrowTable();
+            })
+
+            $("#searchTextComments").keydown(function (e) {
+                if (e.keyCode == 13) {
+                    if (!isValidSearchCriteria('searchTextComments')) { return false; }
+                    BindCommentTable();
+                }
+            });
+
+            $('#SearchBtnForComments').click(function() {
+                if (!isValidSearchCriteria('searchTextComments')) { return false; }
+                BindCommentTable();
+            })
+
+            $( ".select-dropdown" ).change(function() {
+                BindBorrowTable();
+            });
+        });
+
+        function ViewDetails(returnNotes)
+        {
+            $("#returnNotes").val($(returnNotes).siblings('.comment-div:first').text());
+            $("#view-notes").modal('show');
+        }
+        function resetSearchForBorrow(){
+            $(".selectpickerStatus").val('default');
+            $(".selectpickerStatus").selectpicker("refresh");
+            $("#searchTextBorrow").val('');
+            BindBorrowTable();
+        }
+        function resetSearchForComments(){
+            $("#searchTextComments").val('');
+            BindCommentTable();
+        }
+        function ActionDetailType(type) {
+            $(".liActionLink").each(function (element) {
+                if ($(this).hasClass("active")) {
+                    $(this).removeClass("active");
+                }
+            });
+            $(".right").each(function (element) {
+                $(this).hide();
+            });
+
+            if (type == '@SmartLibrary.Resources.General.Description') {
+                $("#divDescription").show();
+                $("#liDescription").addClass("active");
+                eqHeightAbs();
+            }
+            else if (type == '@SmartLibrary.Resources.Books.Borrowers') {
+                $("#divBorrowers").show();
+                $("#liBorrowers").addClass("active");
+                BindBorrowTable();
+            }
+            else if (type == '@SmartLibrary.Resources.General.Comments') {
+                $("#divComments").show();
+                $("#liComments").addClass("active");
+                BindCommentTable();
+            }
+        }
+
+        function bindBorrowSearch() {
+            var active, status;
+            active = $('#active').val();
+            if (active != null) {
+                active = active.toString();
+            }
+            status = $('#status').val();
+            if (status != null) {
+                status = status.toString();
+            }
+            var param = {};
+            param["id"] = '@Model.ID';
+            param["searchText"] = $('#searchTextBorrow').val();
+            param["active"] = active;
+            param["status"] = status;
+            return param;
+        }
+
+
+
+        function  bindCommentSearch()
+        {
+            var param = {};
+            param["bookid"] = '@Model.ID';
+            param["searchText"] = $('#searchTextComments').val();
+            return param;
+        }
+
+        function OverDueMail(borrowId)
+        {
+            var param = {};
+            param["borrowerId"] = borrowId;
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.OverDueMail, SmartLibrary.Admin.Pages.Controllers.Book)",
+                data: param,
+                success: function (response)
+                {
+                    if (response.success) {
+                        ShowMessage(response.status, response.message, response.title, null, null)
+                    }
+                    else {
+                        ShowMessage(response.status, response.message, response.title, null, null)
+                    }
+                }
+            });
+        }
+
+        function ApproveRejectBorrowedBook(borrowId,statusId,bookId,bookperiod)
+        {
+            var param = {};
+            param["borrowid"] = borrowId;
+            param["statusId"] = statusId;
+            param["bookId"] = '@Model.ID';
+            param["bookperiod"] = bookperiod;
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.ApproveRejectBorrowedBook, SmartLibrary.Admin.Pages.Controllers.Book)",
+                traditional: true,
+                data: param,
+                success: function (response)
+                {
+                    if (response.success) {
+                        $("#tblBorrowDetails").DataTable().ajax.reload(null, false);
+                        ShowMessage(response.status, response.message, response.title, null, null)
+                        BookDetailViewReLoad();
+                    }
+                    else {
+                        ShowMessage(response.status, response.message, response.title, null, null)
+                    }
+                }
+            });
+        }
+
+        function ReturnBookModalLoad(borrowId)
+        {
+            var param = {};
+            param["borrowid"] = borrowId;
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.ReturnBook, SmartLibrary.Admin.Pages.Controllers.Book)",
+                traditional: true,
+                data: param,
+                success: function (response)
+                {
+                    $('#returnModal').html(response);
+                    $('#return-book-modal').modal('show');
+                }
+            });
+        }
+
+
+        function ReturnBook(borrowId,bookId,returnNotes,returnDate)
+        {
+            var param = {};
+            param["borrowid"] = borrowId;
+            param["bookId"] = bookId;
+            param["returnNotes"] = returnNotes;
+            param["returnDate"] = returnDate;
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.ReturnBook, SmartLibrary.Admin.Pages.Controllers.Book)",
+                traditional: true,
+                data: param,
+                success: function (response)
+                {
+                    if (response.success)
+                    {
+                        $('#return-book-modal').modal('hide');
+                        $("#tblBorrowDetails").DataTable().ajax.reload(null, false);
+                        ShowMessage(response.status, response.message, response.title, null, null)
+                        BookDetailViewReLoad();
+                    }
+                    else {
+                        ShowMessage(response.status, response.message, response.title, null, null)
+                    }
+                }
+            });
+        }
+
+        function BookDetailViewReLoad() {
+            var params = {};
+            params["bookId"] = '@Model.IdEncrypted';
+            $.ajax({
+                type: "Get",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.BookDetailViewReload, SmartLibrary.Admin.Pages.Controllers.Book)",
+                traditional: true,
+                data: params,
+                success: function (response) {
+                    $('#book-display-data-reload').html(response);
+                }
+            });
+        }
+
+        function BindCommentTable()
+        {
+            if ($.fn.DataTable.isDataTable("#tblCommentDetails")) {
+                $('#tblCommentDetails').dataTable().fnDestroy();
+                $('#tblCommentDetails').html('<table id="tblCommentDetails" class="table table-hover table-bordered"></table>');
+            }
+            var deleteRight = '@currentPageAccessRight.Delete' == 'False' ? false : true;
+
+            table = $("#tblCommentDetails").DataTable({
+                "dom": 'r<t><"grid-bottom"ilp>',
+                "lengthChange": true,
+                "processing": true,
+                "oLanguage": {
+                    sProcessing: "<img src='../Images/Loader-Spinner.svg' class='datatable-loadingbar'>"
+                },
+                "serverSide": true,
+                "orderMulti": false,
+                "pageLength": @SmartLibrary.Infrastructure.ProjectConfiguration.PageSize,
+                'autoWidth': false,
+                'searching': false,
+                "order": [[3, 'desc']],
+                "language": {
+                    "lengthMenu": "_MENU_",
+                    "zeroRecords": "@SmartLibrary.Resources.Messages.NoRecordFound",
+                    "processing": "",
+                },
+                "ajax": {
+                    url: '@Url.Action(SmartLibrary.Admin.Pages.Actions.BookComments, SmartLibrary.Admin.Pages.Controllers.Book)',
+                    type: "POST",
+                    data: bindCommentSearch()
+                },
+                "columns": [
+                    {
+                        "title": "&nbsp;", "data": "ProfileImagePath", width: "5%",
+                        "render": function (data, type, row) {
+                            var str = "";
+                            var imagePath = '../' + '@ProjectConfiguration.UserProfileImagePath';
+
+                            var defaultuserImage= '@Url.Content("~/Images/default-user.png")';
+                            str += '<img src="'+imagePath+'/' + data+'" width="40" height="40" onerror="this.src = \''+defaultuserImage +'\'; "/>';
+
+                            return str;
+                        },
+                        "orderable": false
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.Member @SmartLibrary.Resources.General.Name", "data": "CustomerName", width: "30%",
+                        "render": function (data, type, row) {
+
+                            var str = '<span>' + data + '</span>';
+                            return str;
+                        }
+                    },
+                     {
+                         "title": "@SmartLibrary.Resources.General.Comment", "data": "MessageDescription", width: "35%",
+                         "render": function (data, type, row) {
+                             var str = '<span>' + data + '</span>';
+                             return str;
+                         }
+                     },
+                    {
+                        "title": "@SmartLibrary.Resources.General.CreatedDate", "data": "CreatedDate", width: "15%",
+                        "render": function (data, type, row) {
+                            var str= DataTableCustomDateTimeFormat(data, '@SmartLibrary.Infrastructure.ProjectConfiguration.DateFormat.ToUpper()');
+                            str = '<span>' + str + '</span>';
+                            return str;
+                        }
+                    },
+                     {
+                         "title": "@SmartLibrary.Resources.General.Actions",width: "10%",visible: deleteRight,
+                         "data": "Active",
+                         "class": "text-center action-icons",
+                         "render": function (data, type, row) {
+                             var appendstring = '';
+                             appendstring += '<a class="Action delete text-center @(currentPageAccessRight.Delete ? "visible-item":"hidden-item")" data-id="' + row["ID"] + '"href="#" title="@SmartLibrary.Resources.General.Delete" ><img src="@Url.Content("~/Images/delete.svg")" alt="delete" width="15" /></a>';
+                             return appendstring;
+                         },
+                         "orderable": false
+                     }
+                ],
+                "drawCallback": function (settings, json) {
+                    InitVariable();
+                    InitDeleteConfirmation();
+                    RemoveGridBottom("tblCommentDetails");
+                    eqHeightAbs();
+                }
+            });
+
+
+        }
+
+        function InitVariable() {
+            confirmMessage = '@SmartLibrary.Resources.General.ConfirmDeleteMessage';
+            confirmTitle = '@SmartLibrary.Resources.General.ConfirmDelete';
+            confirmYes = '@SmartLibrary.Resources.General.Yes';
+            confirmNo = '@SmartLibrary.Resources.General.No';
+        }
+
+        function DeleteCallback(event) {
+            if (event != undefined) {
+                if (event.target != undefined) {
+                    var atag = event.target;
+                    if (event.target.tagName == "IMG") {
+                        atag = $(event.target).parent();
+                    }
+                    $.ajax({
+                        type: "POST",
+                        beforeSend: function (xhr) { xhr.setRequestHeader('__RequestVerificationToken', $('input[name="__RequestVerificationToken"]', $("#formCommentDetail")).val()); },
+                        url: encodeURI('@Url.Action(SmartLibrary.Admin.Pages.Actions.DeleteComments, SmartLibrary.Admin.Pages.Controllers.Book)'),
+                        data: { "id": $(atag).attr('data-id') },
+                        cache: false,
+                        dataType: 'json',
+                        success: function (response) {
+                            if (response.success) {
+                                BindCommentTable();
+                                ShowMessage(response.status, response.message, response.title, null, null)
+                            }
+                            else {
+                                ShowMessage(response.status, response.message, response.title, null, null)
+                            }
+                        },
+                        error: function (jqXHR, exception, errMsg) {
+                            alert(errMsg);
+                        }
+                    });
+                }
+            }
+        }
+
+        function BindBorrowTable() {
+
+            if ($.fn.DataTable.isDataTable("#tblBorrowDetails")) {
+                $('#tblBorrowDetails').dataTable().fnDestroy();
+                $('#tblBorrowDetails').html('<table id="tblBorrowDetails" class="table table-hover table-bordered"></table>');
+            }
+
+            table = $("#tblBorrowDetails").DataTable({
+                "dom": 'r<t><"grid-bottom"ilp>',
+                "lengthChange": true,
+                "processing": true,
+                "oLanguage": {
+                    sProcessing: "<img src='../Images/Loader-Spinner.svg' class='datatable-loadingbar'>"
+                },
+                "serverSide": true,
+                "orderMulti": false,
+                "pageLength": @SmartLibrary.Infrastructure.ProjectConfiguration.PageSize,
+                'autoWidth': false,
+                'searching': false,
+                "order": [[2, 'desc']],
+                "language": {
+                    "lengthMenu": "_MENU_",
+                    "zeroRecords": "@SmartLibrary.Resources.Messages.NoRecordFound",
+                    "processing": "",
+                },
+                "ajax": {
+                    url: '@Url.Action(SmartLibrary.Admin.Pages.Actions.BorrowerDetails, SmartLibrary.Admin.Pages.Controllers.Book)',
+                    type: "POST",
+                    data: bindBorrowSearch()
+                },
+                "columns": [
+                    {
+                        "title": "&nbsp;", "data": "ProfileImagePath", width: "5%",
+                        "render": function (data, type, row) {
+                            var str = "";
+                            var imagePath = '../' + '@ProjectConfiguration.UserProfileImagePath';
+                            var defaultuserImage = '@Url.Content("~/Images/default-user.png")';
+                            str += '<img src="'+imagePath+'/' + data+'" width="40" height="40" onerror="this.src = \''+defaultuserImage +'\'; "/>';
+
+                            return str;
+                        },
+                        "orderable": false
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.Member @SmartLibrary.Resources.General.Name", "data": "BorrowerName", width: "20%",
+                        "render": function (data, type, row) {
+
+                            var str = '<span>' + data + '</span>';
+                            return str;
+                        }
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.CreatedDate", "data": "CreatedDate",
+                        "class": "hidden",
+                        "render": function (data, type, row) {
+                            return '<span>' + DataTableCustomDateTimeFormat(data, '@ProjectConfiguration.DateFormat.ToUpper()') + '</span>' ;
+                        }
+                    },
+                     {
+                         "title": "@SmartLibrary.Resources.General.Email", "data": "BorrowerEmail", width: "20%",
+                         "render": function (data, type, row) {
+                             var str = '<span>' + data + '</span>';
+                             return str;
+                         }
+                     },
+                    {
+                        "title": "@SmartLibrary.Resources.Books.SKUCode", "data": "SKUCode", width: "13%",
+                        "class": "text-center",
+                        "render": function (data, type, row) {
+                            if(data != null && data != "")
+                            {
+                                var str = '<span>' + data + '</span>';
+                                return str;
+                            }
+                            else{
+                                var str = '<span>@SmartLibrary.Resources.General.NotAssign</span>';
+                                return str;
+                            }
+                        }
+
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.Books.BookPeriod", "data": "BookPeriod", width: "13%",
+                        "class": "text-center",
+                        "orderable": false,
+                        "render": function (data, type, row) {
+                            var str = '';
+                            if (data.toString() == '@SystemEnumList.BookPeriod.OneWeek.GetDescription()')
+                            {
+                                str = '<span>@SmartLibrary.Resources.General.OneWeek</span>';
+                            }
+                            else if (data.toString() == '@SystemEnumList.BookPeriod.TwoWeek.GetDescription()')
+                            {
+                                str = '<span>@SmartLibrary.Resources.General.TwoWeeks</span>';
+                            }
+                            else if (data.toString() == '@SystemEnumList.BookPeriod.OneMonth.GetDescription()')
+                            {
+                                str = '<span>@SmartLibrary.Resources.General.OneMonth</span>';
+                            }
+                            return str;
+                        }
+
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.Books.PickUpDate", "data": "PickUpDate", width: "10%",
+                        "render": function (data, type, row) {
+                            var str= DataTableCustomDateTimeFormat(data, '@SmartLibrary.Infrastructure.ProjectConfiguration.DateFormat.ToUpper()');
+                            str = '<span>' + str + '</span>';
+                            return str;
+                        }
+                    },
+                     {
+                         "title": "@SmartLibrary.Resources.Books.ReturnDate", "data": "ReturnDate", width: "10%",
+                         "render": function (data, type, row) {
+                             var str= DataTableCustomDateTimeFormat(data, '@SmartLibrary.Infrastructure.ProjectConfiguration.DateFormat.ToUpper()');
+                             str = '<span>' + str + '</span>';
+                             return str;
+                         }
+                     },
+
+                   {
+                       "title": "@SmartLibrary.Resources.General.Status", "data": "StatusId", width: "10%", "orderable": false,
+                       "class": "text-center status_padding",
+                       "render": function (data, type, row) {
+                           var dtPickup = new Date(DataTableCustomDateTimeFormat(row["PickUpDate"], '@SmartLibrary.Infrastructure.ProjectConfiguration.DateFormat.ToUpper()'));
+                           var dtReturn= new Date(DataTableCustomDateTimeFormat(row["ReturnDate"], '@SmartLibrary.Infrastructure.ProjectConfiguration.DateFormat.ToUpper()'));
+                           var dtCurrent =  new Date();
+                           dtCurrent = new Date(dtCurrent.getFullYear(),dtCurrent.getMonth(),dtCurrent.getDate(),0,0,0);
+
+                           var str="";
+                           if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Approved.GetHashCode())')
+                           {
+                               if(dtCurrent >= dtPickup && dtCurrent <= dtReturn)
+                               {
+                                   str = '<label class = "status info">' + '@SystemEnumList.BorrowBookStatus.Borrowed.GetDescription()' + '</label>';
+                               }
+                               if(dtCurrent > dtReturn)
+                               {
+                                   str = '<label class = "status error">' + '@SystemEnumList.BorrowBookStatus.OverDue.GetDescription()' + '</label>';
+                               }
+                               if(dtCurrent < dtPickup)
+                               {
+                                   str = '<label class = "status success">' + '@SystemEnumList.BorrowBookStatus.Approved.GetDescription()' + '</label>';
+                               }
+                           }
+                           if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Pending.GetHashCode())'){
+                               str = '<label class = "status warning">' + '@SystemEnumList.BorrowBookStatus.Pending.GetDescription()' + '</label>';
+                           }
+                           if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Returned.GetHashCode())'){
+                               str = '<label class = "status success ">' + '@SystemEnumList.BorrowBookStatus.Returned.GetDescription()' + '</label>';
+                           }
+                           if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Cancel.GetHashCode())'){
+                               str = '<label class = "status error ">' + '@SystemEnumList.BorrowBookStatus.Cancel.GetDescription()' + '</label>';
+                           }
+                           return str;
+                       },
+                   },
+                    {
+                        "title": "&nbsp;", "data": "StatusId", width: "12%",
+                        "class": "text-center action-icons",
+                        "orderable": false,
+                        "render": function (data, type, row) {
+                            var dtPickup = new Date(DataTableCustomDateTimeFormat(row["PickUpDate"], '@SmartLibrary.Infrastructure.ProjectConfiguration.DateFormat.ToUpper()'));
+                            var dtReturn= new Date(DataTableCustomDateTimeFormat(row["ReturnDate"], '@SmartLibrary.Infrastructure.ProjectConfiguration.DateFormat.ToUpper()'));
+                            var dtCurrent =  new Date();
+                            dtCurrent = new Date(dtCurrent.getFullYear(),dtCurrent.getMonth(),dtCurrent.getDate(),0,0,0);
+                            var bookperiod = "'" + row["BookPeriod"].toString() + "'";
+                            var str= '';
+                            if ((data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Pending.GetHashCode())' || data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Cancel.GetHashCode())') && dtCurrent > dtReturn)
+                            {
+                                //todo When Status is Pending and the return date has been passed
+                            }
+                            else if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Pending.GetHashCode())' && dtCurrent <= dtReturn )
+                            {
+                                str= '<a  href="javascript:void(0);" title="@SmartLibrary.Resources.Account.Approve" onclick="ApproveRejectBorrowedBook('+row["ID"]+',@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Approved.GetHashCode()),'+row["BookId"]+','+bookperiod+')"  ><img src="@Url.Content("~/Images/approve-icon.svg")" /></a>';
+                                str= str +'&nbsp;&nbsp;'+'<a href="javascript:void(0);" title="@SmartLibrary.Resources.Account.Reject" onclick="ApproveRejectBorrowedBook('+row["ID"]+',@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Cancel.GetHashCode()),'+row["BookId"]+','+bookperiod+')"><img src="@Url.Content("~/Images/close-black-sm.svg")" /></a>';
+                            }
+                            else if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Cancel.GetHashCode())' && dtCurrent <= dtReturn)
+                            {
+                                str= '<a href="javascript:void(0);" title="@SmartLibrary.Resources.Account.Approve" onclick="ApproveRejectBorrowedBook('+row["ID"]+',@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Approved.GetHashCode()),'+row["BookId"]+','+bookperiod+')" ><img src="@Url.Content("~/Images/approve-icon.svg")" /></a>';
+                                str= str +'&nbsp;&nbsp;'+'<a href="javascript:void(0);" title="@SmartLibrary.Resources.Account.Pending" onclick="ApproveRejectBorrowedBook('+row["ID"]+',@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Pending.GetHashCode()),'+row["BookId"]+','+bookperiod+')"><img src="@Url.Content("~/Images/pending.svg")" /></a>';
+                            }
+                            else if(dtCurrent > dtReturn && (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Approved.GetHashCode())'))
+                            {
+                                str= '<a href="javascript:void(0);" title="@SmartLibrary.Resources.Account.SendReminder" onclick="OverDueMail('+row["ID"]+')"><img src="@Url.Content("~/Images/send-reminder.svg")" /></a>';
+                                str+= '<a href="javascript:void(0);" title="@SmartLibrary.Resources.Account.BookReturn" onclick="ReturnBookModalLoad('+row["ID"]+')"><img src="@Url.Content("~/Images/return-book.svg")" /></a>';
+                            }
+                            else if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Approved.GetHashCode())')
+                            {
+                                str= '<a href="javascript:void(0);"  title="@SmartLibrary.Resources.Account.Pending" onclick="ApproveRejectBorrowedBook('+row["ID"]+',@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Pending.GetHashCode()),'+row["BookId"]+','+bookperiod+')"><img src="@Url.Content("~/Images/pending.svg")" /></a>';
+                                str= str +'&nbsp;&nbsp;'+'<a href="javascript:void(0);" title="@SmartLibrary.Resources.Account.Reject"  onclick="ApproveRejectBorrowedBook('+row["ID"]+',@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Cancel.GetHashCode()),'+row["BookId"]+','+bookperiod+')"><img src="@Url.Content("~/Images/close-black-sm.svg")" /></a>';
+                                if(dtCurrent >= dtPickup && dtCurrent <=dtReturn)
+                                {
+                                    str+= '<a href="javascript:void(0);" title="@SmartLibrary.Resources.Account.BookReturn"  onclick="ReturnBookModalLoad('+row["ID"]+')"><img src="@Url.Content("~/Images/return-book.svg")" /></a>';
+                                }
+                            }
+                            if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Returned.GetHashCode())' && row["ReturnNotes"] != null && row["ReturnNotes"] != "" ){
+                                str += '<a href="javascript:void(0);" onclick="ViewDetails(this)" title="@SmartLibrary.Resources.General.View"><img src="@Url.Content("~/Images/view.svg")"/></a>';
+                                str += '<div class="comment-div" style="display:none;">' + row["ReturnNotes"] + '</div>';
+                            }
+                            return str;
+                        }
+                    },
+                ],
+                "drawCallback": function (settings, json) {
+                    RemoveGridBottom("tblBorrowDetails");
+                    eqHeightAbs();
+                }
+            });
+        }
+
+    </script>
+}
+
+<div class="modal fade cus-modal cus-user-modal" id="view-notes" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="modal-close" data-dismiss="modal"><img src="@Url.Content("~/images/modal-close.svg")" alt="Close" /></a>
+                <h4 class="modal-title">@SmartLibrary.Resources.Books.Return @SmartLibrary.Resources.General.Notes</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row small-gutter">
+                    <div class="col-md-12 col-sm-12">
+                        <div class="form-group floating big-input has-icon">
+                            <textarea id="returnNotes" class="form-control" rows="8" disabled></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

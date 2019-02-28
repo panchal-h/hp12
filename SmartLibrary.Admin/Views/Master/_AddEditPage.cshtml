@@ -1,0 +1,80 @@
+﻿@model SmartLibrary.Models.Page
+<div class="modal fade cus-modal" id="Pages-modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="modal-close" data-dismiss="modal"><img src="@Url.Content("~/images/modal-close.svg")" alt="Close" /></a>
+                <img src="@Url.Content("~/images/page-color.svg")" alt="@SmartLibrary.Resources.General.Page" class="book-stack modal-intro-image" />
+                <h4 class="modal-title">
+                    @if (Model.Id > 0)
+                    {@SmartLibrary.Resources.General.Edit }
+                    else
+                    {@SmartLibrary.Resources.General.AddNew }
+                    @SmartLibrary.Resources.General.Page
+                </h4>
+            </div>
+            @using (Html.SmartLibSecureForm(SmartLibrary.Admin.Pages.Actions.AddEditPages, SmartLibrary.Admin.Pages.Controllers.Master, new { id = "formManagePages" }))
+            {
+                @Html.HiddenFor(x => x.Id)
+                <div class="modal-body">
+                    <div class="form-group floating big-input">
+                        <label class="control-label">@SmartLibrary.Resources.General.Name</label>
+                        @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group floating big-input">
+                        <label class="control-label">@SmartLibrary.Resources.General.ActionName</label>
+                        @Html.TextBoxFor(x => x.ActionName, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group big-input">
+                        <label class="containercheckbox">
+                            <label class="control-label">@SmartLibrary.Resources.General.Active</label>
+                            @Html.CheckBox(SmartLibrary.Resources.General.Active, Model.Active.HasValue ? Model.Active.Value : false)
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>  
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-block btn-lg" onclick="SaveData()">
+                        @if (Model.Id > 0)
+                        { <span>@SmartLibrary.Resources.General.Update @SmartLibrary.Resources.General.Page</span>}
+                        else
+                        {<span>@SmartLibrary.Resources.General.Add @SmartLibrary.Resources.General.Page</span> }
+                    </button>
+                </div> }
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        if ($("#Id").val() > 0) {
+            $(".big-input:has(input[type=text])").addClass("has-value");
+        }
+        $('#formManagePages').on('keypress', function (e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+                return SaveData();
+            }
+        });
+    });
+    function SaveData() {
+        var $form = $('#formManagePages');
+        if (!$("#formManagePages").valid()) return;
+        else {
+            $.ajax({
+                type: "Post",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.AddEditPages, SmartLibrary.Admin.Pages.Controllers.Master)",
+                traditional: true,
+                data: $form.serialize(),                
+                beforeSend: function (xhr) { AddRequestHeader(xhr, $form); },
+                success: function (response) {
+                    if (response.status == statusConstant.success) {
+                        $('#Pages-modal').modal('hide');
+                        $("#tblDisplayPages").DataTable().ajax.reload(null, false);
+                    }
+                    ShowMessage(response.status, response.message, response.title, null, null)
+
+                }
+            });
+        }
+    }
+</script>

@@ -1,0 +1,178 @@
+﻿@using SmartLibrary.Infrastructure;
+@{
+    ViewBag.Title = SmartLibrary.Resources.General.BookProfile;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="wrapper">
+    <div class="card-container">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title"><b>@SmartLibrary.Resources.General.BookProfile</b></h2>
+                <ul class="filter-panel no-padding clearfix">
+                    <li class="searchbox">
+                        <input type="text" class="form-control" placeholder="@SmartLibrary.Resources.General.Search" id="searchText" />
+                        <img src="@Url.Content("~/Images/search.svg")" alt="@SmartLibrary.Resources.General.Search" id="SearchBtnForList" />
+                    </li>
+                </ul>
+            </div>
+            @using (Html.SmartLibSecureForm(SmartLibrary.Site.Pages.Actions.BookProfile, SmartLibrary.Site.Pages.Controllers.Book, new { id = "formBookHistory" }))
+            {
+                <div class="table-responsive custom custom-datatable">
+                    <table class="list-table" id="tblDisplayHistory"></table>
+                </div>
+
+            }
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+
+        var ID = '@ViewData["ID"]';
+        var historyType;
+        $(document).ready(function () {
+            ActiveMenu("#liBookProfile");
+            BindTable();
+        });
+
+        function bindSearch() {
+            var param = {};
+            param["searchdata"] = $('#searchText').val();
+            param["historyType"] = historyType;
+            return param;
+        }
+
+        $("#searchText").keydown(function (e) {
+            if (e.keyCode == 13) {
+                if (!isValidSearchCriteria('searchText')) { return false; }
+                BindTable();
+            }
+        });
+
+        function BindTable() {
+                $("#btnBookHistory").addClass("active");
+                $("#btnSpaceHistory").removeClass("active");
+                BindBookTable();
+        }
+
+        function BindBookTable() {
+
+            if ($.fn.DataTable.isDataTable("#tblDisplayHistory")) {
+                $('#tblDisplayHistory').dataTable().fnDestroy();
+                $('#tblDisplayHistory').html('<table id="tblDisplayHistory" class="table table-hover table-bordered"></table>');
+            }
+
+            table = $("#tblDisplayHistory").DataTable({
+                "lengthChange": true,
+                "processing": true,
+                "oLanguage": {
+                    sProcessing: "<img src='../Images/Loader-Spinner.svg' class='datatable-loadingbar'>"
+                },
+                "serverSide": true,
+                "orderMulti": false,
+                "pageLength": @SmartLibrary.Infrastructure.ProjectConfiguration.PageSize,
+                'autoWidth': false,
+                'searching': false,
+                "order": [[4, 'desc']],
+                "ajax": {
+                    url: '@Url.Action(SmartLibrary.Site.Pages.Actions.BookProfile, SmartLibrary.Site.Pages.Controllers.Book)',
+                    type: "POST",
+                    data: bindSearch()
+                },
+                "columns": [
+                    {
+                        "title": "@SmartLibrary.Resources.General.Book", "data": "BookName", width: "35%",
+                        "render": function (data, type, row) {
+                            var str = '<span>' + data + '</span>';
+                            return str;
+                        }
+                    },
+                     {
+                         "title": "@SmartLibrary.Resources.Books.SKUCode", "data": "SKUCode", width: "20%",
+                         "class": "text-center",
+                         "render": function (data, type, row) {
+                             if(data != null && data != "")
+                             {
+                                 var str = '<span>' + data + '</span>';
+                                 return str;
+                             }
+                             else{
+                                 var str = '<span>@SmartLibrary.Resources.General.NotAssign</span>';
+                                 return str;
+                             }
+                         }
+                     },
+                    {
+                        "title": "@SmartLibrary.Resources.General.PickUpDate", "data": "PickUpDate", width: "15%",
+                        "class": "text-center",
+                        "orderable": false,
+                        "render": function (data, type, row) {
+                            var str= DataTableCustomDateTimeFormat(data, '@SmartLibrary.Infrastructure.ProjectConfiguration.DateFormat.ToUpper()');
+                            str = '<span>' + str + '</span>';
+                            return str;
+                        }
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.ReturnDate", "data": "ReturnDate", width: "15%",
+                        "orderable": false,
+                        "class": "text-center",
+                        "render": function (data, type, row) {
+                            var str= DataTableCustomDateTimeFormat(data, '@SmartLibrary.Infrastructure.ProjectConfiguration.DateFormat.ToUpper()');
+                            str = '<span>' + str + '</span>';
+                            return str;
+                        }
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.CreatedDate", "data": "CreatedDate",
+                        "class": "hidden",
+                        "render": function (data, type, row) {
+                            return '<span>' + DataTableCustomDateTimeFormat(data, '@ProjectConfiguration.DateFormat.ToUpper()') + '</span>' ;
+                        }
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.Status", "data": "StatusId", width: "15%", "orderable": false,
+                        "class": "text-center status_padding",
+                        "render": function (data, type, row) {
+                            var dtPickup = new Date(DataTableCustomDateTimeFormat(row["PickUpDate"], '@SmartLibrary.Infrastructure.ProjectConfiguration.DateFormat.ToUpper()'));
+                            var dtReturn= new Date(DataTableCustomDateTimeFormat(row["ReturnDate"], '@SmartLibrary.Infrastructure.ProjectConfiguration.DateFormat.ToUpper()'));
+                            var dtCurrent =  new Date();
+                            dtCurrent = new Date(dtCurrent.getFullYear(),dtCurrent.getMonth(),dtCurrent.getDate(),0,0,0);
+                            var str="";
+                            if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Approved.GetHashCode())')
+                            {
+                                if(dtCurrent >= dtPickup && dtCurrent <=dtReturn)
+                                {
+                                    str = '<label class = "status info">' + '@SystemEnumList.BorrowBookStatus.Borrowed.GetDescription()' + '</label>';
+                                }
+                                if(dtCurrent > dtReturn)
+                                {
+                                    str = '<label class = "status error">' + '@SystemEnumList.BorrowBookStatus.OverDue.GetDescription()' + '</label>';
+                                }
+                                if(dtCurrent < dtPickup)
+                                {
+                                    str = '<label class = "status success">' + '@SystemEnumList.BorrowBookStatus.Approved.GetDescription()' + '</label>';
+                                }
+                            }
+                            if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Pending.GetHashCode())'){
+                                str = '<label class = "status warning">' + '@SystemEnumList.BorrowBookStatus.Pending.GetDescription()' + '</label>';
+                            }
+                            if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Returned.GetHashCode())'){
+                                str = '<label class = "status success ">' + '@SystemEnumList.BorrowBookStatus.Returned.GetDescription()' + '</label>';
+                            }
+                            if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Cancel.GetHashCode())'){
+                                str = '<label class = "status error ">' + '@SystemEnumList.BorrowBookStatus.Cancel.GetDescription()' + '</label>';
+                            }
+                            return str;
+                        },
+                    },
+                ],
+                "drawCallback": function (settings, json) {
+                    RemoveGridBottom("tblDisplayHistory");
+                }
+            });
+        }
+
+    </script>
+}

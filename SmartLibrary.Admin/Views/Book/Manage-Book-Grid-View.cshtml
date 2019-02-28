@@ -1,0 +1,304 @@
+﻿@model IEnumerable<SmartLibrary.Models.Book>
+@{
+    ViewBag.Title = SmartLibrary.Resources.General.GridView;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    PageAccessRight currentPageAccessRight = (PageAccessRight)ViewData["CurrentPageAccessRight"];
+}
+<div class="wrapper">
+    <div class="card-container">
+        <div class="card normal">
+            <div class="card-header">
+                <span>
+                    <img src="@Url.Content("~/Images/books-Title.svg")" alt="@SmartLibrary.Resources.General.Book" class="card-header-image"> &nbsp;
+                </span>
+                <h2 class="card-title card-title-img">
+                    @SmartLibrary.Resources.General.Books
+                </h2>
+                <ul class="filter-panel">
+                    <li class="dropdown-wrapper">
+                        <div class="btn-group bootstrap-select show-tick filter-select">
+                            @Html.DropDownList("genre", SmartLibrary.Services.CommonBL.GetListForDropdown<SmartLibrary.Models.BookGenre>(), new { @class = "selectpickergenre filter-select", @multiple = "multiple" })
+                        </div>
+                    </li>
+                    <li class="searchbox">
+                        <input class="form-control" placeholder="@SmartLibrary.Resources.General.Search" type="text" id="searchText">
+                        <img src="@Url.Content("~/images/search.svg")" alt="@SmartLibrary.Resources.General.Search" id="SearchBtn">
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" class="btn btn-primary btn-icon btn-raised resetIcon" title="@SmartLibrary.Resources.General.Reset" onclick="resetSearch()">
+                            <img src="@Url.Content("~/Images/close-white.svg")" >
+                        </a>
+                    </li>
+                    <li><a href="@Url.Action(SmartLibrary.Admin.Pages.Actions.BookGrid, SmartLibrary.Admin.Pages.Controllers.Book)" class="btn btn-default btn-icon disabled" title="@SmartLibrary.Resources.General.GridView" style="background-color: #006557"><img src="@Url.Content("~/images/grid-view-selected.svg")" alt="@SmartLibrary.Resources.General.GridView" ></a></li>
+                    <li><a href="@Url.Action(SmartLibrary.Admin.Pages.Actions.BookList, SmartLibrary.Admin.Pages.Controllers.Book)" class="btn btn-default btn-icon btn-inactive" title="@SmartLibrary.Resources.General.ListView"><img src="@Url.Content("~/images/list-view.svg")" alt="@SmartLibrary.Resources.General.ListView"></a></li>
+                    <li><a href="#" class="btn btn-default btn-icon" title="@SmartLibrary.Resources.General.Download" onclick="Download()"><img src="@Url.Content("~/images/download.svg")" alt="@SmartLibrary.Resources.General.Download"></a></li>
+                    <li>
+                        <a href="#" class="btn btn-default btn-icon" onclick="BindActiveInActive()" title="@SmartLibrary.Resources.General.ShowHide">
+                            <img src="@Url.Content("~/Images/eye.svg")" alt="@SmartLibrary.Resources.General.ActiveInActive" id="imgActiveInactive">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" class="btn btn-primary btn-icon btn-raised" title="@SmartLibrary.Resources.General.Add @SmartLibrary.Resources.General.Book" onclick="LoadModal(0)">
+                            <img src="@Url.Content("~/Images/plus-white.svg")" alt="@SmartLibrary.Resources.General.Add" class="small">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <hr>
+            <div id="noRecord">
+                <center style="padding-top:30px;font-weight:bold">
+                    @SmartLibrary.Resources.Messages.NoRecordFound
+                </center>
+            </div>
+
+            @using (Html.SmartLibSecureForm(SmartLibrary.Admin.Pages.Actions.BookGrid, SmartLibrary.Admin.Pages.Controllers.Book, new { id = "GetBookGrid" }))
+            {
+                <div class="book-grid">
+                    <div class="row" id="bookGrid">
+                        @Html.Partial(SmartLibrary.Admin.Pages.PartialViews.BookGrid)
+                    </div>
+                </div>
+                <div id="bookloader" class="text-center" style="visibility:hidden">
+                    <img src="~/Images/Loader-square.gif" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<div id="divModal"></div>
+<div id="bookDetailSideBar">
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.selectpickergenre,.selectpickerLocation').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue){
+                FilterBook();
+            });
+            $(".selectpickergenre").selectpicker({'noneSelectedText' : '@SmartLibrary.Resources.General.SelectGenre','liveSearch':true});
+            $(".selectpickerLocation").selectpicker({'noneSelectedText' : '@SmartLibrary.Resources.General.SelectLocation','liveSearch':true});
+            ActiveMenu("#liBook");
+            CheckforNorecord();
+            ChangeTooltip();
+        });
+
+        function CheckforNorecord()
+        {
+            if ($('.book-box','#bookGrid').length == 0)
+            {
+                $('#noRecord').show();
+            }
+            else
+            {
+                $('#noRecord').hide();
+            }
+        }
+
+        function resetSearch(){
+            $(".selectpickergenre").val('default');
+            $(".selectpickergenre").selectpicker("refresh");
+            $("#searchText").val('');
+            $('#imgActiveInactive').attr("src","../Images/eye.svg");
+            FilterBook();
+        }
+
+        function GetActiveInActiveValue()
+        {
+            var active = 1;
+            var src=$('#imgActiveInactive').attr('src');
+            src=src.substring(src.lastIndexOf('/')+1);
+            if(src == "eye.svg"){
+                active = 1;
+            }
+            else
+            {
+                active = 0;
+            }
+            return  active;
+        }
+
+        function ChangeTooltip(){
+            $("img.imgEye").each(function () {
+
+                var src=$(this).attr("src");
+                src=src.substring(src.lastIndexOf('/')+1);
+
+                if(src == "eye.svg"){
+                    $(this).parent().attr("title","@SmartLibrary.Resources.General.Show");
+                }
+                else
+                {
+                    $(this).parent().attr("title","@SmartLibrary.Resources.General.Hide");
+                }
+            });
+        }
+        function BindActiveInActive()
+        {
+            var src=$('#imgActiveInactive').attr('src');
+            src=src.substring(src.lastIndexOf('/')+1);
+            if(src == "eye.svg"){
+                $('#imgActiveInactive').attr("src","../Images/eye-banned.svg");
+            }
+            else
+            {
+                $('#imgActiveInactive').attr("src","../Images/eye.svg");
+            }
+
+            FilterBook();
+        }
+
+        function BindSearch(pageNo) {
+            var genre, sector, location;
+            genre = $('#genre').val();
+            if (genre != null) {
+                genre = genre.toString();
+            }
+            sector = $('#sector').val();
+            if (sector != null) {
+                sector = sector.toString();
+            }
+            location = $('#location').val();
+            if (location != null) {
+                location = location.toString();
+            }
+            var param = {};
+            param["SearchText"] = $('#searchText').val();
+            param["genre"] = genre;
+            param["sector"] = sector;
+            param["location"] =location;
+            param["CurrentPage"] = pageNo;
+            param["SortExpression"] = 'ImagePath';
+            param["SortDirection"] = '';
+            param["PageSize"] = @ProjectConfiguration.PageSizeGrid;
+            param["active"] = GetActiveInActiveValue();
+            return param;
+        }
+
+        $("#searchText").keydown(function (e) {
+            if (e.keyCode == 13) {
+                if (!isValidSearchCriteria('searchText')) { return false; }
+                FilterBook();
+            }
+        });
+
+        $('#SearchBtn').click(function(){
+            if (!isValidSearchCriteria('searchText')) { return false; }
+            FilterBook();
+        })
+
+        function FilterBook()
+        {
+            currentPage = 1;
+            $.ajax({
+                type: "Post",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.BookGrid, SmartLibrary.Admin.Pages.Controllers.Book)",
+                traditional: true,
+                data: BindSearch(currentPage),
+                beforeSend: function (xhr) { AddRequestHeader(xhr, $('#GetBookGrid')); },
+                success: function (response) {
+                    $('#bookGrid').html(response);
+                    CheckforNorecord();
+                    ChangeTooltip();
+                }
+            });
+        }
+
+        var currentPage = 1;
+        var totalPage = @ViewBag.TotalPage;
+        var isScrollLoading = false;
+        $(window).scroll(function () {
+            if (!isScrollLoading && (Math.abs($(window).scrollTop() - $(document).height() + $(window).height())) < 100)
+            {
+                currentPage++;
+                if (currentPage > totalPage)
+                { return; }
+                CurrentPage = currentPage > 1 ? currentPage : '1';
+                //loader show
+                $("#bookloader").css("visibility","visible")
+                var model = {
+                    SearchText: $("#searchText").val(),
+                    SortExpression: 'BookName',
+                    SortDirection: 'Ascending',
+                    PageSize: @ProjectConfiguration.PageSizeGrid,
+                };
+                isScrollLoading = true;
+                $.ajax({
+                    type: "Post",
+                    url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.BookGrid, SmartLibrary.Admin.Pages.Controllers.Book)",
+                    traditional: true,
+                    data: BindSearch(CurrentPage),
+                    beforeSend: function (xhr) { AddRequestHeader(xhr, $('#GetBookGrid')); },
+                    success: function (response) {
+                        //loader hide
+                        $("#bookloader").css("visibility","hidden")
+                        $('#bookGrid').append(response);
+                    },
+                    complete: function() {
+                        setTimeout(function(){ isScrollLoading = false; }, 100);
+                    }
+                });
+            }
+        });
+
+        function LoadModal(id) {
+            $.ajax({
+                type: "Get",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.AddEditBook, SmartLibrary.Admin.Pages.Controllers.Book)",
+                traditional: true,
+                data: { id: id },
+                success: function (response) {
+                    $("#divModal").html(response);
+                    $("#book-modal").modal('show');
+                    $(".drpSelect").addClass("has-value-fixed");
+                    EnableClientSideValidation($('#formAddEditBook'));
+
+                }
+            });
+        }
+
+        function BindTable(id)
+        {
+            currentPage = 1;
+            $.ajax({
+                type: "Post",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.BookGrid, SmartLibrary.Admin.Pages.Controllers.Book)",
+                traditional: true,
+                data: { Id: id },
+                beforeSend: function (xhr) { AddRequestHeader(xhr, $('#GetBookGrid')); },
+                success: function (response) {
+                    // Only replace html if id matches.
+                    if ($(response).attr('id') == id) {
+                        $('#' + id).html($(response).html());
+                    }
+                    //if new book added then update book list
+                    if(id == 0)
+                    {
+                        FilterBook();
+                    }
+                }
+            });
+        }
+        function Download() {
+            var genre="", sector="", booklocation="";
+            if ( $('#genre').val() != null &&$('#genre').val() != undefined) {
+                genre = $('#genre').val().toString();
+            }
+
+            if ( $('#sector').val() != null &&$('#sector').val() != undefined) {
+                sector = $('#sector').val().toString();
+            }
+
+            if ( $('#location').val() != null &&$('#location').val() != undefined) {
+                booklocation = $('#location').val().toString();
+            }
+            var searchdata="";
+            if( $('#searchText').val()!=undefined){
+                searchdata= $('#searchText').val();
+            }
+            location.href = '@Url.Action(SmartLibrary.Admin.Pages.Actions.BookExportToExcel, SmartLibrary.Admin.Pages.Controllers.Book)?genre=' + genre + '&sector=' +sector + '&location=' + booklocation + '&searchData=' + searchdata ;
+        }
+
+
+    </script>
+}
+

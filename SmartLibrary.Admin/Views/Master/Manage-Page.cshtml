@@ -1,0 +1,200 @@
+﻿@using SmartLibrary.Infrastructure;
+@model IEnumerable<SmartLibrary.Models.Page>
+@{
+    ViewBag.Title = SmartLibrary.Resources.General.Page;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    PageAccessRight currentPageAccessRight = (PageAccessRight)ViewData["CurrentPageAccessRight"];
+}
+<div class="wrapper">
+    <div class="card-container">
+        <div class="card">
+            <div class="card-header">
+
+                <span>
+                    <img src="@Url.Content("~/Images/chart-Title.svg")" alt="@SmartLibrary.Resources.General.Page" class="card-header-image"> &nbsp;
+                </span>
+                <h2 class="card-title card-title-img"><b>@SmartLibrary.Resources.General.Page</b></h2>
+                <ul class="filter-panel">
+                    <li class="searchbox">
+                        <input type="text" class="form-control" placeholder="@SmartLibrary.Resources.General.Search" id="searchText" />
+                        <img src="@Url.Content("~/Images/search.svg")" alt="@SmartLibrary.Resources.General.Search" id="SearchBtnForList" />
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" class="btn btn-primary btn-icon btn-raised resetIcon" title="@SmartLibrary.Resources.General.Reset" onclick="resetSearch()">
+                            <img src="@Url.Content("~/Images/close-white.svg")" >
+                        </a>
+                    </li>
+
+                    <li class="@(currentPageAccessRight.AddUpdate ? "visible-item":"hidden-item")"><a onclick="LoadModal(0)" class="btn btn-primary btn-icon btn-raised" title="@SmartLibrary.Resources.General.Add @SmartLibrary.Resources.General.Page"><img src="@Url.Content("~/Images/plus-white.svg")" alt="Add" class="small" /></a></li>
+                </ul>
+            </div>
+            @using (Html.SmartLibSecureForm(SmartLibrary.Admin.Pages.Actions.Pages, SmartLibrary.Admin.Pages.Controllers.Master, new { id = "formPages" }))
+            {
+                <div class="table-responsive custom custom-datatable">
+                    <table class="list-table" id="tblDisplayPages"></table>
+                </div>
+
+            }
+        </div>
+    </div>
+</div>
+<div id="divModal"></div>
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var activemenus = ["#liPage", "#liMaster"];
+            ActiveMenu(activemenus);
+            BindTable();
+        });
+        function bindSearch() {
+            var param = {};
+            param["searchdata"] = $('#searchText').val();
+            return param;
+        }
+        $("#searchText").keydown(function (e) {
+            if (e.keyCode == 13) {
+                if (!isValidSearchCriteria('searchText')) { return false; }
+                BindTable();
+            }
+        });
+        function resetSearch(){
+            $("#searchText").val('');
+            BindTable();
+        }
+        function BindTable() {
+
+            if ($.fn.DataTable.isDataTable("#tblDisplayPages")) {
+                $('#tblDisplayPages').dataTable().fnDestroy();
+                $('#tblDisplayPages').html('<table id="tblDisplayPages" class="table table-hover table-bordered"></table>');
+            }
+
+            table = $("#tblDisplayPages").DataTable({
+                "lengthChange": true,
+                "processing": true,
+                "oLanguage": {
+                    sProcessing: "<img src='../Images/Loader-Spinner.svg' class='datatable-loadingbar'>"
+                },
+                "serverSide": true,
+                "orderMulti": false,
+                "pageLength": @SmartLibrary.Infrastructure.ProjectConfiguration.PageSize,
+                'autoWidth': false,
+                'searching': false,
+                "ajax": {
+                    url: '@Url.Action(SmartLibrary.Admin.Pages.Actions.Pages, SmartLibrary.Admin.Pages.Controllers.Master)',
+                    type: "POST",
+                    data: bindSearch()
+                },
+                "columns": [
+                    {
+                        "title": "@SmartLibrary.Resources.General.Name", "data": "Name", width: "30%",
+                        "render": function (data, type, row) {
+                            var str = '<span>' + data + '</span>';
+                            return str;
+                        }
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.ActionName", "data": "ActionName", width: "30%",
+                        "render": function (data, type, row) {
+                            var str = '<span>' + data + '</span>';
+                            return str;
+                        }
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.CreatedDate", "data": "CreatedDate", width: "17%",
+                        "render": function (data, type, row) {
+                            var str= DataTableCustomDateTimeFormat(data, '@SmartLibrary.Infrastructure.ProjectConfiguration.DateFormat.ToUpper()');
+                            str = '<span>' + str + '</span>';
+                            return str;
+                        }
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.Actions",width: "17%",
+                        "data": "Active",
+                        "class": "action text-center action-icons",
+                        "render": function (data, type, row) {
+                            var appendstring = '';
+                            if (data == true)
+                                appendstring += '<a  class="@(currentPageAccessRight.AddUpdate ? "visible-item":"hidden-item")" href="#" onclick="ChangeStatus(' + row["Id"] + ',false)"  title="@SmartLibrary.Resources.General.Active"><img src="@Url.Content("~/Images/eye.svg")" alt="Eye" width="15" /></a>'
+                            else
+                                appendstring += '<a class="@(currentPageAccessRight.AddUpdate ? "visible-item":"hidden-item")" href="#"  onclick="ChangeStatus(' + row["Id"] + ',true)" title="@SmartLibrary.Resources.General.InActive"><img src="@Url.Content("~/Images/eye-banned.svg")" alt="Eye Banned" width="15" /></a>'
+                            appendstring += ' <a class="@(currentPageAccessRight.AddUpdate ? "visible-item":"hidden-item")" onclick="LoadModal(' + row["Id"] + ')" data-id="' + row["Id"] + '"href="#" title="@SmartLibrary.Resources.General.Edit"><img src="@Url.Content("~/Images/edit.svg")" alt="Edit" width="15" /></a>'
+                            appendstring += '<a class="Action delete @(currentPageAccessRight.Delete ? "visible-item":"hidden-item")" data-id="' + row["Id"] + '"href="#" title="@SmartLibrary.Resources.General.Delete" ><img src="@Url.Content("~/Images/delete.svg")" alt="delete" width="15" /></a>';
+                            return appendstring;
+                        },
+                        "orderable": false
+                    }
+                ],
+                "drawCallback": function (settings, json) {
+                    InitVariable();
+                    InitDeleteConfirmation();
+                    RemoveGridBottom("tblDisplayPages");
+                }
+            });
+        }
+        function InitVariable() {
+            confirmMessage = '@SmartLibrary.Resources.General.ConfirmDeleteMessage';
+            confirmTitle = '@SmartLibrary.Resources.General.ConfirmDelete';
+            confirmYes = '@SmartLibrary.Resources.General.Yes';
+            confirmNo = '@SmartLibrary.Resources.General.No';
+        }
+        function DeleteCallback(event) {
+            var $form = $('#formPages');
+            if (event != undefined) {
+                if (event.target != undefined) {
+                    var atag = event.target;
+                    if (event.target.tagName == "IMG") {
+                        atag = $(event.target).parent();
+                    }
+                    $.ajax({
+                        type: "POST",
+                        beforeSend: function (xhr) { AddRequestHeader(xhr, $form); },                       
+                        url: encodeURI('@Url.Action(SmartLibrary.Admin.Pages.Actions.DeletePages, SmartLibrary.Admin.Pages.Controllers.Master)'),
+                        data: { "id": $(atag).attr('data-id') },
+                        cache: false,
+                        dataType: 'json',
+                        success: function (response) {
+                            if (response.success) {
+                                BindTable();
+                                ShowMessage(response.status, response.message, response.title, null, null)
+                            }
+                            else {
+                                ShowMessage(response.status, response.message, response.title, null, null)
+                            }
+                        },
+                        error: function (jqXHR, exception, errMsg) {
+                            alert(errMsg);
+                        }
+                    });
+                }
+            }
+        }
+        function LoadModal(id) {
+            $.ajax({
+                type: "Get",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.AddEditPages, SmartLibrary.Admin.Pages.Controllers.Master)",
+                traditional: true,
+                data: { id: id },
+                success: function (response) {
+                    $("#divModal").html(response);
+                    $("#Pages-modal").modal('show');
+                    EnableClientSideValidation($('#formManagePages'));
+                }
+            });
+        }
+
+        function ChangeStatus(id, status) {
+            var $form = $('#formPages');
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.ChangePageStatus, SmartLibrary.Admin.Pages.Controllers.Master)",
+                beforeSend: function (xhr) { AddRequestHeader(xhr, $form); },
+                traditional: true,
+                data: { id: id, status: status },
+                success: function (response) {
+                    $("#tblDisplayPages").DataTable().ajax.reload(null, false);
+                }
+            });
+        }
+    </script>
+
+}

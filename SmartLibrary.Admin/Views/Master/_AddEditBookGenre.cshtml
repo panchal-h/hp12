@@ -1,0 +1,76 @@
+﻿@model SmartLibrary.Models.BookGenre
+<div class="modal fade cus-modal" id="book-genre-modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="modal-close" data-dismiss="modal"><img src="@Url.Content("~/images/modal-close.svg")" alt="Close" /></a>
+                <img src="@Url.Content("~/images/book-stack.svg")" alt="@SmartLibrary.Resources.General.BookGenre" class="book-stack modal-intro-image" />
+                <h4 class="modal-title">
+                    @if (Model.ID > 0)
+                    {@SmartLibrary.Resources.General.Edit }
+                    else
+                    {@SmartLibrary.Resources.General.AddNew }
+                    @SmartLibrary.Resources.General.BookGenre
+                </h4>
+            </div>
+            @using (Html.SmartLibSecureForm(SmartLibrary.Admin.Pages.Actions.AddEditBookGenre, SmartLibrary.Admin.Pages.Controllers.Master, new { id = "formManageBookGenre" }))
+            {
+                @Html.HiddenFor(x => x.ID)
+                <div class="modal-body">
+                    <div class="form-group floating big-input">
+                        <label class="control-label">@SmartLibrary.Resources.General.Name</label>
+                        @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group big-input">
+                        <label class="containercheckbox">
+                            <label class="control-label">@SmartLibrary.Resources.General.Active</label>
+                            @Html.CheckBox(SmartLibrary.Resources.General.Active, Model.Active.HasValue ? Model.Active.Value : false)
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>  
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-block btn-lg" onclick="SaveData()">
+                        @if (Model.ID > 0)
+                        {<span>@SmartLibrary.Resources.General.Update @SmartLibrary.Resources.General.BookGenre</span>}
+                        else
+                        {<span>@SmartLibrary.Resources.General.Add @SmartLibrary.Resources.General.BookGenre</span> }
+                    </button>
+                </div> }
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        if ($("#ID").val() > 0) {
+            $(".big-input:has(input[type=text])").addClass("has-value");
+        }
+        $('#formManageBookGenre').on('keypress', function (e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+                return SaveData();
+            }
+        });
+    });
+    function SaveData() {
+        var $form = $('#formManageBookGenre');
+        if (!$("#formManageBookGenre").valid()) return;
+        else {
+            $.ajax({
+                type: "Post",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.AddEditBookGenre, SmartLibrary.Admin.Pages.Controllers.Master)",
+                traditional: true,
+                data: $form.serialize(),
+                beforeSend: function (xhr) { xhr.setRequestHeader('__RequestVerificationToken', $('input[name="__RequestVerificationToken"]', $("#formManageBookGenre")).val()); },
+                success: function (response) {
+                    if (response.status == statusConstant.success) {
+                        $('#book-genre-modal').modal('hide');
+                        $("#tblDisplayBookGenre").DataTable().ajax.reload(null, false);
+                    }
+                    ShowMessage(response.status, response.message, response.title, null, null)
+                   
+                }
+            });
+        }
+    }
+</script>

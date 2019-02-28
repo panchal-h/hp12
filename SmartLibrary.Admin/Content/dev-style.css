@@ -1,0 +1,480 @@
+.list-table > thead > tr > th {
+    vertical-align: top;
+}
+
+.custom-datatable .dataTables_wrapper {
+    padding: 0;
+    padding-bottom: 15px;
+}
+
+    .custom-datatable .dataTables_wrapper .dataTables_info, .custom-datatable .dataTables_wrapper .dataTables_length, .custom-datatable .dataTables_wrapper .dataTables_paginate {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+.custom-datatable div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+}
+
+.custom-datatable .dataTables_wrapper .dataTables_paginate {
+    float: right;
+    margin-right: 15px;
+}
+
+.custom-datatable .dataTables_wrapper .dataTables_info {
+    padding: 0 15px;
+}
+
+.custom-datatable div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+    margin: 0;
+}
+
+.custom-datatable .dataTables_wrapper .dataTables_length .form-control {
+    height: 32px;
+    width: auto;
+}
+
+table.dataTable thead > tr > th.sorting_asc, table.dataTable thead > tr > th.sorting_desc, table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > td.sorting_asc, table.dataTable thead > tr > td.sorting_desc, table.dataTable thead > tr > td.sorting {
+    padding-right: 40px;
+}
+
+.custom-datatable table.dataTable thead .sorting_asc>span:after, .custom-datatable table.dataTable thead .sorting_desc>span:after, .custom-datatable table.dataTable thead .sorting>span:after {
+    content: "";
+    position: absolute;
+    height: 16px;
+    width: 16px;
+    background: url('../Images/sort-asc.svg') center no-repeat;
+    opacity: 0.8;
+    bottom: auto;
+    top: 2px;
+    right: 15px;
+}
+table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:after, table.dataTable thead .sorting_desc:after, table.dataTable thead .sorting_asc_disabled:after, table.dataTable thead .sorting_desc_disabled:after{display:none;}
+
+.custom-datatable table.dataTable thead .sorting:after{display:none;}
+.custom-datatable table.dataTable thead .sorting>span,.custom-datatable table.dataTable thead .sorting_desc>span,.custom-datatable table.dataTable thead .sorting_asc>span{padding-right:15px;position:relative;}
+.custom-datatable table.dataTable thead .sorting>span:after,.custom-datatable table.dataTable thead .sorting_desc>span:after,.custom-datatable table.dataTable thead .sorting_asc>span:after {
+    content: "";
+    position: absolute;
+    height: 16px;
+    width: 16px;
+    background: url('../Images/sort-indicator.svg') center no-repeat;
+    opacity: 0.8;
+    top: 1px;
+    bottom: auto;
+    right:-30px;
+}
+.custom-datatable table.dataTable thead .sorting_desc>span:after {
+    background-image: url('../Images/sort-desc.svg');
+}
+.custom-datatable table.dataTable thead .sorting_asc>span:after {
+    background-image: url('../Images/sort-asc.svg');
+}
+
+.custom-datatable table.dataTable {
+    margin: 0 !important;
+}
+
+    .custom-datatable table.dataTable td.dataTables_empty,
+    .custom-datatable table.dataTable th.dataTables_empty {
+        text-align: center;
+    }
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+    .switch input {
+        display: none;
+    }
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+}
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+    }
+
+input[type="checkbox"]:checked + input[type="hidden"] + .slider,
+input[type="checkbox"]:checked + .slider {
+    background-color: #386FFF;
+}
+
+input[type="checkbox"]:focus + input[type="hidden"] + .slider,
+input[type="checkbox"]:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input[type="checkbox"]:checked + input[type="hidden"] + .slider:before,
+input[type="checkbox"]:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
+
+.form-group.big-input .control-label {
+    left: 26px;
+    font-weight: bold;
+    line-height: 18px;
+    transition: all 0.2s ease;
+    cursor: text;
+    z-index: 3;
+    color: #000;
+}
+
+.bs-linebreak {
+    height: 50px;
+}
+
+.list-table > thead > tr > th {
+    position: relative;
+}
+
+.modal-body .dropdown-menu > .active > a, .modal-body .dropdown-menu > .active > a:focus, .modal-body .dropdown-menu > .active > a:hover {
+    background-color: transparent !important;
+}
+
+.customMultiselect .dropdown-menu > .active > a, .customMultiselect .dropdown-menu > .active > a:focus, .customMultiselect .dropdown-menu > .active > a:hover {
+    background-color: transparent !important;
+    color: #000 !important;
+}
+
+.modal-body .form-group .bootstrap-select.form-control > .dropdown-menu {
+    padding: 0px !important;
+}
+
+.bs-searchbox input {
+    height: 40px !important;
+    padding: 12px 6px !important;
+}
+
+.verticalMiddle {
+    vertical-align: middle !important;
+}
+/*Merge From Style.css*/
+.custom-scroll .scroller-inner {
+    overflow: hidden;
+}
+
+.card-container .filter-panel {
+    padding: 0px;
+}
+
+.sidebar .middle-nav-outer {
+    overflow: hidden;
+}
+
+.form-group .bootstrap-select.form-control > .btn.input-validation-error, .form-group .bootstrap-select.form-control > .btn.input-validation-error:hover {
+    border-color: #EC3633 !important;
+    border-width: 1px !important;
+}
+
+.book-details .right {
+    border-left: 1px solid #f7f7f7 !important;
+}
+
+.list-table .action-icons {
+    white-space: nowrap;
+}
+
+.book-details .right {
+    padding: 48px !important;
+}
+
+.notification-panel .tab-content .tab-pane .custom-scroll {
+    position: absolute;
+    top: 106px;
+    left: 30px;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+}
+
+.custom-scroll .notification-list {
+    margin-right: 0;
+}
+
+.table-responsive #tblPages {
+    direction: ltr !important;
+}
+
+    .table-responsive #tblPages > table {
+        direction: ltr !important;
+    }
+
+.resetIcon {
+    background-color: #999 !important;
+}
+
+    .resetIcon:hover, .resetIcon:focus {
+        background-color: #6e6e6e !important;
+    }
+
+body {
+    background-color: #C3C3C3;
+}
+
+.list-table .interest {
+    color: #172343;
+    border-radius: 2px;
+    background: #f3f4f6;
+    min-width: 30px;
+    text-align: center;
+    line-height: 18px;
+    padding: 5px 10px;
+    display: inline-block;
+}
+
+.card-container .card-header.members {padding-bottom:30px}
+
+.card-container .card {
+    min-height: 768px;
+}
+
+.pickmeup .pmu-instance .pmu-selected:before {
+    background:#006557 !important;
+}
+
+
+@media(max-width:1439px) {
+    .activity-filter.all-activity .sub-navigation-wrapper {
+        right: 50px;
+        padding-right: 0;
+        border-right: 0;
+    }
+
+    .activity-filter.all-activity .card-title {
+        display: inline-block;
+        padding-bottom: 20px;
+    }
+
+    .activity-filter.all-activity .filter-panel .date-range-dropdown {
+        float: left;
+    }
+
+    .card-container .activity-filter.all-activity .filter-panel {
+        position: static;
+        float: none;
+        padding-left: 0;
+    }
+}
+
+@media(max-width:1199px) {
+    .custom-datatable .list-table > tbody > tr > td:first-child, .custom-datatable .list-table > thead > tr > th:first-child {
+        padding-left: 30px !important;
+    }
+}
+
+@media(max-width:991px) {
+    .custom-datatable {
+        text-align: center;
+    }
+
+        .custom-datatable .list-table {
+            text-align: left;
+        }
+
+        .custom-datatable .dataTables_wrapper .dataTables_paginate {
+            display: block;
+            float: none;
+            padding-top: 15px;
+            text-align: center;
+        }
+
+        .custom-datatable .dataTables_wrapper .dataTables_info {
+            padding-left: 0;
+        }
+
+    .activity-filter.all-activity .filter-panel > li {
+        float: left !important;
+    }
+}
+
+@media(max-width:767px) {
+    .notification-panel .tab-content .tab-pane .custom-scroll {
+        top: 82px;
+        left: 15px;
+    }
+
+    .bootstrap-select.btn-group .dropdown-menu li a {
+        word-break: break-all;
+    }
+
+    .activity-filter.all-activity .sub-navigation-wrapper {
+        display: block;
+    }
+
+    .card-container .card {
+        min-height: inherit;
+    }
+}
+
+@media (min-width: 1366px) {
+    .activity-filter .sub-navigation-wrapper {
+        right: 770px;
+    }
+
+    #arabic .activity-filter .sub-navigation-wrapper {
+        left: 570px;
+    }
+}
+
+@media (min-width: 1200px) and (max-width: 1600px) {
+    .book-grid .status {
+        float: left;
+        margin-left: 0;
+        padding: 5px;
+        width: 100%;
+    }
+
+    .book-grid .interest {
+        width: 100%;
+        margin-top: 5px;
+        margin-right: 0;
+    }
+
+    .book-grid .book-box .upper {
+        height: 300px;
+        margin-bottom: 2px;
+        padding: 45px 12px;
+    }
+}
+
+#arabic .custom-datatable table.dataTable thead .sorting_asc:after, #arabic .custom-datatable table.dataTable thead .sorting_desc:after, #arabic .custom-datatable table.dataTable thead .sorting:after {
+    right: auto;
+    left: 15px;
+}
+
+#arabic table.dataTable thead > tr > th.sorting_asc, #arabic table.dataTable thead > tr > th.sorting_desc, #arabic table.dataTable thead > tr > th.sorting, #arabic table.dataTable thead > tr > td.sorting_asc, #arabic table.dataTable thead > tr > td.sorting_desc, #arabic table.dataTable thead > tr > td.sorting {
+    padding-right: 10px;
+    padding-left: 40px;
+}
+
+    #arabic table.dataTable thead > tr > th.sorting_asc:first-child, #arabic table.dataTable thead > tr > th.sorting_desc:first-child, #arabic table.dataTable thead > tr > th.sorting:first-child, #arabic table.dataTable thead > tr > td.sorting_asc:first-child, #arabic table.dataTable thead > tr > td.sorting_desc:first-child, #arabic table.dataTable thead > tr > td.sorting:first-child {
+        padding-right: 50px;
+    }
+
+#arabic .custom-scroll .notification-list {
+    margin-left: 0;
+}
+
+#arabic .notification-panel .tab-content .tab-pane .custom-scroll {
+    right: 30px;
+    left: auto;
+}
+#arabic .custom-datatable table.dataTable thead .sorting>span:after, #arabic .custom-datatable table.dataTable thead .sorting_desc>span:after, #arabic .custom-datatable table.dataTable thead .sorting_asc>span:after{
+    right:auto;
+    left:-30px;
+}
+#arabic .custom-datatable table.dataTable thead .sorting > span, #arabic .custom-datatable table.dataTable thead .sorting_desc > span, #arabic .custom-datatable table.dataTable thead .sorting_asc > span {
+    padding-right: 0;
+    padding-left: 15px;
+}
+
+@media(max-width:1439px) {
+    #arabic .activity-filter.all-activity .sub-navigation {
+        margin-left: 0;
+    }
+
+    #arabic .card-container .activity-filter.all-activity .filter-panel {
+        float: none;
+    }
+
+    #arabic .activity-filter.all-activity .sub-navigation-wrapper {
+        left: 50px;
+        border-left: 0;
+        padding-left: 0;
+    }
+}
+
+@media(max-width:1199px) {
+    #arabic table.dataTable thead > tr > th.sorting_asc:first-child, #arabic table.dataTable thead > tr > th.sorting_desc:first-child, #arabic table.dataTable thead > tr > th.sorting:first-child, #arabic table.dataTable thead > tr > td.sorting_asc:first-child, #arabic table.dataTable thead > tr > td.sorting_desc:first-child, #arabic table.dataTable thead > tr > td.sorting:first-child {
+        padding-right: 30px;
+    }
+}
+
+@media(max-width:991px) {
+    #arabic .custom-datatable .list-table {
+        text-align: right;
+    }
+
+    #arabic .activity-filter.all-activity .filter-panel > li {
+        float: right !important;
+    }
+}
+
+@media(max-width:767px) {
+    #arabic table.dataTable thead > tr > th.sorting_asc:first-child, #arabic table.dataTable thead > tr > th.sorting_desc:first-child, #arabic table.dataTable thead > tr > th.sorting:first-child, #arabic table.dataTable thead > tr > td.sorting_asc:first-child, #arabic table.dataTable thead > tr > td.sorting_desc:first-child, #arabic table.dataTable thead > tr > td.sorting:first-child {
+        padding-right: 15px;
+    }
+
+    #arabic .notification-panel .tab-content .tab-pane .custom-scroll {
+        right: 15px;
+        left: auto;
+    }
+
+    .messages .right-pane {
+        padding-bottom: 103px;
+    }
+}
+
+#arabic .notification-list > li > a > img[src$="tail-right.svg"] {
+    transform: scaleX(-1);
+}
+
+#arabic .notification-list > li > a {
+    transform: none;
+}
+
+#arabic .bootbox-close-button {
+    display: block;
+    position: absolute;
+    padding: 15px;
+    top: 0px;
+    right: 40px;
+}
+
+#arabic .bootbox-close-button {
+    right: auto;
+    left: 0px;
+}
+
+#arabic .date-holder {
+    direction: ltr;
+    text-align: right;
+}
+
+#arabic .book-details .comment-list > li .upper {
+    padding-right: 46px;
+    padding-left: 0px;
+}
+
+    #arabic .book-details .comment-list > li > a .upper > img, #arabic .book-details .comment-list > li .upper > img {
+        left: auto;
+        right: 0;
+    }

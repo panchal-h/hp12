@@ -1,0 +1,27 @@
+﻿
+@{
+    Layout = null;
+}
+@RenderSection("header", required: false)
+<input type="hidden" value="@ViewBag.Title - @SmartLibrary.Resources.General.ApplicationName" id="documentTitle" />
+<div class="content-wrapper">
+    <div class="content-header row">
+        <div class="content-header-left col-md-8 col-xs-12 mb-2">
+            <h3 class="content-header-title mb-0">@ViewBag.Title</h3>
+            <div class="row breadcrumbs-top">
+                <div class="breadcrumb-wrapper col-xs-12">
+                    @RenderSection("breadcrumb", required: true)
+                </div>
+            </div>
+        </div>
+        <div class="content-header-right text-md-right col-md-4 col-xs-12">
+            <div class="form-group">
+                @RenderSection("headeroptions", required: false)
+            </div>
+        </div>
+    </div>
+    <div class="content-body">
+        @RenderBody()
+    </div>
+</div>
+@RenderSection("scripts", required: false)  

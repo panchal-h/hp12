@@ -1,0 +1,73 @@
+﻿@model IEnumerable<SmartLibrary.Models.Notification>
+<div class="tab-content">
+    <div class="tab-pane active">
+        <div class="custom-scroll">
+            <div class="scroller-inner">
+                <ul class="notification-list with-btn">
+                    @foreach (var notification in Model)
+            {
+                        <li>
+                            <div class="image-wrapper">
+                                @switch (notification.NotificationTypeId)
+                                {
+                                    case (int)SystemEnumList.NotificationType.BookApprove:
+                                    case (int)SystemEnumList.NotificationType.BookCancel:
+                                    case (int)SystemEnumList.NotificationType.BookPending:
+                                    case (int)SystemEnumList.NotificationType.BookBorrowedByAdmin:
+                                    case (int)SystemEnumList.NotificationType.BookReturn:
+                                        <img src="@Url.Content("~/images/bookmark2.svg")" alt="" />
+                                        break;
+                                    case (int)SystemEnumList.NotificationType.SpaceBookingApprove:
+                                        <img src="@Url.Content("~/images/event-create.svg")" alt="" />
+                                        break;
+                                    case (int)SystemEnumList.NotificationType.SpaceBookingReject:
+                                        <img src="@Url.Content("~/images/request-denied.svg")" alt="" />
+                                        break;
+                                    case (int)SystemEnumList.NotificationType.SpaceBookingReschedule:
+                                        <img src="@Url.Content("~/images/opening-times.svg")" alt="" />
+                                        break;
+                                    default:
+                                        <img src="@Url.Content("~/images/bookmark2.svg")" alt="" />
+                                        break;
+                                }
+                            </div>
+                            <span> @notification.Title </span>
+                            <p> @notification.Description </p>
+                            @if (notification.NotificationTypeId != (int)SystemEnumList.NotificationType.BookAvailable)
+                            {   <a title="" href="@Url.Action(SmartLibrary.Site.Pages.Actions.AllActivities, SmartLibrary.Site.Pages.Controllers.Home, new { BorrowedBookId = notification.BorrowedBookId.HasValue ? EncryptionDecryption.EncryptByTripleDES(notification.BorrowedBookId.Value.ToString()) : null, SpaceBookingId = notification.SpaceBookingId.HasValue ? EncryptionDecryption.EncryptByTripleDES(notification.SpaceBookingId.Value.ToString()) : null })">
+                                @switch (notification.NotificationTypeId)
+                                {
+                                    case (int)SystemEnumList.NotificationType.BookApprove:
+                                    case (int)SystemEnumList.NotificationType.BookCancel:
+                                    case (int)SystemEnumList.NotificationType.BookPending:
+                                    case (int)SystemEnumList.NotificationType.BookBorrowedByAdmin:
+                                    case (int)SystemEnumList.NotificationType.BookReturn:
+                                        <img src="@Url.Content("~/images/tail-right.svg")" alt="" />
+                                        break;
+                                    case (int)SystemEnumList.NotificationType.SpaceBookingApprove:
+                                    case (int)SystemEnumList.NotificationType.SpaceBookingReject:
+                                        <img src="@Url.Content("~/images/correct-black.svg")" alt="" />
+                                        break;
+                                    case (int)SystemEnumList.NotificationType.SpaceBookingReschedule:
+                                        <img src="@Url.Content("~/images/eye.svg")" alt="" />
+                                        break;
+                                    default:
+                                        <img src="@Url.Content("~/images/correct-black.svg")" alt="" />
+                                        break;
+                                }
+                            </a>
+                            }
+                        </li>
+                    }
+                    @if (Model.Count() == 0)
+            {
+                        <li class="lblNoRecord">
+                            <label>@SmartLibrary.Resources.Messages.NoNotifications</label>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,61 @@
+﻿@model SmartLibrary.Models.Login
+<head>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/AD/style.css" rel="stylesheet" />
+</head>
+@{
+    Layout = Url.Content("~/Views/Shared/_LoginLayout.cshtml");
+    ViewBag.Title = "ADLogin";
+    var ReturnUrl = Model.ReturnUrl.IsNull() ? "" : "?returnUrl=" + Model.ReturnUrl;
+}
+<body id="english" class="register-page">
+    <div class="login-outer register-outer-block">
+        <!-- Login Left Side Start -->
+        <div class="left">
+            <div class="brand-header clearfix">
+                <a href="#" title="Government of Dubai"><img src="~/images/logo-government-of-dubai.svg" alt="Government of Dubai" /></a>
+                <a href="#" class="pull-right" title="Dubai Economy"><img src="~/images/logo-dubai-economy.svg" alt="Dubai Economy" /></a>
+            </div>
+            <div class="content-box">
+                <img alt="Arrow" src="~/images/ic-login.svg" class="login-icon" />
+                <h3 class="title">Sign in to Smart Library</h3>
+                <p>Select system below.</p>
+                <div class="icon-btn-wrapper">
+                    <a href="@Url.Action(SmartLibrary.Site.Pages.Actions.StaffLogin,SmartLibrary.Site.Pages.Controllers.ActiveDirectory)@ReturnUrl" class="btn-with-icon green" title="Login As DED Staff"><span class="image-container"><img src="~/images/users.svg" alt="Users" /></span><span>Login As <strong>DED Staff</strong></span></a>
+                    <a href="@Url.Action(SmartLibrary.Site.Pages.Actions.Index,SmartLibrary.Site.Pages.Controllers.Account)@ReturnUrl" class="btn-with-icon red" title="Login As Guest"><span class="image-container"><img src="~/images/users.svg" alt="Users" /></span><span>Login As <strong>Guest</strong></span></a>
+
+                </div>
+                <a class="bold-link light" href="#" title="Terms & Conditions / Privacy Policy ">Terms & Conditions / Privacy Policy</a>
+            </div>
+        </div>
+        <!-- Login Left Side End -->
+        <!-- Login Right Side start -->
+        <div class="right login-right">
+            <p class="welcome-msg">Welcome to the new Smart Library smart system</p>
+            <img src="~/images/ic-agreement-white.png" alt="Agreement" class="system-icon" />
+            <h3>Smart Library Management</h3>
+            <p class="system-info">Configure the frequency in which comments are sent to your inbox. You can also permanently unsubscribe from any prototype below.</p>
+            <img src="~/images/handshake-illustration.png" alt="Handshake" class="handshake" />
+            <p class="copyright">Copyright  2018. All Rights Reserved.</p>
+        </div>
+        <!-- Login Right Side End -->
+    </div>
+    <!-- forgot password modal start-->
+    @*<div class="modal fade" id="forgot-password-modal" tabindex="-1">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button aria-label="Close" class="btn close" data-dismiss="modal" type="button"></button>
+                        <h2 class="modal-title">Forgot Password</h2>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group label-floating is-empty">
+                            <label class="control-label">Email Address</label>
+                            <input class="form-control cus-control" type="text">
+                        </div>
+                        <a class="btn cus-btn btn-raised btn-primary btn-block" href="#" title="Reset Password">Reset Password</a>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+</body>

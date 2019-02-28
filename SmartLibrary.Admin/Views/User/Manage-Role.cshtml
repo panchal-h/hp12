@@ -1,0 +1,180 @@
+﻿@using SmartLibrary.Infrastructure;
+@model IEnumerable<SmartLibrary.Models.Role>
+@{
+    ViewBag.Title = SmartLibrary.Resources.General.Role;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    PageAccessRight currentPageAccessRight = (PageAccessRight)ViewData["CurrentPageAccessRight"];
+}
+<div class="wrapper">
+    <div class="card-container">
+        <div class="card">
+            <div class="card-header">
+                <span>
+                    <img src="@Url.Content("~/Images/user-rights-Title.svg")" alt="@SmartLibrary.Resources.General.Role" class="card-header-image"> &nbsp;
+                </span>
+                <h2 class="card-title card-title-img"><b>@SmartLibrary.Resources.General.Role</b></h2>
+                <ul class="filter-panel">
+                    <li class="searchbox">
+                        <input type="text" class="form-control" placeholder="@SmartLibrary.Resources.General.Search" id="searchText" />
+                        <img src="@Url.Content("~/Images/search.svg")" alt="@SmartLibrary.Resources.General.Search" id="SearchBtnForList" />
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" class="btn btn-primary btn-icon btn-raised resetIcon" title="@SmartLibrary.Resources.General.Reset" onclick="resetSearch()">
+                            <img src="@Url.Content("~/Images/close-white.svg")" >
+                        </a>
+                    </li>
+
+                    <li class="@(currentPageAccessRight.AddUpdate ? "visible-item":"hidden-item")">
+                     <a href="@Url.Action(SmartLibrary.Admin.Pages.Actions.AddEditRole, SmartLibrary.Admin.Pages.Controllers.User,new { id = string.Empty })" class="btn btn-primary btn-icon btn-raised" title="@SmartLibrary.Resources.General.Add @SmartLibrary.Resources.General.Role"><img src="@Url.Content("~/Images/plus-white.svg")" alt="Add" class="small" /></a>                      
+                    </li>
+                </ul>
+            </div>
+            @using (Html.SmartLibSecureForm(SmartLibrary.Admin.Pages.Actions.Role, SmartLibrary.Admin.Pages.Controllers.User, new { id = "formRole" }))
+            {
+                <div class="table-responsive custom custom-datatable">
+                    <table class="list-table" id="tblDisplayRole"></table>
+                </div>
+
+            }
+        </div>
+    </div>
+</div>
+<div id="divModal"></div>
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var activemenus = ["#liUserManage", "#liRoles"];
+            ActiveMenu(activemenus);
+            BindTable();
+        });
+        function bindSearch() {
+            var param = {};
+            param["searchdata"] = $('#searchText').val();
+            return param;
+        }
+        function resetSearch(){
+            $("#searchText").val('');
+            BindTable();
+        }
+        $("#searchText").keydown(function (e) {
+            if (e.keyCode == 13) {
+                if (!isValidSearchCriteria('searchText')) { return false; }
+                BindTable();
+            }
+        });
+
+        function BindTable() {
+
+            if ($.fn.DataTable.isDataTable("#tblDisplayRole")) {
+                $('#tblDisplayRole').dataTable().fnDestroy();
+                $('#tblDisplayRole').html('<table id="tblDisplayRole" class="table table-hover table-bordered"></table>');
+            }
+
+            table = $("#tblDisplayRole").DataTable({
+                "lengthChange": true,
+                "processing": true,
+                "oLanguage": {
+                    sProcessing: "<img src='../Images/Loader-Spinner.svg' class='datatable-loadingbar'>"
+                },
+                "serverSide": true,
+                "orderMulti": false,
+                "pageLength": @SmartLibrary.Infrastructure.ProjectConfiguration.PageSize,
+                'autoWidth': false,
+                'searching': false,
+                "ajax": {
+                    url: '@Url.Action(SmartLibrary.Admin.Pages.Actions.Role, SmartLibrary.Admin.Pages.Controllers.User)',
+                    type: "POST",
+                    data: bindSearch()
+                },
+                "columns": [
+                    {
+                        "title": "@SmartLibrary.Resources.General.Name", "data": "Name", width: "53%",
+                        "render": function (data, type, row) {
+                            var str = '<span>' + data + '</span>';
+                            return str;
+                        }
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.CreatedDate", "data": "CreatedDate", width: "22%",
+                        "render": function (data, type, row) {
+                            var str= DataTableCustomDateTimeFormat(data, '@SmartLibrary.Infrastructure.ProjectConfiguration.DateFormat.ToUpper()');
+                            str = '<span>' + str + '</span>';
+                            return str;
+                        }
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.Actions",width: "17%",
+                        "data": "Active",
+                        "class": "action text-center action-icons",
+                        "render": function (data, type, row) {                                                                        
+                            var appendstring = '';
+                            if (data == true)
+                                appendstring += '<a  class="@(currentPageAccessRight.AddUpdate ? "visible-item":"hidden-item")" href="#" onclick="ChangeStatus(' + row["Id"] + ',false)"><img src="../Images/eye.svg" alt="Eye" width="15" /></a>'
+                            else
+                                appendstring += '<a class="@(currentPageAccessRight.AddUpdate ? "visible-item":"hidden-item")" href="#"  onclick="ChangeStatus(' + row["Id"] + ',true)"><img src="../Images/eye-banned.svg" alt="Eye Banned" width="15" /></a>'                                                   
+                            appendstring += ' <a class="@(currentPageAccessRight.AddUpdate ? "visible-item":"hidden-item")" href="@Url.Action(SmartLibrary.Admin.Pages.Actions.AddEditRole, SmartLibrary.Admin.Pages.Controllers.User)?id=' + row["IdEncrypted"] + '" data-id="' + row["IdEncrypted"] + '"><img src="../Images/edit.svg"  alt="Edit" width="15" /></a>'
+                            appendstring += '<a class="Action delete @(currentPageAccessRight.AddUpdate ? "visible-item":"hidden-item")" data-id="' + row["Id"] + '"href="#" ><img src="../Images/delete.svg" alt="delete" width="15" /></a>';
+                            return appendstring;
+                        },
+                        "orderable": false
+                    }
+                ],
+                "drawCallback": function (settings, json) {
+                                    InitVariable();
+                                    InitDeleteConfirmation();
+                                }
+                            });
+        }
+
+        function InitVariable() {
+            confirmMessage = '@SmartLibrary.Resources.General.ConfirmDeleteMessage';
+            confirmTitle = '@SmartLibrary.Resources.General.ConfirmDelete';
+            confirmYes = '@SmartLibrary.Resources.General.Yes';
+            confirmNo = '@SmartLibrary.Resources.General.No';
+        }
+        function DeleteCallback(event) {
+            if (event != undefined) {
+                if (event.target != undefined) {
+                    var atag = event.target;
+                    if (event.target.tagName == "IMG") {
+                        atag = $(event.target).parent();
+                    }
+                    $.ajax({
+                        type: "POST",
+                        beforeSend: function (xhr) { xhr.setRequestHeader('__RequestVerificationToken', $('input[name="__RequestVerificationToken"]', $("#formRole")).val()); },
+                        url: encodeURI('@Url.Action(SmartLibrary.Admin.Pages.Actions.DeleteRole, SmartLibrary.Admin.Pages.Controllers.User)'),
+                        data: { "id": $(atag).attr('data-id') },
+                        cache: false,
+                        dataType: 'json',
+                        success: function (response) {
+                            if (response.success) {
+                                BindTable();
+                                ShowMessage(response.status, response.message, response.title, null, null)
+                            }
+                            else {
+                                ShowMessage(response.status, response.message, response.title, null, null)
+                            }
+                        },
+                        error: function (jqXHR, exception, errMsg) {
+                            alert(errMsg);
+                        }
+                    });
+                }
+            }
+        }
+
+        function ChangeStatus(id, status) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.ChangeRoleStatus, SmartLibrary.Admin.Pages.Controllers.User)",
+                beforeSend: function (xhr) { xhr.setRequestHeader('__RequestVerificationToken', $('input[name="__RequestVerificationToken"]', $("#formRole")).val()); },
+                traditional: true,
+                data: { id: id, status: status },
+                success: function (response) {
+                    $("#tblDisplayRole").DataTable().ajax.reload(null, false);
+                }
+            });
+        }
+    </script>
+
+}

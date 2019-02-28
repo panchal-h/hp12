@@ -1,0 +1,36 @@
+﻿@model IEnumerable<Message>
+@using SmartLibrary.Models
+
+<ul>
+@if (Model != null && Model.Count() > 0)
+{
+    foreach (var message in Model)
+    {
+        <li data-totalRecords="@message.TotalRecords" data-id="@message.ID">
+            <div class="upper">
+                @if (!(message.IsSendByAdmin ?? false) && !string.IsNullOrEmpty(message.ProfileImagePath))
+                {
+                    <img src="@Url.Content("~/" + ProjectConfiguration.UserProfileImagePath + "/" + message.ProfileImagePath)" alt="" onerror="this.src = '@Url.Content("~/Images/default-user.png")'; "/>
+                }
+                else
+                {
+                    <img src="@Url.Content("~/images/default-user.png")" alt="" />
+                }
+                <span class="name">@message.SenderName @(message.IsSendByAdmin.HasValue && message.IsSendByAdmin.Value ? ("(" + SmartLibrary.Resources.General.Admin + ")") : "" )</span>
+                @if (!string.IsNullOrEmpty(message.BookName) && SystemEnumList.MessageType.ChatMessage.GetHashCode() != message.MessageTypeId)
+                {
+                    <span class="time">@message.BookName - @(((SystemEnumList.MessageType)message.MessageTypeId).GetDescription())</span>
+                }
+                <span class="time">@SmartLibrary.Services.CommonBL.GetSpentTime(message.CreatedDate)</span>
+            </div>
+            <p>@Html.Raw(string.Join("</p><p>", message.Description.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries)))</p>
+        </li>
+    }
+}
+else
+{
+    <li class="empty-state">
+        @SmartLibrary.Resources.Messages.NoMessage
+    </li>
+}
+</ul>

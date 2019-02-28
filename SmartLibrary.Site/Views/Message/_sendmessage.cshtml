@@ -1,0 +1,72 @@
+﻿@model SmartLibrary.Models.Message
+
+<div class="modal fade cus-modal send-message-modal" id="send-message-modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header has-subtext">
+                <a href="#" class="modal-close" data-dismiss="modal">
+                    <img src="@Url.Content("~/images/modal-close.svg")" alt="@SmartLibrary.Resources.General.Close" />
+                </a>
+                <h4 class="modal-title">@SmartLibrary.Resources.General.Send  @SmartLibrary.Resources.General.Message</h4>
+                <p class="sub-text"></p>
+            </div>
+
+            @using (Html.SmartLibSecureForm(SmartLibrary.Site.Pages.Actions.SendMessage, SmartLibrary.Site.Pages.Controllers.Message, new { id = "formSendMessageModal" }))
+            {
+                <div class="modal-body">
+                    @Html.HiddenFor(x => x.BookId)
+                    <div class="form-group floating has-value-fixed big-input">
+                        <label class="control-label">@SmartLibrary.Resources.General.MessageType</label>
+                        @Html.DropDownListFor(x => x.MessageTypeId, SmartLibrary.Services.CommonBL.GetMessageTypeList(SmartLibrary.Resources.General.Select.SetArguments(SmartLibrary.Resources.General.MessageType)), new { @class = "form-control selectpicker" })
+                    </div>
+                    <div class="form-group floating big-input">
+                        @Html.LabelFor(x => x.Description, new { @class = "control-label" })
+                        @Html.TextBoxFor(x => x.Description, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-block btn-lg" onclick="sendMessage()">
+                        @SmartLibrary.Resources.General.Send  @SmartLibrary.Resources.General.Message
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $(".selectpicker", "#formSendMessageModal").selectpicker({ 'liveSearch': true });
+        $(".form-group.floating .form-control", "#formSendMessageModal").trigger("focusout");
+        $('#formSendMessageModal').on('keypress', function (e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+                sendMessage();
+                return false;
+            }
+        });
+    });
+
+    function sendMessage() {
+        var $form = $("#formSendMessageModal");
+        if ($form.valid()) {
+            var data = $form.serialize();
+            $.ajax({
+                type: "Post",
+                url: "@Url.Action(SmartLibrary.Site.Pages.Actions.SendMessage, SmartLibrary.Site.Pages.Controllers.Message)",
+                traditional: true,
+                data: data,
+                beforeSend: function (xhr) { AddRequestHeader(xhr, $form); },
+                success: function (response) {
+                    if (response.status == statusConstant.success) {
+                        $("#send-message-modal").modal('hide');
+                    }
+                    ShowMessage(response.status, response.message, response.title, null, null);
+                }
+            });
+        }
+
+        return false;
+    }
+
+</script>

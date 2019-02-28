@@ -1,0 +1,38 @@
+﻿@model IEnumerable<SmartLibrary.Models.BookDiscussion>
+@foreach (var item in Model)
+{
+    var dateAndTime = DateTime.Now;
+
+    var createddate = item.CreatedDate;
+    var datenew = createddate.ToDate().Date.ToShortDateString();
+
+    string diff = datenew.ToString();
+    if (dateAndTime.Date == createddate.ToDate().Date)
+    {
+        TimeSpan ts = (dateAndTime - createddate.ToDate());
+        double difference = Math.Floor(ts.TotalHours);
+        if (difference > 0)
+        {
+            diff=difference +" hours ago ";
+        }
+        else
+        {
+            difference = Math.Ceiling(ts.TotalMinutes);
+            diff = difference + " minutes ago ";
+        }
+
+    }
+
+    <li>
+        <div class="upper">
+            <img src=@Url.Content("~/" + ProjectConfiguration.UserProfileImagePath + "/" + item.ProfileImagePath) onerror="this.src = '@Url.Content("~/Images/default-user.png")'; "/>
+            <span class="name">@item.CreatedByName</span>           
+            <span class="time">
+                @Html.Raw(diff)
+            </span>
+        </div>
+        <p>           
+            @item.MessageDescription
+        </p>
+    </li>
+}

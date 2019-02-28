@@ -1,0 +1,98 @@
+﻿@using SmartLibrary.Resources;
+@model SmartLibrary.Site.Models.MyProfileViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = SmartLibrary.Resources.General.Profile;
+    var selectedLanguage = Model.Language.HasValue ? Enum.GetName(typeof(SmartLibrary.Infrastructure.SystemEnumList.Language), Model.Language) : string.Empty;
+    var selectedGender = Model.Gender.HasValue ? Enum.GetName(typeof(SmartLibrary.Infrastructure.SystemEnumList.Gender), Model.Gender) : string.Empty;
+    var profileImage = Model.ProfileImagePath != null ? Model.ProfileImagePath : "default-user.png";
+}
+
+<div class="wrapper">
+    <div class="card-container">
+        <div class="card normal profile-card">
+            <div class="inner-wrapper">
+                <h2 class="title">@General.Profile</h2>
+
+                @using (Html.SmartLibSecureForm(SmartLibrary.Site.Pages.Actions.MyProfile, SmartLibrary.Site.Pages.Controllers.User, new { id = "formManageUserProfile", enctype = "multipart/form-data" }))
+                {
+                    <div class="user-image-section">
+                        @Html.HiddenFor(m => Model.ProfileImagePath)
+                        @Html.HiddenFor(m => Model.Id)
+                        <img src="@Url.Content("~/" + ProjectConfiguration.UserProfileImagePath + "/" + profileImage)" alt="Demo User" id="ProfileImage" onerror="this.src = '@Url.Content("~/Images/default-user.png")'; "/>
+                        <a href="#" class="btn-file-upload-trigger edit-btn" title="@SmartLibrary.Resources.General.Change"><img src="@Url.Content("~/Images/settings.svg")" alt="Cog"></a>
+                        <input type="file" name="file" class="btn-file-upload" onchange="showProfileImage(event)">
+                    </div>
+                    <div class="form-group floating big-input has-value">
+                        <label class="control-label">@General.FirstName</label>
+                        @Html.TextBoxFor(m => Model.FirstName, new { @class = "form-control grey" })
+                    </div>
+                    <div class="form-group floating big-input has-value">
+                        <label class="control-label">@General.LastName</label>
+                        @Html.TextBoxFor(m => Model.LastName, new { @class = "form-control grey" })
+                    </div>
+                    <div class="form-group floating big-input has-value">
+                        <label class="control-label">@General.Email</label>
+                        @Html.TextBoxFor(m => Model.Email, new { @class = "form-control grey" , @readonly = "readonly" })
+                    </div>
+                    <div class="form-group floating big-input has-value">
+                        <label class="control-label">@General.Phone</label>
+                        @Html.TextBoxFor(m => Model.Phone, new { @class = "form-control grey" })
+                    </div> 
+                    <div class="form-group floating has-value-fixed big-input">
+                        <label class="control-label">@General.Gender</label>
+                        <div class="btn-group bootstrap-select form-control">
+                            @Html.DropDownListFor(m => Model.Gender, SmartLibrary.Infrastructure.EnumHelper.GetItems(typeof(SmartLibrary.Infrastructure.SystemEnumList.Gender), selectedGender), new { @class = "form-control selectpicker" })
+                        </div>
+                    </div>
+                    <div class="form-group floating has-value-fixed big-input">
+                        <label class="control-label">@General.Language</label>                        
+                        <div class="btn-group bootstrap-select form-control">
+                            @Html.DropDownListFor(m => Model.Language, SmartLibrary.Infrastructure.EnumHelper.GetItems(typeof(SmartLibrary.Infrastructure.SystemEnumList.Language), selectedLanguage), new { @class = "form-control selectpicker" })
+                        </div>
+                    </div>
+
+                    <h2 class="title">@General.Security</h2>
+                    <div class="form-group floating big-input">
+                        <label class="control-label">@Account.CurrentPassword</label>
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control grey" })
+                    </div>
+                    <div class="form-group floating big-input">
+                        <label class="control-label">@Account.NewPassword</label>
+                        @Html.PasswordFor(m => m.NewPassword, new { @class = "form-control grey" })
+                    </div>
+                    <div class="form-group floating big-input">
+                        <label class="control-label">@Account.ConfirmPassword</label>
+                        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control grey" })
+                    </div>
+                    <button type="submit" value="update" name="action" class="btn btn-primary btn-block btn-lg">
+                        @General.Update
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(function () {
+            $(".big-input:has(input[type=text])").addClass("has-value");
+            ActiveMenu("#liProfile");
+        })
+        function showProfileImage(event) {
+            var output = document.getElementById('ProfileImage');
+            if (!$.validator.methods.HttpPostedFileExtensionAndSizeAttribute("", $("input[name=file]")[0], validExtensions)) {
+                if ($.validator.messages.httppostedfileextension != undefined) {
+                    ShowMessage('error',$.validator.messages.httppostedfileextension,'@SmartLibrary.Resources.General.UserProfile');
+                    $("input[name=file]").val('');
+                    output.src = '@Url.Content("~/Images/default-user.png")';
+                    return false;
+                }
+                return false;
+            }
+            output.src = URL.createObjectURL(event.target.files[0]);
+        }
+    </script>
+}

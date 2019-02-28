@@ -1,0 +1,115 @@
+﻿@using SmartLibrary.Resources
+@using SmartLibrary.Admin.Pages;
+@using SmartLibrary.Infrastructure;
+@model SmartLibrary.Models.Login
+<head>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/AD/style.css" rel="stylesheet" />
+</head>
+@{
+    Layout = Url.Content("~/Views/Shared/_LoginLayout.cshtml");
+    ViewBag.Title = @General.ApplicationName;
+}
+<body id="english" class="register-page">
+    <div class="login-outer register-outer-block">
+        <!-- Login Left Side Start -->
+        <div class="login-left">
+            <div class="loginbox">
+                <img src="~/images/ic-login.svg" alt="">
+                <div class="logintitle">Login as Smart Library Staff</div>
+
+                @using (Html.SmartLibSecureForm(Views.StaffLogin, Controllers.ActiveDirectory))
+            {
+                    @Html.HiddenFor(m => m.ReturnUrl)
+
+                    <div class="form-group big-input floating">
+                        <label class="control-label">@Account.Username</label>
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control cus-control" })
+                    </div>
+                    <div class="form-group floating big-input">
+                        <label class="control-label">@Account.Password</label>
+                        @Html.PasswordFor(m => m.Password, new { value = @Model.Password, @class = "form-control cus-control" })
+                        @Html.HiddenFor(m => m.EncryptedPassword)
+                    </div>
+                    <div class="form-group big-input no-label">
+                        @Html.CheckBoxFor(m => m.RememberMe, new { @class = "chk-remember" })
+                        @Account.RememberMe
+                    </div>
+                    <input type="submit" class="btn btn-primary btn-lg btn-block btn-raised btnLogin" value="@Account.Login" />
+
+                }
+                <p class="text-center" style="margin:10px 0 10px;">- OR -</p>
+                @using (Html.SmartLibSecureForm(Actions.StaffDirectLogin, Controllers.ActiveDirectory))
+            {
+                    @Html.HiddenFor(m => m.ReturnUrl)
+                    @Html.Hidden("UserName")
+                    <input type="submit" class="btn btn-primary btn-lg btn-block btn-raised" value="@Account.DirectLogin" />
+                }
+            </div>
+        </div>
+        <!-- Login Left Side End -->
+        <!-- Login Right Side Start -->
+        <div class="right login-right">
+            <p class="welcome-msg">Welcome to the new Smart Library - Back Office smart system</p>
+            <img src="~/images/ic-agreement-white.png" alt="Agreement" class="system-icon" />
+            <h3>Smart Library Management - Back Office</h3>
+            <p class="system-info">Configure the frequency in which comments are sent to your inbox. You can also permanently unsubscribe from any prototype below.</p>
+            <img src="~/images/handshake-illustration.png" alt="Handshake" class="handshake" />
+            <p class="copyright">Copyright  2018. All Rights Reserved.</p>
+        </div>
+        <!-- Login Right Side End -->
+    </div>
+    <!-- Login End -->
+    <!-- Login Footer Start -->
+    <div class="loginfooter">
+        <div>
+            <div class="lff">
+                <div><a href="#">Terms &amp; Conditions</a> &nbsp;/&nbsp; <a href="#">Privacy Policy</a></div>
+            </div>
+            <div class="lfr">
+                <div></div>
+            </div>
+        </div>
+    </div>
+    <!-- Login Footer End -->
+
+    <script src="~/Scripts/jsencrypt.min.js"></script>
+    <script>
+        var publickKey = '@ProjectConfiguration.RSAPublicKey';
+        $(document).ready(function () {
+            EncryptPassword($("#Password"), $("#EncryptedPassword"));
+            $(".big-input:has(input)").addClass("has-value");
+
+            var iframe = document.createElement("iframe");
+            iframe.src = "@ProjectConfiguration.ActiveDirectoryDirectLoginIFrameURL";
+            iframe.onload = function () {
+                window.addEventListener('message', function (event) {
+                    if (~event.origin.indexOf("@ProjectConfiguration.ActiveDirectoryDirectLoginIFrameURL")) {
+                        localStorage.ADLogonUser = window.atob(event.data.UserName);;
+                        $('#UserName').val(localStorage.ADLogonUser);
+                    } else {
+                        return;
+                    }
+                });
+            };
+            iframe.style.display = "none";
+            document.body.appendChild(iframe);
+
+            $("#Password").on("blur", function () {
+                EncryptPassword($("#Password"), $("#EncryptedPassword"));
+            });
+        });
+
+        function EncryptPassword($source, $target) {
+            // Encrypt with the public key...
+            var encrypt = new JSEncrypt();
+            encrypt.setPublicKey(publickKey);
+
+            if ($source.val() != undefined && $source.val() != '') {
+                var encrypted = encrypt.encrypt($source.val());
+                $target.val('');
+                $target.val(encrypted);
+            }
+        }
+    </script>
+</body>

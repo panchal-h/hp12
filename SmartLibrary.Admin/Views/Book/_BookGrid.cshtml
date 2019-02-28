@@ -1,0 +1,70 @@
+﻿@model IEnumerable<SmartLibrary.Models.Book>
+
+
+@foreach (var item in Model)
+{
+    string status = item.CurrentQuantity > 0 ? "<span class='status success'>" + SmartLibrary.Resources.General.Available + "</span>" : "<span class='status warning'>" + SmartLibrary.Resources.General.Borrowed + "</span>";
+    string active = item.Active == true ? "<img class ='imgEye' src='../images/eye.svg' alt='Eye' title=" + SmartLibrary.Resources.General.Show + " id=eye_" + item.ID + ">" : "<img src='../images/eye-banned.svg' class ='imgEye' alt='Eye Banned' id=eye_" + item.ID + " title=" + SmartLibrary.Resources.General.Hide + ">";
+
+    <div class="col-lg-2 col-md-4 col-sm-6" id="@item.ID">
+        <div class="book-box">
+            <div class="upper">
+                <span class="qty">@item.CurrentQuantity / @item.TotalQuantity</span>
+                <div class="book-image">
+                    <a href="#" class="book-quick-view-btn" title="@item.BookName" onclick="BookDetailSideBarLoad(@item.ID)">
+                        <img src=@Url.Content("~/" + ProjectConfiguration.BookImagesPath + "/" + item.ImagePath) alt="@item.BookName" onerror="this.src = '@Url.Content("~/Images/DefaultBookImage.jpg")'; " class="img-responsive"/>
+                    </a>
+                </div>
+                @Html.Raw(status)
+                <span class="interest">@item.Interested @SmartLibrary.Resources.Books.Interests</span>
+            </div>
+            <a href="#" class="book-title book-quick-view-btn" title="@item.BookName" onclick="BookDetailSideBarLoad(@item.ID)">@item.BookName</a>
+            <span class="book-author fixed-width" title="@item.Authors">&nbsp;@item.Authors</span>
+            <a href="#" class="view-icon" onclick="changeStatus(@item.ID)">
+                @Html.Raw(active)
+            </a>
+        </div>
+    </div>
+}
+
+<script>
+    function changeStatus(id) {
+        $.ajax({
+            type: "Post",
+            url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.ChangeBookStatus, SmartLibrary.Admin.Pages.Controllers.Book)",
+            traditional: true,
+            data: { id: id },
+            beforeSend: function (xhr) { AddRequestHeader(xhr, $('#GetBookGrid')); },
+            success: function (response) {
+                if (response.resultData == -1) {
+                    ShowMessage(response.status, response.message, response.title, null, null)
+                }
+                else {
+                    if (response.status) {
+                        $('#eye_' + id + '').attr("src", "../images/eye.svg").attr("title", '@SmartLibrary.Resources.General.Show');
+                    }
+                    else {
+                        $('#eye_' + id + '').attr("src", "../images/eye-banned.svg").attr("title", '@SmartLibrary.Resources.General.Hide');
+                    }
+                }
+                FilterBook();
+            }
+        });
+    }
+    function BookDetailSideBarLoad(bookId) {
+        var params = {};
+        params["bookId"] = bookId;
+        params["statusId"] = '@SmartLibrary.Infrastructure.SystemEnumList.BorrowBookStatus.Returned.GetHashCode()';
+        $.ajax({
+            type: "Get",
+            url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.BookDetailSideBar, SmartLibrary.Admin.Pages.Controllers.Book)",
+            traditional: true,
+            data: params,
+            success: function (response) {
+                $('#bookDetailSideBar').html(response);
+                GetScrollReset();
+                $(".selectpicker", "#formDetailSideBar").selectpicker({ 'liveSearch': true });
+            }
+        });
+    }
+</script>

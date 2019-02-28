@@ -1,0 +1,38 @@
+﻿@model SmartLibrary.Models.Book
+<link href="~/Content/style.css" rel="stylesheet" />
+<div class="brief">
+    <div class="upper">
+        <img src="@Url.Content("~/" + ProjectConfiguration.BookImagesPath + "/" + Model.ImagePath)" alt="@SmartLibrary.Resources.Books.BookTitle" onerror="this.src = '@Url.Content("~/Images/DefaultBookImage.jpg")'; "/>
+        <div>
+            @if (Model.CurrentBookStatus == @ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Available.GetHashCode()))
+            {
+                <span class="status success">@SystemEnumList.BorrowBookStatus.Available.GetDescription()</span>
+            }
+            else if (Model.CurrentBookStatus == @ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Borrowed.GetHashCode()))
+            {
+                <span class="status warning">@SystemEnumList.BorrowBookStatus.Borrowed.GetDescription()</span>
+            }
+
+            <span class="interest">@Model.Interested @SmartLibrary.Resources.Books.Interests</span>
+        </div>
+    </div>
+    <span class="book-title">@Model.BookName</span>
+</div>
+<ul class="specs">
+    <li>
+        <label>@SmartLibrary.Resources.Books.Authors</label>
+        <span>@Model.Authors</span>
+    </li>
+    <li>
+        <label>@SmartLibrary.Resources.Books.Quantity</label>
+        <span>@Model.CurrentQuantity / @Model.TotalQuantity</span>
+    </li>
+    <li>
+        <label>@SmartLibrary.Resources.Books.Genre</label>
+        <span>@Model.BookGenre</span>
+    </li>
+    <li>
+        <label>@SmartLibrary.Resources.Books.Location</label>
+        <span>@Model.BookLocation</span>
+    </li>
+</ul>

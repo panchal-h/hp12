@@ -1,0 +1,221 @@
+﻿@model SmartLibrary.Models.SpaceBooking
+
+<div class="modal fade cus-modal cus-user-modal request-reschedule-modal" id="book-space-modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header has-subtext">
+                <a href="#" class="modal-close" data-dismiss="modal">
+                    <img src="@Url.Content("~/Images/modal-close.svg")" alt="@SmartLibrary.Resources.General.Close" />
+                </a>
+                <h4 class="modal-title">@SmartLibrary.Resources.General.BookSpace</h4>
+                <p class="sub-text">@SmartLibrary.Resources.General.BookSpaceTitle</p>
+            </div>
+            @using (Html.SmartLibSecureForm(SmartLibrary.Admin.Pages.Actions.RescheduleBookSpace, SmartLibrary.Admin.Pages.Controllers.Home, new { id = "formBookSpace" }))
+            {
+                @Html.HiddenFor(x => x.ID)
+                @Html.HiddenFor(x => x.CustomerId)
+                @Html.HiddenFor(x => x.BookingTitle)
+                <div class="modal-body">
+                    <div class="inline-calendar form-group">
+                        <div class="form-group floating has-value big-input">
+                            <label class="control-label">@SmartLibrary.Resources.General.BookingDate</label>
+                            @Html.TextBoxFor(x => x.BookingDate, new { @class = "form-control date-holder focusDisable", @readonly = "" })
+                        </div>
+                        <div class="calendar-body"></div>
+                    </div>                    
+                    <div class="form-group floating has-value-fixed big-input">
+                        @Html.LabelFor(x => x.SpaceId, new { @class = "control-label" })
+                        @Html.DropDownListFor(m => m.SpaceId, SmartLibrary.Services.CommonBL.GetListForDropdown<SmartLibrary.Models.Space>(SmartLibrary.Resources.General.SelectBookingArea, Model.SpaceId.String()), new { @class = "form-control selectpicker" })
+                    </div>
+                    <div class="form-group floating has-value-fixed big-input" style="padding-left :14px;">
+                        <a onclick="showHideSpaceBookingRequests()" style="color:#428bca; cursor:pointer;">
+                            @SmartLibrary.Resources.General.ViewSpaceBookingRequests
+                        </a>
+                    </div>
+                    <div class="row small-gutter-xs">
+                        <div class="col-md-6">
+                            <div class="form-group floating big-input div-FromTime">
+                                @Html.LabelFor(x => x.FromTime, new { @class = "control-label" })
+                                @Html.DropDownListFor(x => x.FromTime, GeneralHelper.GetTimeSelectionList(SmartLibrary.Resources.General.FromTime), new { @class = "form-control selectpicker hasvalue" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group big-input floating div-ToTime">
+                                @Html.LabelFor(x => x.ToTime, new { @class = "control-label" })
+                                @Html.DropDownListFor(x => x.ToTime, GeneralHelper.GetTimeSelectionList(SmartLibrary.Resources.General.ToTime), new { @class = "form-control selectpicker hasvalue" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group floating big-input has-value">
+                        @Html.LabelFor(x => x.NoOfPeople, new { @class = "control-label" })
+                        @Html.TextBoxFor(x => x.NoOfPeople, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group floating big-input has-value">
+                        @Html.LabelFor(x => x.Comment, new { @class = "control-label" })
+                        @Html.TextBoxFor(x => x.Comment, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-block btn-lg" onclick="SaveData()">
+                        @SmartLibrary.Resources.General.BookSpace
+                    </button>
+                </div>
+            }
+            <div id="spaceBookingRequest" style="display:none;"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#FromTime option:last, #ToTime option:not([value=""]):first').remove();
+
+    $(document).ready(function () {
+        $('#Comment', "#formBookSpace").val('');
+        $(".inline-calendar").each(function () {
+            var target = $(this).find(".calendar-body");
+            var dateHolder = $(this).find(".date-holder");
+            pickmeup(target[0], {
+                flat: true,
+                mode: 'single',
+                format: 'd b Y',
+                min: new Date()
+            });
+            target.on("pickmeup-change", function () {
+                var selectedValue = pickmeup(target[0]).get_date(true);
+                dateHolder.val(selectedValue);
+                if ($('#SpaceId').val() != '')
+                    GetSpaceBookingRequestTimings();
+            });
+            var selectedValue = pickmeup(target[0]).get_date(true);
+            dateHolder.val(selectedValue);
+        });
+
+        $(".selectpicker", "#formBookSpace").selectpicker({ 'liveSearch': true });
+        $(".form-group.floating .form-control", "#formBookSpace").trigger("focusout");
+        $('#formBookSpace').on('keypress', function (e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+                SaveData();
+                return false;
+            }
+        });
+        $('#SpaceId').on('change', GetSpaceBookingRequestTimings);
+        GetSpaceBookingRequestTimings();
+    });
+
+    $('#FromTime').on('change', function () {
+        if ($('#ToTime')[0].selectedIndex < $('#FromTime')[0].selectedIndex) {
+            $('#ToTime')[0].selectedIndex = $('#FromTime')[0].selectedIndex;
+        }
+        if ($('#FromTime').val() != '' && $('#ToTime option[value="' + $('#FromTime').val() + '"]').length > 0) {
+            $('#ToTime option').attr('disabled', true);
+            $('#ToTime option[value="' + $('#FromTime').val() + '"]').nextUntil('.booked').removeAttr('disabled');
+        } else {
+            $('#ToTime option').removeAttr('disabled', true);
+        }
+        $('#ToTime option.booked').attr('disabled', true);
+        if ($('#ToTime option:selected').is(':disabled')) {
+            $('#ToTime').val($('#ToTime option:not(:disabled):first').val());
+        }
+        $('#ToTime').selectpicker('refresh');
+        $('.div-ToTime ul.dropdown-menu > li.disabled').attr('title', '@SmartLibrary.Resources.Messages.BookingAreaUnavailableTooltip');
+        $('#ToTime').change();
+    });
+
+    function GetSpaceBookingRequestTimings() {
+        var $form = $("#formBookSpace");
+        if ($('#SpaceId').valid()) {
+            var data = $form.serialize();
+            $.ajax({
+                type: "Post",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.GetSpaceBookingRequestTimings, SmartLibrary.Admin.Pages.Controllers.SpaceBooking)",
+                traditional: true,
+                data: data,
+                beforeSend: function (xhr) { AddRequestHeader(xhr, $form); },
+                success: function (response) {
+                    $('#ToTime option, #FromTime option').removeClass('booked').removeAttr('disabled', true);
+                    if (response.length > 0) {
+                        response.forEach(function (r) {
+                            $('#FromTime option[value="' + r.From + '"], #ToTime option[value="' + r.To + '"]').addClass('booked');
+                            $('#FromTime option[value="' + r.From + '"]').nextUntil($('#FromTime option[value="' + r.To + '"]')).addClass('booked');
+                            $('#ToTime option[value="' + r.To + '"]').prevUntil($('#ToTime option[value="' + r.From + '"]')).addClass('booked');
+                            //if ($('#ToTime option[value="' + r.From + '"]').length > 0) {
+                            //    $('#ToTime option[value="' + r.From + '"]').nextUntil($('#ToTime option[value="' + r.To + '"]')).addClass('booked');
+                            //} else {
+                            //    $('#ToTime option:first').nextUntil($('#ToTime option[value="' + r.To + '"]')).addClass('booked');
+                            //    $('#ToTime option:first').addClass('booked');
+                            //}
+                        });
+                    }
+                    $('#ToTime option[value=""].booked').removeClass('booked');
+                    $('#FromTime option.booked, #ToTime option.booked').attr('disabled', true);
+                    if ($('#FromTime option:selected').is(':disabled')) {
+                        $('#FromTime').val($('#FromTime option:not(.booked):first').val());
+                    }
+                    $('#FromTime, #ToTime').selectpicker('refresh');
+                    $('.div-FromTime ul.dropdown-menu > li.disabled').attr('title', '@SmartLibrary.Resources.Messages.BookingAreaUnavailableTooltip');
+                    $('#FromTime').change();
+                }
+            });
+            GetSpaceBookingRequests();
+        }
+        return false;
+    }
+
+    function SaveData() {
+        var $form = $("#formBookSpace");
+        if ($form.valid()) {
+            var data = $form.serialize();
+            $.ajax({
+                type: "Post",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.RescheduleBookSpace, SmartLibrary.Admin.Pages.Controllers.Member)",
+                traditional: true,
+                data: data,
+                beforeSend: function (xhr) { AddRequestHeader(xhr, $form); },
+                success: function (response) {
+                    if (response.status == statusConstant.success) {
+                        $("#book-space-modal").modal('hide');
+                        BindTable();
+                    }
+                    ShowMessage(response.status, response.message, response.title, null, null)
+                }
+            });
+        }
+
+        return false;
+    }
+
+    function GetSpaceBookingRequests() {
+        var $form = $("#formBookSpace");
+        if ($('#SpaceId').valid()) {
+            var data = $form.serialize();
+            $.ajax({
+                type: "Post",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.SpaceBookingRequests, SmartLibrary.Admin.Pages.Controllers.SpaceBooking)",
+                traditional: true,
+                data: data,
+                beforeSend: function (xhr) { AddRequestHeader(xhr, $form); },
+                success: function (response) {
+                    $("#spaceBookingRequest").html(response);
+                }
+            });
+        }
+        return false;
+    }
+
+    function showHideSpaceBookingRequests() {
+        $("#spaceBookingRequest").toggle();
+    }
+
+</script>
+<style>
+    .pickmeup .pmu-instance .pmu-day-of-week *, .pickmeup .pmu-instance .pmu-days *{
+        line-height: 35px;
+    }
+    .cus-user-modal .modal-content{
+        padding-top: 50px;
+    }
+    .bootstrap-select.btn-group .dropdown-menu li.disabled {
+        background-color: #eee;
+    }
+</style>

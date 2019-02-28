@@ -1,0 +1,75 @@
+﻿@model Message
+
+<div class="modal fade cus-modal cus-user-modal" id="send-message-modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="modal-close" data-dismiss="modal">
+                    <img src="@Url.Content("~/images/modal-close.svg")" alt="@SmartLibrary.Resources.General.Close" />
+                </a>
+                @if (!string.IsNullOrEmpty(Model.ProfileImagePath))
+                {
+                    <img class="modal-intro-image" src="@Url.Content("~/" + ProjectConfiguration.UserProfileImagePath + "/" + Model.ProfileImagePath)" alt="" onerror="this.src = '@Url.Content("~/Images/default-user.png")'; "/>
+                }
+                else
+                {
+                    <img class="modal-intro-image" src="@Url.Content("~/images/default-user.png")" alt="" />
+                }
+                <h4 class="modal-title">@SmartLibrary.Resources.General.Send @SmartLibrary.Resources.General.Message @SmartLibrary.Resources.General.To @Model.CustomerName</h4>
+            </div>
+
+            @using (Html.SmartLibSecureForm(SmartLibrary.Admin.Pages.Actions.SendMessage, SmartLibrary.Admin.Pages.Controllers.Message, new { id = "formSendMessageModal" }))
+            {
+                <div class="modal-body">
+                    @Html.HiddenFor(x => x.CustomerId)
+                    <div class="form-group floating big-input extended">
+                        <label class="control-label">@SmartLibrary.Resources.General.Add @SmartLibrary.Resources.General.Message</label>
+                        @Html.TextBoxFor(x => x.Description, new { @class = "form-control", @data_val_required = SmartLibrary.Resources.General.EnterYourMessage })
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-block btn-lg" onclick="sendMessage()">
+                        @SmartLibrary.Resources.General.Send  @SmartLibrary.Resources.General.Message
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#formSendMessageModal').on('keypress', function (e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+                sendMessage();
+                return false;
+            }
+        });
+    });
+
+    function sendMessage() {
+        if ($('#CustomerId', "#formSendMessageModal").val() == 0) {
+            ShowMessage("error", '@SmartLibrary.Resources.Messages.SelectUserToSendMessage', null, null, null);
+            return;
+        }
+
+        if ($('#Description', "#formSendMessageModal").valid()) {
+            $.ajax({
+                type: "Post",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.SendMessage, SmartLibrary.Admin.Pages.Controllers.Message)",
+                traditional: true,
+                data: { Description: $('#Description', "#formSendMessageModal").val(), customerId: $('#CustomerId', "#formSendMessageModal").val(), MessageTypeId: @SystemEnumList.MessageType.ChatMessage.GetHashCode() },
+                beforeSend: function (xhr) { AddRequestHeader(xhr, "#formSendMessageModal"); },
+                success: function (response) {
+                    if (response.status == statusConstant.success) {
+                        $("#send-message-modal").modal('hide');
+                    }
+                    ShowMessage(response.status, response.message, response.title, null, null);
+                }
+            });
+        }
+
+        return false;
+    }
+</script>

@@ -1,0 +1,60 @@
+﻿@using SmartLibrary.Resources
+@using SmartLibrary.Admin.Pages;
+@using SmartLibrary.Infrastructure;
+@model SmartLibrary.Models.Login
+@{
+    Layout = Url.Content("~/Views/Shared/_LoginLayout.cshtml");
+    ViewBag.Title = @General.ApplicationName;
+}
+<div class="vertical-wrapper login-wrapper">
+    <div class="vertical-wrapper-inner">
+        <div class="form-wrapper">
+            <a href="#" class="brand" title="@SmartLibrary.Resources.General.ApplicationName"><img src="@Url.Content("~/Images/logo.png")" alt="@SmartLibrary.Resources.General.ApplicationName" /></a>
+            <h3 class="title">@Account.Login_Header_BackOffice</h3>
+            @using (Html.SmartLibSecureForm(Views.Index, Controllers.Account))
+            {
+                @Html.HiddenFor(m => m.ReturnUrl)
+                <div class="form-group big-input no-label">
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = Account.Username })
+                </div>
+                <div class="form-group big-input no-label">
+                    @Html.PasswordFor(m => m.Password, new { value = @Model.Password, @class = "form-control", placeholder = Account.Password })
+                    @Html.HiddenFor(m => m.EncryptedPassword)
+                </div>
+                <div class="form-group big-input no-label">
+                    @Html.CheckBoxFor(m => m.RememberMe, new { @class = "chk-remember" })
+                    @Account.RememberMe
+                </div>
+                <input type="submit" class="btn btn-primary btn-lg btn-block btn-raised" value="@Account.Login" />
+                <a href="@Url.Action(SmartLibrary.Admin.Pages.Actions.ForgotPassword, SmartLibrary.Admin.Pages.Controllers.Account)" class="bold-link" title="@Account.ForgotPassword?">@Account.ForgotPassword?</a>
+            }
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script src="~/Scripts/jsencrypt.min.js"></script>
+    <script type="text/javascript">
+        var publickKey = '@ProjectConfiguration.RSAPublicKey';
+        $(document).ready(function () {
+            EncryptPassword($("#Password"), $("#EncryptedPassword"));
+            $("#Password").on("blur", function () {
+                EncryptPassword($("#Password"), $("#EncryptedPassword"));
+            });
+        });
+        function EncryptPassword($source, $target) {
+            // Encrypt with the public key...
+            var encrypt = new JSEncrypt();
+            encrypt.setPublicKey(publickKey);
+
+            if ($source.val() != undefined && $source.val() != '') {
+                var encrypted = encrypt.encrypt($source.val());
+                $target.val('');
+                $target.val(encrypted);
+            }
+        }
+    </script>
+}
+
+
+
+

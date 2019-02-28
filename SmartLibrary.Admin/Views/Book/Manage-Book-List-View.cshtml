@@ -1,0 +1,356 @@
+﻿@using SmartLibrary.Infrastructure;
+@using SmartLibrary.Services;
+@using SmartLibrary.Models;
+
+@model IEnumerable<SmartLibrary.Models.Book>
+@{
+    ViewBag.Title = SmartLibrary.Resources.General.Books;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    PageAccessRight currentPageAccessRight = (PageAccessRight)ViewData["CurrentPageAccessRight"];
+}
+<div class="wrapper">
+    <div class="card-container">
+        <div class="card">
+            <div class="card-header">
+                <span>
+                    <img src="@Url.Content("~/Images/books-Title.svg")" alt="@SmartLibrary.Resources.General.Book" class="card-header-image"> &nbsp;
+                </span>
+                <h2 class="card-title card-title-img">
+                    @SmartLibrary.Resources.General.Books
+                </h2>
+                <ul class="filter-panel">
+                    <li class="dropdown-wrapper">
+                        <div class="btn-group bootstrap-select show-tick filter-select">
+                            @Html.DropDownList("genre", SmartLibrary.Services.CommonBL.GetListForDropdown<SmartLibrary.Models.BookGenre>(), new { @class = "selectpickergenre filter-select", @multiple = "multiple" })
+                        </div>
+                    </li>
+                    <li class="searchbox">
+                        <input type="text" class="form-control" placeholder="@SmartLibrary.Resources.General.Search" id="searchText">
+                        <img src="@Url.Content("~/Images/search.svg")" alt="@SmartLibrary.Resources.General.Search" id="SearchBtnForList">
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" class="btn btn-primary btn-icon btn-raised resetIcon" title="@SmartLibrary.Resources.General.Reset" onclick="resetSearch()">
+                            <img src="@Url.Content("~/Images/close-white.svg")" >
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action(SmartLibrary.Admin.Pages.Actions.BookGrid, SmartLibrary.Admin.Pages.Controllers.Book)" class="btn btn-default btn-icon btn-inactive" title="@SmartLibrary.Resources.General.GridView">
+                            <img src="@Url.Content("~/Images/grid-view.svg")" alt="@SmartLibrary.Resources.General.GridView">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action(SmartLibrary.Admin.Pages.Actions.BookList, SmartLibrary.Admin.Pages.Controllers.Book)" class="btn btn-default btn-icon disabled" title="@SmartLibrary.Resources.General.ListView" style="background-color: #006557">
+                            <img src="@Url.Content("~/Images/list-view-selected.svg")" alt="@SmartLibrary.Resources.General.ListView">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="btn btn-default btn-icon" title="@SmartLibrary.Resources.General.Download" onclick="Download()">
+                            <img src="@Url.Content("~/Images/download.svg")" alt="@SmartLibrary.Resources.General.Download">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="btn btn-default btn-icon" onclick="BindActiveInActive()" title="@SmartLibrary.Resources.General.ShowHide">
+                            <img src="@Url.Content("~/Images/eye.svg")" id="imgActiveInactive">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" class="btn btn-primary btn-icon btn-raised" title="@SmartLibrary.Resources.General.Add @SmartLibrary.Resources.General.Book" onclick="LoadModal(0)">
+                            <img src="@Url.Content("~/Images/plus-white.svg")" alt="@SmartLibrary.Resources.General.Add" class="small">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            @using (Html.SmartLibSecureForm(SmartLibrary.Admin.Pages.Actions.BookList, SmartLibrary.Admin.Pages.Controllers.Book, new { id = "formManageBook" }))
+            {
+                <div class="table-responsive custom custom-datatable">
+                    <table class="list-table" id="tblDisplayBooks"></table>
+                </div>
+
+            }
+        </div>
+    </div>
+</div>
+<div id="divModal"></div>
+
+<div id="bookDetailSideBar">
+</div>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            BindTable();
+            $('.filter-select').on('change', function (e) {
+                var foo = $(this).val();
+                BindTable();
+            });
+            ActiveMenu("#liBook");
+
+            $(".selectpickergenre").selectpicker({ 'noneSelectedText': '@SmartLibrary.Resources.General.SelectGenre', 'liveSearch': true });
+            $(".selectpickerLocation").selectpicker({ 'noneSelectedText': '@SmartLibrary.Resources.General.SelectLocation', 'liveSearch': true });
+        });
+        function resetSearch(){
+            $(".selectpickergenre").val('default');
+            $(".selectpickergenre").selectpicker("refresh");
+            $("#searchText").val('');
+            $('#imgActiveInactive').attr("src","../Images/eye.svg");
+            BindTable();
+        }
+        function GetActiveInActiveValue()
+        {
+            var active = 1;
+            var src=$('#imgActiveInactive').attr('src');
+            src=src.substring(src.lastIndexOf('/')+1);
+            if(src == "eye.svg"){
+                active = 1;
+            }
+            else
+            {
+                active = 0;
+            }
+            return  active;
+        }
+
+        function BindActiveInActive()
+        {
+            var src=$('#imgActiveInactive').attr('src');
+            src=src.substring(src.lastIndexOf('/')+1);
+            if(src == "eye.svg"){
+                $('#imgActiveInactive').attr("src","../Images/eye-banned.svg");
+            }
+            else
+            {
+                $('#imgActiveInactive').attr("src","../Images/eye.svg");
+            }
+
+            BindTable();
+        }
+
+        function BindSearch() {
+            var genre, sector, location;
+            genre = $('#genre').val();
+            if (genre != null) {
+                genre = genre.toString();
+            }
+            sector = $('#sector').val();
+            if (sector != null) {
+                sector = sector.toString();
+            }
+            location = $('#location').val();
+            if (location != null) {
+                location = location.toString();
+            }
+
+            var param = {};
+            param["searchData"] = $('#searchText').val();
+            param["genre"] = genre;
+            param["sector"] = sector;
+            param["location"] = location;
+            param["active"] = GetActiveInActiveValue();
+            return param;
+        }
+        $("#searchText").keydown(function (e) {
+            if (e.keyCode == 13) {
+                if (!isValidSearchCriteria('searchText')) { return false; }
+                BindTable();
+            }
+        });
+        function BindTable() {
+
+            if ($.fn.DataTable.isDataTable("#tblDisplayBooks")) {
+                $('#tblDisplayBooks').dataTable().fnDestroy();
+                $('#tblDisplayBooks').html('<table id="tblDisplayBooks" class="table table-hover table-bordered"></table>');
+            }
+
+            table = $("#tblDisplayBooks").DataTable({
+                "lengthChange": true,
+                "processing": true,
+                "oLanguage": {
+                    sProcessing: "<img src='../Images/Loader-Spinner.svg' class='datatable-loadingbar'>"
+                },
+                "serverSide": true,
+                "orderMulti": false,
+                "pageLength": @SmartLibrary.Infrastructure.ProjectConfiguration.PageSize,
+                'autoWidth': false,
+                'searching': false,
+                "order": [[8, 'desc']],
+                "ajax": {
+                    url: '@Url.Action(SmartLibrary.Admin.Pages.Actions.BookList, SmartLibrary.Admin.Pages.Controllers.Book)',
+                    type: "POST",
+                    data: BindSearch()
+                },
+                'rowId': 'Id',
+                "columns": [
+                    {
+                        "title": "&nbsp;", "data": "ImagePath", width: "2%",
+                        "render": function (data, type, row) {
+                            var str = "";
+                            var imagePath = '../' + '@ProjectConfiguration.BookImagesPath';
+                            var defaultBookImage= '@Url.Content("~/Images/DefaultBookImage.jpg")';
+
+                            str += '<a href="#" onclick="BookDetailSideBarLoad(' + row["ID"] + ')" class="book-link book-quick-view-btn " ><img src="'+imagePath+'/s-' + data+'" width="40" height="40" onerror="this.src = \''+defaultBookImage +'\'; "/></a>';
+                            return str;
+                        },
+                        "orderable": false
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.BookTitle", "data": "BookName", width: "21%",
+                        "render": function (data, type, row) {
+                            var str = '<a href="javascript:void(0);" onclick="BookDetailSideBarLoad(' + row["ID"] + ')"  class="book-link book-quick-view-btn book_name ">' + data + '</a>';
+                            return str;
+                        }
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.Author", "data": "Authors", width: "10%",
+                        "render": function (data, type, row) {
+                            if (data == null)
+                            {
+                                var str = '<label class="fixed-width" title=""></label>';
+                            }
+                            else
+                            {
+                                var str = '<label class="fixed-width" title="' + data + '">' + data + '</label>';
+                            }
+                            return str;
+                        },
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.Genre", "data": "BookGenre", width: "10%",
+                        "render": function (data, type, row) {
+                            var str = '<label class="interest fixed-width" title="' + data + '">' + data + '</label>';
+                            return str;
+                        }
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.Location", "data": "BookLocation", width: "10%",
+                        "render": function (data, type, row) {
+                            var str = '<label>' + data + '</label>';
+                            return str;
+                        },
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.Qty", "data": "Quantity", width: "5%",
+                        "render": function (data, type, row) {
+                            var str = '<label>' + data + '</label>';
+                            return str;
+                        },
+                        "orderable": false
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.Interests", "data": "Interested", width: "5%",
+                        "render": function (data, type, row) {
+                            var str = '<label class="interest">' + data + '</label>';
+                            return str;
+                        },
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.Status", "data": "Status", width: "10%",
+                        "render": function (data, type, row) {
+                            if (data.toString() == '@ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Available.GetHashCode())') {
+                                str = '<label class = "status success">' + '@SystemEnumList.BorrowBookStatus.Available.GetDescription()' + '</label>';
+                            }
+                            else {
+                                str = '<label class = "status warning">' + '@SystemEnumList.BorrowBookStatus.Borrowed.GetDescription()' + '</label>';
+                            }
+                            return str;
+                        },
+                    },
+                    {
+                        "title": "", "data": "ImagePath", width: "0%","class": "hidden-item",
+                    },
+                   {
+                        "title": "@SmartLibrary.Resources.General.CreatedDate", "data": "CreatedDate", width: "10%",
+                        "render": function (data, type, row) {
+                            return DataTableCustomDateTimeFormat(data, '@SmartLibrary.Infrastructure.ProjectConfiguration.DateFormat.ToUpper()');
+                        }
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.ShowHide", width: "7%",
+                        "data": "Active",
+                        "class": "text-center action-icons action-hide",
+                        "render": function (data, type, row) {
+                            var appendstring = '';
+                            if (data == true)
+                                appendstring += '<a  class="@(currentPageAccessRight.AddUpdate ? "visible-item":"hidden-item")" href="#" onclick="ChangeStatus(' + row["ID"] + ')"  title="@SmartLibrary.Resources.General.Show"><img src="@Url.Content("~/Images/eye.svg")" alt="Eye" width="15" /></a>'
+                            else
+                                appendstring += '<a class="@(currentPageAccessRight.AddUpdate ? "visible-item":"hidden-item")" href="#"  onclick="ChangeStatus(' + row["ID"] + ')" title="@SmartLibrary.Resources.General.Hide" ><img src="@Url.Content("~/Images/eye-banned.svg")" alt="Eye Banned" width="15" /></a>'
+                            return appendstring;
+                        },
+                        "orderable": false
+                    }
+                ],
+                "drawCallback": function (settings, json) {
+                    RemoveGridBottom("tblDisplayBooks");
+                }
+            });
+        }
+        function LoadModal(id) {
+            $.ajax({
+                type: "Get",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.AddEditBook, SmartLibrary.Admin.Pages.Controllers.Book)",
+                traditional: true,
+                data: { id: id },
+                success: function (response) {
+                    $("#divModal").html(response);
+                    $("#book-modal").modal('show');
+                    $(".drpSelect").addClass("has-value-fixed");
+                    EnableClientSideValidation($('#formAddEditBook'));
+                }
+            });
+        }
+        function BookDetailSideBarLoad(bookId) {
+            var params = {};
+            params["bookId"] = bookId;
+            params["statusId"] = '@SmartLibrary.Infrastructure.SystemEnumList.BorrowBookStatus.Returned.GetHashCode()';
+            $.ajax({
+                type: "Get",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.BookDetailSideBar, SmartLibrary.Admin.Pages.Controllers.Book)",
+                traditional: true,
+                data: params,
+                success: function (response) {
+                    $('#bookDetailSideBar').html(response);
+                    $(".selectpicker", "#formDetailSideBar").selectpicker({ 'liveSearch': true });
+                    GetScrollReset();
+                }
+            });
+        }
+        function ChangeStatus(id) {
+            var $form = $('#formManageBook');
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.ChangeBookStatus, SmartLibrary.Admin.Pages.Controllers.Book)",
+                beforeSend: function (xhr) { AddRequestHeader(xhr, $form); },
+                traditional: true,
+                data: { id: id },
+                success: function (response) {
+                    if (response.resultData == -1) {
+                        ShowMessage(response.status, response.message, response.title, null, null)
+                    }
+                    else {
+                        $("#tblDisplayBooks").DataTable().ajax.reload(null, false);
+                    }
+                    BindTable();
+                }
+            });
+        }
+        function Download() {
+            var genre="", sector="", booklocation="";
+            if ( $('#genre').val() != null &&$('#genre').val() != undefined) {
+                genre = $('#genre').val().toString();
+            }
+
+            if ( $('#sector').val() != null &&$('#sector').val() != undefined) {
+                sector = $('#sector').val().toString();
+            }
+
+            if ( $('#location').val() != null &&$('#location').val() != undefined) {
+                booklocation = $('#location').val().toString();
+            }
+            var searchdata="";
+            if( $('#searchText').val()!=undefined){
+                searchdata= $('#searchText').val();
+            }
+            location.href = '@Url.Action(SmartLibrary.Admin.Pages.Actions.BookExportToExcel, SmartLibrary.Admin.Pages.Controllers.Book)?genre=' + genre + '&sector=' +sector + '&location=' + booklocation + '&searchData=' + searchdata ;
+        }
+
+    </script>
+}

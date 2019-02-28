@@ -1,0 +1,215 @@
+﻿@{
+    ViewBag.Title = SmartLibrary.Resources.General.LibraryRoomBooking;
+}
+
+<div class="wrapper">
+    <div class="card-container">
+        <div class="card">
+            <div class="card-header">
+                <span>
+                    <img src="@Url.Content("~/Images/date-calendar-Title.svg")" alt="@SmartLibrary.Resources.General.LibraryRoomBooking" class="card-header-image"> &nbsp;
+                </span>
+                <h2 class="card-title card-title-img"><b>@SmartLibrary.Resources.General.LibraryRoomBooking</b></h2>
+                <ul class="filter-panel no-padding clearfix">
+                    <li class="searchbox">
+                        <input type="text" class="form-control" placeholder="@SmartLibrary.Resources.General.Search" id="searchText" />
+                        <img src="@Url.Content("~/Images/search.svg")" alt="@SmartLibrary.Resources.General.Search" id="SearchBtnForList" />
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" class="btn btn-primary btn-icon btn-raised resetIcon" title="@SmartLibrary.Resources.General.Reset" onclick="resetSearch()">
+                            <img src="@Url.Content("~/Images/close-white.svg")" >
+                        </a>
+                    </li>
+                    <li class="visible-item">
+                        <a onclick="LoadModal(0)" class="btn btn-primary" title="@SmartLibrary.Resources.General.BookSpace">@SmartLibrary.Resources.General.BookSpace</a>
+                    </li>
+                </ul>
+            </div>
+            @using (Html.SmartLibSecureForm(SmartLibrary.Site.Pages.Actions.LibraryRoomBookings, SmartLibrary.Site.Pages.Controllers.LibraryRoomBookings, new { id = "formLibraryRoomBookings" }))
+            {
+                <div class="table-responsive custom custom-datatable">
+                    <table class="list-table" id="tblLibraryRoomBookings"></table>
+                    <div id="dataTableNoRoomRecord" hidden>
+                        <center style="padding-top:30px;font-weight:bold">
+                            <img src="~/Images/meeting-room.svg" height="150" /><br>
+                            @SmartLibrary.Resources.Messages.NoRoomsBooked
+                        </center><br>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<div id="divModal"></div>
+<div class="modal fade cus-modal cus-user-modal" id="view-notes" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="modal-close" data-dismiss="modal"><img src="@Url.Content("~/images/modal-close.svg")" alt="Close" /></a>
+                <h4 class="modal-title modaltitle">@SmartLibrary.Resources.General.Comment</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row small-gutter">
+                    <div class="col-md-12 col-sm-12">
+                        <div class="form-group floating big-input has-icon">
+                            <textarea id="returnNotes" class="form-control" rows="8" disabled></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            ActiveMenu("#liRoomBooking");
+            BindTable();
+        });
+
+        function bindSearch() {
+            var param = {};
+            param["searchdata"] = $('#searchText').val();
+            return param;
+        }
+        function resetSearch(){
+            $("#searchText").val('');
+            BindTable();
+        }
+        $("#searchText").keydown(function (e) {
+            if (e.keyCode == 13) {
+                if (!isValidSearchCriteria('searchText')) { return false; }
+                BindTable();
+            }
+        });
+
+        function BindTable() {
+
+            if ($.fn.DataTable.isDataTable("#tblLibraryRoomBookings")) {
+                $('#tblLibraryRoomBookings').dataTable().fnDestroy();
+                $('#tblLibraryRoomBookings').html('<table id="tblLibraryRoomBookings" class="table table-hover table-bordered"></table>');
+            }
+
+            table = $("#tblLibraryRoomBookings").DataTable({
+                "aaSorting": [],
+                "lengthChange": true,
+                "processing": true,
+                "oLanguage": {
+                    sProcessing: "<img src='../Images/Loader-Spinner.svg' class='datatable-loadingbar'>"
+                },
+                "serverSide": true,
+                "orderMulti": false,
+                "pageLength": @ProjectConfiguration.PageSize,
+                'autoWidth': false,
+                'searching': false,
+                "order": [[4, 'desc']],
+                "ajax": {
+                    url: '@Url.Action(SmartLibrary.Site.Pages.Actions.LibraryRoomBookings, SmartLibrary.Site.Pages.Controllers.LibraryRoomBookings)',
+                    type: "POST",
+                    data: bindSearch()
+                },
+                "columns": [
+                    {
+                        "title": "@SmartLibrary.Resources.General.BookingTime", "data": "FromDate", width: "20%",
+                        "render": function (data, type, row) {
+                            return '<span>' + DataTableCustomDateTimeFormat(row.FromDate, 'hh:mm A') + "-" + DataTableCustomDateTimeFormat(row.ToDate, 'hh:mm A') + '</span>';
+                        },
+                        "orderable": false
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.BookingDate", "data": "FromDate", width: "15%",
+                        "render": function (data, type, row) {
+                            return '<span>' + DataTableCustomDateTimeFormat(data, '@ProjectConfiguration.DateFormat.ToUpper()') + '</span>' ;
+                        }
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.DaysLeft", "data": "DaysLeft", width: "15%",
+                        "render": function (data, type, row) {
+                            return '<span>' + data + '</span>';
+                        },
+                        "orderable": false
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.BookingArea", "data": "SpaceName", width: "20%",
+                        "render": function (data, type, row) {
+                            return '<span>' + data + '</span>';
+                        }
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.CreatedDate", "data": "CreatedDate",
+                        "class": "hidden",
+                        "render": function (data, type, row) {
+                            return '<span>' + DataTableCustomDateTimeFormat(data, '@ProjectConfiguration.DateFormat.ToUpper()') + '</span>' ;
+                        }
+                    },
+                    {
+                        "title": "@SmartLibrary.Resources.General.Status", "data": "StatusId", width: "10%",
+                        "class": "text-center status_padding action-icons",
+                        "render": function (data, type, row) {
+                            switch(data.toString()) {
+                                case '@ConvertTo.ToInteger(@SystemEnumList.SpaceBookingStatus.Approved.GetHashCode())':
+                                    return '<label class = "status success">' + '@SystemEnumList.SpaceBookingStatus.Approved.GetDescription()' + '</label>';
+                                case '@ConvertTo.ToInteger(@SystemEnumList.SpaceBookingStatus.Pending.GetHashCode())':
+                                    return '<label class = "status warning">' + '@SystemEnumList.SpaceBookingStatus.Pending.GetDescription()' + '</label>';
+                                case '@ConvertTo.ToInteger(@SystemEnumList.SpaceBookingStatus.Cancel.GetHashCode())':
+                                    return '<label class = "status error">' + '@SystemEnumList.SpaceBookingStatus.Cancel.GetDescription()' + '</label>';
+                                case '@ConvertTo.ToInteger(@SystemEnumList.SpaceBookingStatus.Rescheduled.GetHashCode())':
+                                     return '<label class = "status info">' + '@SystemEnumList.SpaceBookingStatus.Rescheduled.GetDescription()' + '</label>' ;
+                            }
+                            return '';
+                        }
+                    },
+                    {
+                        "title": "&nbsp", "data": "StatusId", width: "8%",
+                        "class": "text-center status_padding action-icons",
+                        "render": function (data, type, row) {
+                            if (row["Comment"] && (row["StatusId"] == '@ConvertTo.ToInteger(@SystemEnumList.SpaceBookingStatus.Rescheduled.GetHashCode())' || row["StatusId"] == '@ConvertTo.ToInteger(@SystemEnumList.SpaceBookingStatus.Cancel.GetHashCode())')) {
+                                return '<a href="javascript:void(0);" onclick="ViewSpaceBookingComment(this)" title="@SmartLibrary.Resources.General.Comment"><img src="@Url.Content("~/Images/comment.svg")"/></a>' + '<div class="comment-div" style="display:none;">' + row["Comment"] + '</div>';
+                            }
+                            return "";
+                        },
+                        "orderable": false
+                    }
+                ],
+                "drawCallback": function (settings, json) {
+                    RemoveRoomNoData();
+                }
+            });
+        }
+        function RemoveRoomNoData()
+        {
+            var tblUR = $('#tblLibraryRoomBookings').DataTable();
+            if (!tblUR.data().count()) {
+                $(".grid-bottom").hide();
+                $('#dataTableNoRoomRecord').show();
+            }
+            else {
+                $('#dataTableNoRoomRecord').hide();
+                $(".grid-bottom").show();
+            }
+            $('.dataTables_empty').hide();
+        }
+
+        function LoadModal(id) {
+            $.ajax({
+                type: "Get",
+                url: "@Url.Action(SmartLibrary.Site.Pages.Actions.BookSpace, SmartLibrary.Site.Pages.Controllers.LibraryRoomBookings)",
+                traditional: true,
+                data: { id: id },
+                success: function (response) {
+                    $("#divModal").html(response);
+                    $("#book-space-modal").modal('show');
+                    EnableClientSideValidation($('#formBookSpace'));
+                }
+            });
+        }
+
+        function ViewSpaceBookingComment(aComment)
+        {
+            $("#returnNotes").val($(aComment).siblings('.comment-div:first').text());
+            $("#view-notes").modal('show');
+        }
+    </script>
+
+}

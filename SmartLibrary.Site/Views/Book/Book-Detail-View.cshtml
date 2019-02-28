@@ -1,0 +1,367 @@
+﻿@model SmartLibrary.Models.Book
+@{
+    ViewBag.Title = SmartLibrary.Resources.General.Books;
+    Layout = "~/Views/Shared/_BookDetailLayout.cshtml";
+}
+<body id="english">
+    @Html.HiddenFor(model => model.ID)
+    @Html.Hidden("totalComments")
+    <div class="blue-backdrop"><a href="#"></a></div>
+    <div class="bottom-bar">
+        <a href="@Url.Action(SmartLibrary.Site.Pages.Actions.BookGrid, SmartLibrary.Site.Pages.Controllers.Book)" class="back-btn"><img src="@Url.Content("~/Images/chevron-left-rounded.svg")" alt="Chevron Left" /></a>
+        <div class="dropdown dropup">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <span></span>
+                <span></span>
+                <span></span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-right">
+                <li class="active liActionLink" id="liDescription"><a href="#" onclick="ActionDetailType('@SmartLibrary.Resources.General.Description')" title="@SmartLibrary.Resources.General.Description">@SmartLibrary.Resources.General.Description</a></li>
+            </ul>
+        </div>
+        <div class="btn-list">
+            <a onclick="LoadSendMessageModal('@Model.ID')" class="btn btn-grey btn-lg" title="@SmartLibrary.Resources.General.Send @SmartLibrary.Resources.General.Message">@SmartLibrary.Resources.General.Send @SmartLibrary.Resources.General.Message</a>
+
+            @if (Model.StatusId == @ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Approved.GetHashCode()))
+            {
+                <a href="#" data-toggle="modal" class="status warning book-status-borrowed" title="@SmartLibrary.Resources.Books.AlreadyBorrowed">@SmartLibrary.Resources.Books.AlreadyBorrowed</a>
+            }
+            else if (Model.StatusId == @ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Pending.GetHashCode()))
+            {
+                <a href="#" data-toggle="modal" class="status warning book-status-borrowed" title="@SmartLibrary.Resources.Books.RequestedForBorrored">@SmartLibrary.Resources.Books.RequestedForBorrored</a>
+            }
+            else if (Model.CurrentBookStatus == @ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Available.GetHashCode()))
+            {
+
+                <a href="#borrow-book-modal" data-toggle="modal" class="btn btn-primary btn-lg" title="@SmartLibrary.Resources.Books.Borrow">@SmartLibrary.Resources.Books.Borrow</a>
+
+            }
+            else if (Model.CurrentBookStatus == @ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Borrowed.GetHashCode()))
+            {
+
+                <a href="#" data-toggle="modal" class="status warning book-status-borrowed" title="@SmartLibrary.Resources.Books.AllBooksBorrowed">@SmartLibrary.Resources.Books.AllBooksBorrowed</a>
+            }
+
+        </div>
+    </div>
+    <div class="wrapper no-sidebar has-bottom-bar">
+        <div class="card-container">
+            <div class="card book-details clearfix user-view eqHeight-abs">
+                <div class="left BookDetailSidebar abs-target">
+                    <div class="brief">
+                        <div class="upper">
+                            <img src="@Url.Content("~/" + ProjectConfiguration.BookImagesPath + "/" + Model.ImagePath)" alt="@SmartLibrary.Resources.Books.BookTitle" onerror="this.src = '@Url.Content("~/Images/DefaultBookImage.jpg")';eqHeightAbs();"/>
+                            <div>
+                                @if (Model.StatusId == @ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Approved.GetHashCode()))
+            {
+                                    <span class="status info">@SystemEnumList.BorrowBookStatus.Borrowed.GetDescription()</span>
+                                }
+                                else if (Model.StatusId == @ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Pending.GetHashCode()))
+                                {
+                                    <span class="status warning">@SystemEnumList.BorrowBookStatus.Pending.GetDescription()</span>
+                                }
+                                else if (Model.CurrentBookStatus == @ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Available.GetHashCode()))
+                                {
+                                    <span class="status success">@SystemEnumList.BorrowBookStatus.Available.GetDescription()</span>
+                                }
+                                else if (Model.CurrentBookStatus == @ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Borrowed.GetHashCode()))
+                                {
+                                    <span class="status error">@SmartLibrary.Resources.General.NotAvailable</span>
+                                }
+                                <span class="interest">@Model.Interested @SmartLibrary.Resources.Books.Interests</span>
+                            </div>
+                        </div>
+                        <span class="book-title title-pointer" title="@Model.BookName">@Model.BookName</span>
+                    </div>
+                    <ul class="specs">
+                        <li>
+                            <label>@SmartLibrary.Resources.Books.Authors</label>
+                            <span>@Model.Authors</span>
+                        </li>
+                        <li>
+                            <label>@SmartLibrary.Resources.Books.Quantity</label>
+                            <span>@Model.CurrentQuantity / @Model.TotalQuantity</span>
+                        </li>
+                        <li>
+                            <label>@SmartLibrary.Resources.Books.Genre</label>
+                            <span>@Model.BookGenre</span>
+                        </li>
+                        <li>
+                            <label>@SmartLibrary.Resources.Books.Location</label>
+                            <span>@Model.BookLocation</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="right" id="divDescription">
+                    <div class="labeled-text">
+                        <label>@SmartLibrary.Resources.General.Description</label>
+                        <p> @Html.Raw(HttpUtility.HtmlDecode(Model.Description))</p>
+                    </div>
+                    @using (Html.SmartLibSecureForm(SmartLibrary.Site.Pages.Actions.CommentList, SmartLibrary.Site.Pages.Controllers.Book, new { id = "GetComment" }))
+                    {
+                        <div class="comment-section">
+                            <span class="count" id="totalcount">@SmartLibrary.Resources.General.UserComments (@ViewBag.TotalComments)</span>
+                            <div class="add-comment form-group floating big-input" id="divComment">
+                                <label class="control-label">@SmartLibrary.Resources.General.AddComment</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="txtComment" maxlength="500" data-val="true" data-val-required="@SmartLibrary.Resources.Messages.RequiredFieldMessage.SetArguments(SmartLibrary.Resources.General.Comment)">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary btn-lg" type="button" onclick="AddComment(@Model.ID)" id="btnAddComment">@SmartLibrary.Resources.General.Comment</button>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <ul class="comment-list" id="commentList">
+                                @Html.Partial(SmartLibrary.Site.Pages.PartialViews.CommentList, Model.CommentList)
+                            </ul>
+                        </div>
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+</body>
+<div class="modal fade cus-modal borrow-book-modal" id="borrow-book-modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header has-subtext">
+                <a href="#" class="modal-close" data-dismiss="modal"><img src="@Url.Content("~/Images/modal-close.svg")" alt="Close" /></a>
+                <h4 class="modal-title">@SmartLibrary.Resources.Books.Borrow @SmartLibrary.Resources.General.Book</h4>
+                <p class="sub-text">@SmartLibrary.Resources.Messages.BorrowBookHeader</p>
+            </div>
+            <div class="modal-body">
+                <div class="inline-calendar1 form-group">
+                    <div class="form-group floating has-value big-input">
+                        <label class="control-label">@SmartLibrary.Resources.Books.PickUpDate</label>
+                        <input type="text" class="form-control date-holder focusDisable" readonly="" id="bookPickUpDate" />
+                    </div>
+                    <div class="calendar-body"></div>
+                </div>
+                <div class="form-group radio-wrapper">
+                    <span>@SmartLibrary.Resources.Books.BookPeriod</span>
+                    <p>@SmartLibrary.Resources.Messages.BookPeriodMessage </p>
+                    <ul class="radio-btn-group">
+                        <li>
+                            <label>
+                                <input type="radio" name="book-period" value="7" />
+                                <span>@SmartLibrary.Resources.General.OneWeek</span>
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="radio" name="book-period" checked="checked" value="14" />
+                                <span>@SmartLibrary.Resources.General.TwoWeeks</span>
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="radio" name="book-period" value="30" />
+                                <span>@SmartLibrary.Resources.General.OneMonth</span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            @using (Html.SmartLibSecureForm(SmartLibrary.Site.Pages.Actions.BorrowBook, SmartLibrary.Site.Pages.Controllers.Book, new { id = "formBookDetailView" }))
+            {
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-block btn-lg" onclick="BorrowBook(@Model.ID,$('input[name=book-period]:checked').val(),$('#bookPickUpDate').val())">@SmartLibrary.Resources.Books.Borrow</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div id="div-send-message-modal"></div>
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            ActionDetailType('@SmartLibrary.Resources.General.Description');
+            $(".selectpickerActive").selectpicker({ 'noneSelectedText': 'Select Active', 'liveSearch': true });
+            $(".selectpickerStatus").selectpicker({ 'noneSelectedText': 'Select Status', 'liveSearch': true });
+
+            $("#searchTextBorrow").keydown(function (e) {
+                if (e.keyCode == 13) {
+                    if (!isValidSearchCriteria('searchTextBorrow')) { return false; }
+                    BindBorrowTable();
+                }
+            });
+
+            $(".select-dropdown").change(function () {
+                BindBorrowTable();
+            });
+
+            $(".inline-calendar1").each(function () {
+                var target = $(this).find(".calendar-body");
+                var dateHolder = $(this).find(".date-holder");
+                pickmeup(target[0], {
+                    flat: true,
+                    mode: 'single',
+                    format: 'd b Y',
+                    min: new Date()
+                });
+                target.on("pickmeup-change", function () {
+                    var selectedValue = pickmeup(target[0]).get_date(true);
+                    dateHolder.val(selectedValue);
+                });
+                var selectedValue = pickmeup(target[0]).get_date(true);
+                dateHolder.val(selectedValue);
+            });
+            $("#totalComments").val(@ViewBag.TotalComments);
+            $("#txtComment").keypress(function(e) {
+                if(e.which == 13) {
+                    e.preventDefault();
+                    AddComment(@Model.ID);
+                }
+            });
+
+            $("#GetComment").keypress(function(e) {
+                if(e.which == 13) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
+
+
+        function ActionDetailType(type) {
+            $(".liActionLink").each(function (element) {
+                if ($(this).hasClass("active")) {
+                    $(this).removeClass("active");
+                }
+            });
+            $(".right").each(function (element) {
+                $(this).hide();
+            });
+
+            if (type == '@SmartLibrary.Resources.General.Description') {
+                $("#divDescription").show();
+                $("#liDescription").addClass("active");
+            }
+        }
+        function AddComment(bookId) {
+            var $form = $('#GetComment');
+            if (!$("#GetComment").valid()) return;
+            IllegalCharMsg = '@SmartLibrary.Resources.Messages.RestrictIllegalCharacters';
+            if (!isValidSearchCriteria('txtComment')) { return false; }
+
+
+            var param = {};
+            param["comment"] = $("#txtComment").val();
+            param["bookId"] = bookId;
+            $.ajax({
+                type: "Post",
+                url: "@Url.Action(SmartLibrary.Site.Pages.Actions.AddComment, SmartLibrary.Site.Pages.Controllers.Book)",
+                traditional: true,
+                beforeSend: function (xhr) { AddRequestHeader(xhr, $('#GetComment')); },
+                data: param,
+                success: function (response) {
+                    ShowMessage(response.status, response.message, response.title, null, null)
+                    $("#txtComment").val("");
+                    $.ajax({
+                        type: "Post",
+                        url: "@Url.Action(SmartLibrary.Site.Pages.Actions.CommentList, SmartLibrary.Site.Pages.Controllers.Book)",
+                        traditional: true,
+                        data: BindAddCommnet(),
+                        beforeSend: function (xhr) { AddRequestHeader(xhr, $('#GetComment')); },
+                        success: function (response) {
+                            $('#commentList').prepend(response);
+                            var count=$("#totalComments").val();
+                            count++;
+                            $("#totalComments").val(count);
+                            var ctext='@SmartLibrary.Resources.General.UserComments ('+count+')';
+                            $("#totalcount").text(ctext);
+                            $("#btnAddComment").focus();
+                            $("#divComment").removeClass("has-value");
+                            $("#txtComment").removeClass("input-validation-error").removeClass("has-error").addClass("Success").addClass("success");
+                        },
+                        error:function(data){
+                            alert(data)
+                        }
+                    });
+                }
+            });
+        }
+
+
+        function BorrowBook(bookId, borrowedPeriod, pickUpDate) {
+            var params = {};
+            params["pickUpDate"] = pickUpDate;
+            params["bookId"] = bookId;
+            params["period"] = borrowedPeriod;
+            $.ajax({
+                type: "Post",
+                url: "@Url.Action(SmartLibrary.Site.Pages.Actions.BorrowBook, SmartLibrary.Site.Pages.Controllers.Book)",
+                beforeSend: function (xhr) { xhr.setRequestHeader('__RequestVerificationToken', $('input[name="__RequestVerificationToken"]', $("#formBookDetailView")).val()); },
+                traditional: true,
+                data: params,
+                success: function (response) {
+                    ShowMessage(response.status, response.message, response.title, null, null)
+                    if (response.status == statusConstant.success)
+                    {
+                        $('#borrow-book-modal').modal('hide');
+                        setTimeout(function(){ location.reload(); }, 3000);
+
+                    }
+                }
+            });
+        }
+
+        var currentPage =1;
+        var totalPage = @ViewBag.TotalPage;
+        $(window).scroll(function () {
+            if ($(window).scrollTop() == ($(document).height() - $(window).height()))
+            {
+                ++currentPage;
+                if (currentPage > totalPage)
+                { return; }
+                CurrentPage = currentPage > 1 ? currentPage : '1';
+                $.ajax({
+                    type: "Post",
+                    url: "@Url.Action(SmartLibrary.Site.Pages.Actions.CommentList, SmartLibrary.Site.Pages.Controllers.Book)",
+                    traditional: true,
+                    data: BindSearchComments(CurrentPage),
+                    beforeSend: function (xhr) { AddRequestHeader(xhr, $('#GetComment')); },
+                    success: function (response) {
+                        $('#commentList').append(response);
+                    }
+                });
+            }
+        });
+
+        function BindSearchComments(CurrentPage){
+            var param = {};
+            param["currentPage"] = CurrentPage;
+            param["pagesize"] = '@ProjectConfiguration.CommentSize';
+            param["bookId"]=$("#ID").val();
+            return param;
+        }
+        function BindAddCommnet(){
+            var param = {};
+            param["currentPage"] = 1;
+            param["pagesize"] = 1;
+            param["bookId"]=$("#ID").val();
+            return param;
+        }
+
+        function LoadSendMessageModal(id) {
+            $.ajax({
+                type: "Get",
+                url: "@Url.Action(SmartLibrary.Site.Pages.Actions.SendMessageModal, SmartLibrary.Site.Pages.Controllers.Message)",
+                traditional: true,
+                data: { id: id },
+                success: function (response) {
+                    $("#div-send-message-modal").html(response);
+                    $("#send-message-modal").modal('show');
+                    EnableClientSideValidation($('#formSendMessageModal'));
+                }
+            });
+        }
+    </script>
+
+
+}

@@ -1,0 +1,111 @@
+﻿@using SmartLibrary.Admin.Classes
+@using SmartLibrary.Admin.Pages
+<div class="sidebar">
+    <a href="@Url.Action(Actions.AllActivities, Controllers.Home)" class="brand" title="@SmartLibrary.Resources.General.ApplicationName"><img src="@Url.Content("~/Images/logo.png")" alt="@SmartLibrary.Resources.General.ApplicationName" /></a>
+    <ul class="bottom-nav">
+        <li class="dropdown nav-link">
+            <a href="#" title="@SmartLibrary.Resources.General.Profile" data-toggle="dropdown" class="dropdown-toggle" data-target=".profile-dropdown"><img src="@Url.Content("~/Images/profile.svg")" alt="User" /></a>
+        </li>
+        <li>
+            <a href="#" class="notificationbtn" title="@SmartLibrary.Resources.General.Notification" data-url="@Url.Action(Actions.GetNotifications, Controllers.Notification)" data-notificationcount-url="@Url.Action(Actions.GetNewNotificationCount, Controllers.Notification)"><img src="@Url.Content("~/Images/notifications.svg")" alt="@SmartLibrary.Resources.General.Notification"></a>
+        </li>
+    </ul>
+    <div class="middle-nav-outer custom-scroll">
+        <div class="middle-nav-wrapper scroller-inner">
+            <ul class="middle-nav">
+                @if (Rights.HasMenuAccess(Controllers.Book))
+                {
+                    <li id="liBook" class="nav-link">
+                        <a href="@Url.Action(Actions.BookGrid, Controllers.Book)" title="@SmartLibrary.Resources.General.Books">
+                            <img src="@Url.Content("~/Images/books.svg")" alt="@SmartLibrary.Resources.General.Books" />
+                        </a>
+                    </li>
+                }
+                @if (Rights.HasAccess(Controllers.Home, Actions.AllActivities))
+                {
+                    <li id="liTodayActivity" class="nav-link"><a href="@Url.Action(Actions.AllActivities, Controllers.Home)" title="@SmartLibrary.Resources.General.Todaysactivities"><img src="@Url.Content("~/Images/calendar.svg")" alt="Calendar" /></a></li>
+                }
+                @if (Rights.HasAccess(Controllers.SpaceBooking, Actions.LibraryRoomBookings))
+                {
+                    <li id="liRoomBooking" class="nav-link"><a href="@Url.Action(Actions.LibraryRoomBookings, Controllers.SpaceBooking)" title="@SmartLibrary.Resources.General.LibraryRoomBookings"><img src="@Url.Content("~/Images/date-calendar.svg")" alt="Calendar" /></a></li>
+                }
+                @if (Rights.HasMenuAccess(Controllers.Member))
+                {
+                    <li id="liMember" class="nav-link"><a href="@Url.Action(Actions.CustomerGrid, Controllers.Member)" title="@SmartLibrary.Resources.General.Members"><img src="@Url.Content("~/Images/members.svg")" alt="Members" /></a></li>
+                }
+                @if (Rights.HasMenuAccess(Controllers.Report))
+                {
+                    <li id="liReports" class="nav-link"><a href="@Url.Action(Actions.ManageReport, Controllers.Report)" title="@SmartLibrary.Resources.General.Reporting"><img src="@Url.Content("~/Images/chart.svg")" alt="Chart" /></a></li>
+                }
+                
+                @if (Rights.HasMenuAccess(Controllers.Message))
+                {
+                    <li id="liMessage" class="nav-link">
+                        <a class="messagebtn" href="@Url.Action(Actions.ManageMessages, Controllers.Message)" title="@SmartLibrary.Resources.General.Message" data-messagecount-url="@Url.Action(Actions.GetNewMessageCount, Controllers.Message)">
+                            <img src="@Url.Content("~/Images/email.svg")" alt="@SmartLibrary.Resources.General.Message">
+                        </a>
+                    </li>
+                }
+                @if (Rights.HasMenuAccess(Controllers.User))
+                {
+                    <li id="liUserManage" class="dropdown nav-link">
+                        <a href="#" title="@SmartLibrary.Resources.General.UserManagement" data-toggle="dropdown" class="dropdown-toggle" data-target=".usermanagement-dropdown"><img src="@Url.Content("~/Images/usermanagement.svg")" alt="User Management" /></a>
+                    </li>
+                }
+                @if (Rights.HasMenuAccess(Controllers.Master))
+                {
+                    <li id="liMaster" class="dropdown nav-link">
+                        <a href="#" title="@SmartLibrary.Resources.General.Master" data-toggle="dropdown" class="dropdown-toggle" data-target=".master-dropdown"><img src="@Url.Content("~/Images/settings.svg")" alt="Master" /></a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+    <button class="nav-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+</div>
+<div class="dropdown fixed">
+    <ul class="dropdown-menu profile-dropdown">
+        <li id="liProfile"><a href="@Url.Action(Actions.UserProfile, Controllers.User)" title="@SmartLibrary.Resources.General.ViewProfile"><img class="submenu-icons" src="~/Images/user-profile.svg" alt="@SmartLibrary.Resources.General.ViewProfile" />@SmartLibrary.Resources.General.ViewProfile</a></li>
+        @*<li id="liChangePassword"><a href="@Url.Action(Actions.ChangePassword, Controllers.User)" title="@SmartLibrary.Resources.General.ChangePassword"><img class="submenu-icons" src="~/Images/user.svg" alt="@SmartLibrary.Resources.General.ChangePassword" />@SmartLibrary.Resources.General.ChangePassword</a></li>*@
+        <li><a href="@Url.Action(Actions.Logout, Controllers.Account)" title="@SmartLibrary.Resources.General.Logout"><img class="submenu-icons" src="~/Images/logout.svg" alt="@SmartLibrary.Resources.General.Logout" />@SmartLibrary.Resources.General.Logout</a></li>
+    </ul>
+</div>
+<div class="dropdown fixed">
+    <ul class="dropdown-menu master-dropdown">
+        @if (Rights.HasAccess(Controllers.Master, Actions.BookGenre))
+        {
+            <li id="liBookGenre"><a href="@Url.Action(Actions.BookGenre, Controllers.Master)" title="@SmartLibrary.Resources.General.BookGenre"><img class="submenu-icons" src="~/Images/books-stack-of-three.svg" alt="@SmartLibrary.Resources.General.BookGenre" />@SmartLibrary.Resources.General.BookGenre </a></li>
+        }
+        @if (Rights.HasAccess(Controllers.Master, Actions.BookLocation))
+        {
+            <li id="liBookLocation"><a href="@Url.Action(Actions.BookLocation, Controllers.Master)" title="@SmartLibrary.Resources.General.BookLocation"><img class="submenu-icons" src="~/Images/location.svg" alt="@SmartLibrary.Resources.General.BookLocation" />@SmartLibrary.Resources.General.BookLocation </a></li>
+        }
+        @if (Rights.HasAccess(Controllers.Master, Actions.Space))
+        {
+            <li id="liBookSpace"><a href="@Url.Action(Actions.Space, Controllers.Master)" title="@SmartLibrary.Resources.General.Space"><img class="submenu-icons" src="~/Images/space.svg" alt="@SmartLibrary.Resources.General.Space" />@SmartLibrary.Resources.General.Space</a></li>
+        }
+    </ul>
+</div>
+<div class="dropdown fixed">
+    <ul class="dropdown-menu usermanagement-dropdown">
+        @if (Rights.HasAccess(Controllers.User, Actions.Users))
+        {
+            <li id="liUsers"><a href="@Url.Action(Actions.Index, Controllers.User)" title="@SmartLibrary.Resources.General.User"><img class="submenu-icons" src="~/Images/user.svg" alt="@SmartLibrary.Resources.General.User" />@SmartLibrary.Resources.General.User </a></li>
+        }
+        @if (Rights.HasAccess(Controllers.User, Actions.Role))
+        {
+            <li id="liRoles"><a href="@Url.Action(Actions.Role, Controllers.User)" title="@SmartLibrary.Resources.General.Role"><img class="submenu-icons" src="~/Images/user-rights.svg" alt="@SmartLibrary.Resources.General.Role" />@SmartLibrary.Resources.General.Role </a></li>
+        }
+    </ul>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        GetScrollReset();
+    });
+</script>
+

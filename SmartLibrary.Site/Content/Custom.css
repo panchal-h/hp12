@@ -1,0 +1,581 @@
+﻿/*.list-table > thead > tr > th:first-child {
+    padding: 10px 0px 10px 50px !important;
+}*/
+
+.table .thead-dark th {
+    color: #495057;
+    background-color: #e9ecef;
+    /*border-color: #32383e;*/
+}
+
+.Role-card {
+    padding: 9px !important;
+}
+
+.frmRole {
+    margin: 0 auto;
+    width: 20%;
+}
+
+.modal-Checkbox {
+    margin-left: 25%;
+    margin-top: 4%;
+}
+
+.chkSuperAdmin {
+    margin-left: 37%;
+    margin-top: 4%;
+}
+
+.checkbox-primary {
+    padding-left: 24px;
+}
+
+.error {
+    color: red;
+}
+
+.txtBlur {
+    opacity: 0.5;
+}
+
+.member-box > a > img {
+    border-radius: 500px;
+    height: 73px;
+    width: 73px;
+    margin-bottom: 20px;
+}
+/*Validation Error Formatting*/
+.field-validation-error {
+    color: red;
+}
+
+.input-validation-error {
+    border-color: #EC3633 !important;
+    border-width: 1px;
+}
+
+input.input-validation-error[type="checkbox"] {
+    outline: 1px solid #EC3633;
+}
+
+input.input-validation-error[type="radio"] {
+    outline: 1px solid #ff0000;
+}
+/* Better red border around controls with errors*/
+.has-error .form-control {
+    border-color: #EC3633;
+    border-width: 1px;
+    /*outline: solid 2px #EC3633;*/
+}
+
+    .has-error .form-control[type="checkbox"] {
+        border-color: #EC3633;
+        border-width: 2px;
+        outline: solid 2px #EC3633 !important;
+    }
+
+.action {
+    padding-right: 3% !important;
+}
+
+.visible-item {
+    display: block;
+    visibility: visible;
+}
+
+.hidden-item {
+    display: none;
+    visibility: hidden;
+}
+
+.submenu-icons {
+    width: 15px;
+    height: 15px;
+    margin-left: 8px;
+    margin-right: 8px;
+    margin-top: 5px;
+}
+
+.chk-center {
+    text-align: center !important;
+}
+
+#tblPages th {
+    width: 15%;
+}
+
+.book_name {
+    width: auto !important;
+}
+
+.lblNoRecord {
+    border-bottom: none !important;
+    font-weight: bold;
+    color: #E50006;
+}
+
+.card-container .filter-panel {
+    padding-right: 0px !important;
+}
+
+th.action {
+    padding-left: 9% !important;
+}
+
+td.action {
+    text-align: right;
+    padding-right: 3% !important;
+}
+
+.status_padding {
+    padding: 5px 10px !important;
+}
+
+.status.error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.no-Focus:focus {
+    border-color: #ecedf1 !important;
+}
+
+.favourite-icon {
+    padding: 9px 12px;
+}
+
+.BookDetailSidebar {
+    overflow: hidden !important;
+}
+
+#noRecord {
+    display: none;
+}
+
+.card-header-image {
+    height: 30px;
+    width: 30px;
+}
+
+.card-title-img {
+    vertical-align: super;
+    font-weight: 700;
+}
+
+.star-interest {
+    margin-top: 9px;
+    font-size: 16px;
+}
+.book-interest{
+    padding-right: 5px !important;
+}
+
+.book-interest:hover {
+    padding-right: 9px !important;
+    margin-right: 9%;
+}
+
+@media (max-width:767px) {
+    .frmRole {
+        margin: 0 auto;
+        width: 100%;
+    }
+
+    #tblPages th {
+        width: 20%;
+    }
+
+    th.action {
+        padding-left: 3% !important;
+    }
+
+    .book-status {
+        text-align: center;
+        margin-top: 2%;
+    }
+}
+
+@media (max-width: 991px) {
+    th.action {
+        padding-left: 3% !important;
+    }
+
+    .book-status-borrowed {
+        margin-top: 0px !important;
+    }
+}
+
+.containercheckbox {
+    display: inline-block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+    /* Hide the browser's default checkbox */
+    .containercheckbox input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+/* Create a custom checkbox */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+}
+
+/* On mouse-over, add a grey background color */
+.containercheckbox input ~ .checkmark {
+    background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.containercheckbox input:checked ~ .checkmark {
+    background-color: #006557;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the checkmark when checked */
+.containercheckbox input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Style the checkmark/indicator */
+.containercheckbox .checkmark:after {
+    left: 10px;
+    top: 6px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.book-grid .fixed-width {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    -ms-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    max-width: 250px;
+    margin: 0px auto;
+    line-height: 22px !important;
+}
+
+.image-small-size {
+    height: 40px;
+    width: 40px;
+}
+
+.book-status-borrowed {
+    margin-top: 10px;
+}
+
+.notification-panel {
+    overflow-y: hidden !important;
+}
+
+.sidebar .middle-nav > li > a .count {
+    position: absolute;
+    font-size: 12px;
+    line-height: 18px;
+    text-align: center;
+    padding: 0 4px;
+    background: #ff3838;
+    color: #fff;
+    border-radius: 500px;
+    right: 14px;
+    top: 6px;
+    min-width: 26px;
+    z-index: 2;
+}
+
+.book-image-custom {
+    width: 129px;
+    height: 154px;
+}
+
+.member-image-custom {
+    border-radius: 500px !important;
+    padding: 0px;
+    padding-top: 2px;
+    height: 117px;
+    width: 117px;
+}
+
+.cus-modal .modal-close > img {
+    height: 13px !important;
+    width: 12px !important;
+}
+
+.SideBarMenu .dropdown-menu {
+    z-index: 11;
+}
+
+.book-quick-view-open .blue-backdrop, .nav-open .blue-backdrop {
+    opacity: 0.9;
+    visibility: visible;
+}
+
+/* start : css for loader */
+.custom-loading {
+    position: absolute;
+    top: 45%;
+    left: 45%;
+}
+
+#floatingBarsG {
+    position: relative;
+    width: 22px;
+    height: 27px;
+    margin: auto;
+}
+
+.blockG {
+    position: absolute;
+    background-color: rgb(255,255,255);
+    width: 3px;
+    height: 8px;
+    border-radius: 3px 3px 0 0;
+    -o-border-radius: 3px 3px 0 0;
+    -ms-border-radius: 3px 3px 0 0;
+    -webkit-border-radius: 3px 3px 0 0;
+    -moz-border-radius: 3px 3px 0 0;
+    transform: scale(0.4);
+    -o-transform: scale(0.4);
+    -ms-transform: scale(0.4);
+    -webkit-transform: scale(0.4);
+    -moz-transform: scale(0.4);
+    animation-name: fadeG;
+    -o-animation-name: fadeG;
+    -ms-animation-name: fadeG;
+    -webkit-animation-name: fadeG;
+    -moz-animation-name: fadeG;
+    animation-duration: 1.2s;
+    -o-animation-duration: 1.2s;
+    -ms-animation-duration: 1.2s;
+    -webkit-animation-duration: 1.2s;
+    -moz-animation-duration: 1.2s;
+    animation-iteration-count: infinite;
+    -o-animation-iteration-count: infinite;
+    -ms-animation-iteration-count: infinite;
+    -webkit-animation-iteration-count: infinite;
+    -moz-animation-iteration-count: infinite;
+    animation-direction: normal;
+    -o-animation-direction: normal;
+    -ms-animation-direction: normal;
+    -webkit-animation-direction: normal;
+    -moz-animation-direction: normal;
+}
+
+#rotateG_01 {
+    left: 0;
+    top: 10px;
+    animation-delay: 0.45s;
+    -o-animation-delay: 0.45s;
+    -ms-animation-delay: 0.45s;
+    -webkit-animation-delay: 0.45s;
+    -moz-animation-delay: 0.45s;
+    transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+}
+
+#rotateG_02 {
+    left: 3px;
+    top: 3px;
+    animation-delay: 0.6s;
+    -o-animation-delay: 0.6s;
+    -ms-animation-delay: 0.6s;
+    -webkit-animation-delay: 0.6s;
+    -moz-animation-delay: 0.6s;
+    transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+}
+
+#rotateG_03 {
+    left: 9px;
+    top: 1px;
+    animation-delay: 0.75s;
+    -o-animation-delay: 0.75s;
+    -ms-animation-delay: 0.75s;
+    -webkit-animation-delay: 0.75s;
+    -moz-animation-delay: 0.75s;
+    transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+}
+
+#rotateG_04 {
+    right: 3px;
+    top: 3px;
+    animation-delay: 0.9s;
+    -o-animation-delay: 0.9s;
+    -ms-animation-delay: 0.9s;
+    -webkit-animation-delay: 0.9s;
+    -moz-animation-delay: 0.9s;
+    transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+}
+
+#rotateG_05 {
+    right: 0;
+    top: 10px;
+    animation-delay: 1.05s;
+    -o-animation-delay: 1.05s;
+    -ms-animation-delay: 1.05s;
+    -webkit-animation-delay: 1.05s;
+    -moz-animation-delay: 1.05s;
+    transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+}
+
+#rotateG_06 {
+    right: 3px;
+    bottom: 2px;
+    animation-delay: 1.2s;
+    -o-animation-delay: 1.2s;
+    -ms-animation-delay: 1.2s;
+    -webkit-animation-delay: 1.2s;
+    -moz-animation-delay: 1.2s;
+    transform: rotate(135deg);
+    -o-transform: rotate(135deg);
+    -ms-transform: rotate(135deg);
+    -webkit-transform: rotate(135deg);
+    -moz-transform: rotate(135deg);
+}
+
+#rotateG_07 {
+    bottom: 0;
+    left: 9px;
+    animation-delay: 1.35s;
+    -o-animation-delay: 1.35s;
+    -ms-animation-delay: 1.35s;
+    -webkit-animation-delay: 1.35s;
+    -moz-animation-delay: 1.35s;
+    transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+}
+
+#rotateG_08 {
+    left: 3px;
+    bottom: 2px;
+    animation-delay: 1.5s;
+    -o-animation-delay: 1.5s;
+    -ms-animation-delay: 1.5s;
+    -webkit-animation-delay: 1.5s;
+    -moz-animation-delay: 1.5s;
+    transform: rotate(-135deg);
+    -o-transform: rotate(-135deg);
+    -ms-transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
+    -moz-transform: rotate(-135deg);
+}
+
+
+
+@keyframes fadeG {
+    0% {
+        background-color: rgb(0,0,0);
+    }
+
+    100% {
+        background-color: rgb(255,255,255);
+    }
+}
+
+@-o-keyframes fadeG {
+    0% {
+        background-color: rgb(0,0,0);
+    }
+
+    100% {
+        background-color: rgb(255,255,255);
+    }
+}
+
+@-ms-keyframes fadeG {
+    0% {
+        background-color: rgb(0,0,0);
+    }
+
+    100% {
+        background-color: rgb(255,255,255);
+    }
+}
+
+@-webkit-keyframes fadeG {
+    0% {
+        background-color: rgb(0,0,0);
+    }
+
+    100% {
+        background-color: rgb(255,255,255);
+    }
+}
+
+@-moz-keyframes fadeG {
+    0% {
+        background-color: rgb(0,0,0);
+    }
+
+    100% {
+        background-color: rgb(255,255,255);
+    }
+}
+/* end : css for loader */
+
+
+#arabic .activity-filter .sub-navigation {
+    margin-left: 190px;
+}
+
+.datatable-loadingbar {
+    width: 135px;
+    height: 135px;
+    margin: auto;
+}
+
+div.dataTables_wrapper div.dataTables_processing {
+    background: transparent !important;
+}
+
+.title-pointer {
+    cursor: pointer !important;
+}

@@ -1,0 +1,37 @@
+﻿@model IEnumerable<SmartLibrary.Models.Message>
+
+<ul>
+    @if (Model != null && Model.Count() > 0)
+    {
+        @*<li class="empty-state">
+                @SmartLibrary.Resources.Messages.NoUsersFound
+            </li>*@
+        foreach (var message in Model)
+        {
+            <li class="active">
+                <a href="#" title="@SmartLibrary.Resources.General.Admin">
+                    <div class="upper">
+                        <img src="@Url.Content("~/images/default-user.png")" alt="">
+                        <span class="name">@SmartLibrary.Resources.General.Admin</span>
+                        <span class="time">@SmartLibrary.Services.CommonBL.GetSpentTime(message.CreatedDate)</span>
+                        @*<span class="time">Return Book</span>*@
+                    </div>
+                    <p>@(message.Description.Length < 100 ? message.Description : message.Description.Substring(0, 100))</p>
+                </a>
+            </li>
+        }
+    }
+    else
+    {
+        <li class="active">
+            <a href="#" title="@SmartLibrary.Resources.General.Admin">
+                <div class="upper">
+                    <img src="@Url.Content("~/images/default-user.png")" alt="">
+                    <span class="name">@SmartLibrary.Resources.General.Admin</span>
+                </div>
+                <p></p>
+            </a>
+        </li>
+    }
+
+</ul>

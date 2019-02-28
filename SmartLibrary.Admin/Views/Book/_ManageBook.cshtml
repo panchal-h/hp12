@@ -1,0 +1,236 @@
+﻿@model SmartLibrary.Models.Book
+
+<div class="modal fade cus-modal book-modal" id="book-modal" tabindex="-1" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="modal-close" data-dismiss="modal">
+                    <img src="@Url.Content("~/Images/modal-close.svg")" alt="@SmartLibrary.Resources.General.Close" />
+                </a>
+                <h4 class="modal-title has-icon">
+                    <span>
+                        <img src="@Url.Content("~/Images/book-stack.svg")" alt="@SmartLibrary.Resources.Books.BookStack" />
+                        @(Model.ID > 0 ? SmartLibrary.Resources.General.Edit : SmartLibrary.Resources.General.AddNew)
+                        @SmartLibrary.Resources.General.Book
+                    </span>
+                </h4>
+            </div>
+
+            @using (Html.SmartLibSecureForm(SmartLibrary.Admin.Pages.Actions.AddEditBook, SmartLibrary.Admin.Pages.Controllers.Book, new { id = "formAddEditBook" }))
+            {
+                @Html.HiddenFor(x => x.ID)
+                @Html.HiddenFor(x => x.ImagePath)
+                @Html.HiddenFor(x => x.CurrentQuantity)
+                @Html.Hidden("image")
+                @Html.Hidden("isImageUpdated", false)
+                <div class="modal-body">
+                    <div class="row eqHeight small-gutter">
+                        <div class="col-md-6 col-sm-12 demo-wrap upload-demo">
+                            <div class="img-uploaded-wrapper">
+                                <div class="img-uploaded-viewer">
+                                    <button type="button" class="upload-result btn btn-primary btn-lg" style="width:40%;">@SmartLibrary.Resources.General.Add</button>
+                                    <button type="button" class="upload-cancel btn btn-primary btn-lg" style="width:40%;">@SmartLibrary.Resources.General.Remove</button>
+                                    <div class="upload-demo-wrap">
+                                        <div id="upload-demo"></div>
+                                        <div class="clearfix"></div>
+                                    </div>
+
+                                    <div class="img-uploader form-group">
+                                        <a href="#" title="@SmartLibrary.Resources.Books.UploadImageCover">
+                                            <span>@SmartLibrary.Resources.Books.UploadImageCover</span>
+                                        </a>
+                                        <input type="file" id="upload" value="Choose a file" accept="image/*">
+                                    </div>
+                                    <div class="image-wrapper-div cover-img-viewer form-group" @(Model.ID > 0 ? "style='display:none;'" : "")>
+                                        <div class="image-wrapper">
+                                            @if (Model.ID > 0)
+                                            {
+                                                <img src="@Url.Content("~/" + ProjectConfiguration.BookImagesPath + "/" + Model.ImagePath)" alt="" />
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="loader"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group floating big-input has-icon">
+                                @Html.LabelFor(x => x.ISBNNo, new { @class = "control-label" })
+                                @if (Model.ID > 0)
+                                {
+                                    @Html.HiddenFor(x => x.ISBNNo)
+                                    @Html.TextBox("ISBNNoDisabled", Model.ISBNNo, new { @class = "form-control", disabled = "disabled" })
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(x => x.ISBNNo, new { @class = "form-control" })
+                                    <a href="#" class="icon-wrapper" tabindex="-1" onclick="GetBookByISBN()"><img src="@Url.Content("~/Images/search2.svg")" alt="Search" /></a>
+                                }
+                            </div>
+                            <div class="form-group floating big-input">
+                                @Html.LabelFor(x => x.BookName, new { @class = "control-label" })
+                                @Html.TextBoxFor(x => x.BookName, new { @class = "form-control" })
+                            </div>
+                            <div class="form-group floating big-input">
+                                @Html.LabelFor(x => x.Authors, new { @class = "control-label" })
+                                @Html.TextBoxFor(x => x.Authors, new { @class = "form-control" })
+                            </div>
+                            <div class="row small-gutter-xs">
+                                <div class="col-md-6">
+                                    <div class="form-group floating big-input">
+                                        @Html.LabelFor(x => x.TotalQuantity, new { @class = "control-label" })
+                                        @Html.TextBoxFor(x => x.TotalQuantity, new { @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group big-input floating drpSelect">
+                                        @Html.LabelFor(x => x.BookGenreId, new { @class = "control-label" })
+                                        @Html.DropDownListFor(m => m.BookGenreId, SmartLibrary.Services.CommonBL.GetListForDropdown<SmartLibrary.Models.BookGenre>(SmartLibrary.Resources.General.SelectGenre, Model.BookGenreId.String(), Model.BookGenre.String()), new { @class = "form-control selectpicker" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group big-input floating drpSelect">
+                                @Html.LabelFor(x => x.BookLocationId, new { @class = "control-label" })
+                                @Html.DropDownListFor(m => m.BookLocationId, SmartLibrary.Services.CommonBL.GetListForDropdown<SmartLibrary.Models.BookLocation>(SmartLibrary.Resources.General.SelectLocation, Model.BookLocationId.String(), Model.BookLocation.String()), new { @class = "form-control selectpicker" })
+                            </div>
+                            <div class="form-group big-input">
+                                <label class="containercheckbox">
+                                    @Html.LabelFor(x => x.Active, new { @class = "control-label" })
+                                    @Html.CheckBox("Active", Model.Active.HasValue ? Model.Active.Value : true)
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group floating big-input has-scroll">
+                        @Html.LabelFor(x => x.Description, new { @class = "control-label" })
+                        @Html.TextArea("Description", HttpUtility.HtmlDecode(Model.Description), new { @class = "form-control", rows = "5" })
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-sm-6 col-sm-offset-3">
+                            <button type="button" class="btn btn-primary btn-block btn-lg" onclick="SaveData()">
+                                @((Model.ID > 0 ? SmartLibrary.Resources.General.Update : SmartLibrary.Resources.General.Add) + " " + SmartLibrary.Resources.General.Book)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@* https://foliotek.github.io/Croppie/ *@
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/croppie.css")" />
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/croppie-demo.css")" />
+<script src="@Url.Content("~/Scripts/croppie.js")"></script>
+<script src="@Url.Content("~/Scripts/croppie-demo.js")"></script>
+<script>
+    var invalidImageMessage = "@SmartLibrary.Resources.Messages.InvalidImageMessage";
+     
+    $(document).ready(function () {
+        setTimeout(() => {
+            CroppieDemo.init();
+            $('#upload-demo input').rules('add', { range: [0, Number.MAX_SAFE_INTEGER] });
+        }, 1000);
+
+        if ($("#ID", "#formAddEditBook").val() > 0) {
+            $(".big-input").addClass("has-value");
+        }
+       
+        $(".selectpicker", "#formAddEditBook").selectpicker({ 'liveSearch': true });
+        //$(".selectpicker", "#formAddEditBook").selectpicker();
+        $(".form-group.floating .form-control", "#formAddEditBook").trigger("focusout");
+        $('#formAddEditBook').on('keypress', function (e) {
+            if (e.keyCode == 13 && e.target.id != "Description") {
+                e.preventDefault();
+                e.target.id == "ISBNNo" ? GetBookByISBN() : SaveData();
+                return false;
+            }
+        });
+
+        $('.img-uploaded-viewer').popover({
+            container: 'body', content: '@SmartLibrary.Resources.Messages.RequiredBookCoverImage', toggle: "popover", placement: "top", trigger: "manual"
+        });
+        $('html').off('mouseenter mouseleave', '.img-uploaded-viewer.input-validation-error.has-error');
+        $('html').on('mouseenter', '.img-uploaded-viewer.input-validation-error.has-error', function () {
+            $('.img-uploaded-viewer').popover('show');
+        }).on('mouseleave', '.img-uploaded-viewer.input-validation-error.has-error', function () {
+            $('.img-uploaded-viewer').popover('hide');
+        });
+    });
+
+    function GetBookByISBN() {
+        if ($("#ISBNNo").valid()) {
+            var $form = $("#formAddEditBook");
+            $.ajax({
+                type: "Get",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.GetBookByISBN, SmartLibrary.Admin.Pages.Controllers.Book)" + "?isbn=" + $("#ISBNNo").val(),
+                traditional: true,
+                beforeSend: function (xhr) { AddRequestHeader(xhr, $form); },
+                success: function (response) {
+                    if (response.status == statusConstant.success) {
+                        $('#BookName').val(response.bookModel.BookName || "");
+                        $('#Description').val(response.bookModel.Description || "");
+                        $('#Authors').val(response.bookModel.Authors || "");
+                        if (response.bookModel.Image && response.bookModel.Image.trim() != '')
+                            setCroppedImage('<img src="' + response.bookModel.Image + '" />');
+                        $(".form-group.floating .form-control", "#formAddEditBook").trigger("focusout");
+                    }
+                    ShowMessage(response.status, response.message, response.title, null, null)
+                }
+            });
+        }
+        return false;
+    }
+
+    function SaveData() {
+        $('#image').val($('.image-wrapper>img').attr('src'));
+
+        var $form = $("#formAddEditBook");
+        if ($form.valid() & validImage()) {
+            var data = $form.serialize();
+
+            $.ajax({
+                type: "Post",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.AddEditBook, SmartLibrary.Admin.Pages.Controllers.Book)",
+                traditional: true,
+                data: data,
+                beforeSend: function (xhr) { AddRequestHeader(xhr, $form); },
+                success: function (response) {
+                    if (response.status == statusConstant.success) {
+                        $('#book-modal').modal('hide');
+                        @if (Model.ID > 0)
+                        {
+                            <text>BookDetailSideBarLoad($("#ID", $form).val());</text>
+                        }
+                        BindTable($("#ID", "#formAddEditBook").val(), $("#ISBNNo", "#formAddEditBook").val());
+                    }
+                    ShowMessage(response.status, response.message, response.title, null, null)
+                }
+            });
+        }
+
+        return false;
+    }
+
+    function validImage() {
+        if ($('.upload-demo.ready').length == 0 && $('.image-wrapper').find('img').length > 0) {
+            return true;
+        }
+        $('.img-uploaded-viewer').addClass('input-validation-error has-error');
+        return false;
+    }
+
+    function setCroppedImage(html) {
+        $('.image-wrapper').html(html);
+        $('.upload-demo').removeClass('ready show-loader');
+        $('.img-uploaded-viewer').removeClass('input-validation-error has-error');
+        $('.img-uploaded-viewer').popover('hide');
+        $('#isImageUpdated').val(true);
+    }
+</script>

@@ -1,0 +1,56 @@
+﻿<div class="modal fade cus-modal add-member-modal" id="invite-member-modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="modal-close" data-dismiss="modal"><img src="../images/modal-close.svg" alt="Close"></a>
+                <img src="../images/invite-member.svg" alt="Nikola Uzunov" class="modal-intro-image">
+                <h4 class="modal-title">@SmartLibrary.Resources.General.InviteNewMembers</h4>
+            </div>
+            @using (Html.SmartLibSecureForm(SmartLibrary.Admin.Pages.Actions.InviteCustomer, SmartLibrary.Admin.Pages.Controllers.Member, new { id = "formAddNewMember" }))
+            {
+                <div class="modal-body">
+                    <div class="form-group floating has-value big-input extended">
+                        <label class="control-label">@SmartLibrary.Resources.General.Email</label>
+                        <input required class="form-control" type="email" id="email">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input class="btn btn-primary btn-lg btn-block" value="Send Invitation" type="button" onclick="SendInvite()">
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $(".selectpicker", "#formAddNewMember").selectpicker({ 'liveSearch': true });
+        $('#formAddNewMember').on('keypress', function (e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+                return SendInvite();
+            }
+        });
+    });
+
+    function SendInvite() {
+        var $form = $('#formAddNewMember');
+        if (!$("#formAddNewMember").valid()) return;
+        else {
+            var email = $("#email").val();
+            var loginType = $('#UserType').val();
+            var PCNumber = $('#PCNumber').val();
+            $.ajax({
+                type: "Post",
+                url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.InviteCustomer, SmartLibrary.Admin.Pages.Controllers.Member)",
+                traditional: true,
+                data: { email: email },
+                beforeSend: function (xhr) { xhr.setRequestHeader('__RequestVerificationToken', $('input[name="__RequestVerificationToken"]', $("#formAddNewMember")).val()); },
+                success: function (response) {
+                    $('#invite-member-modal').modal('hide');
+                    ShowMessage(response.status, response.message, response.title, null, null)
+
+                }
+            });
+        }
+    }
+</script>

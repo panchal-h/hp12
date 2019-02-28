@@ -1,0 +1,245 @@
+﻿@model SmartLibrary.Models.Book
+@using SmartLibrary.Infrastructure;
+<div class="book-quick-view">
+    <div class="header">
+        <a href="#" class="close-btn" title="@SmartLibrary.Resources.General.Hide"><img src="@Url.Content("~/Images/chevron-right.svg")" alt="Chevron Right" /><img src="@Url.Content("~/Images/chevron-left.svg")" alt="Chevron Left" class="inverse" /></a>
+        <h4 class="title">@SmartLibrary.Resources.General.Information</h4>
+        <ul class="action-links">
+            <li><a href="#" title="@SmartLibrary.Resources.General.View @SmartLibrary.Resources.General.History" class="history-view-btn"><img src="@Url.Content("~/Images/history.svg")" alt="@SmartLibrary.Resources.General.History" /><img src="@Url.Content("~/Images/history-blue.svg")" alt="@SmartLibrary.Resources.General.History" class="active-icon"></a></li>
+            <li><a href="#" title="@SmartLibrary.Resources.General.ActiveBorrorwers" class="active-borrower-btn"><img src="@Url.Content("~/Images/ActiveBorrorwer.svg")" alt="@SmartLibrary.Resources.General.History" /><img src="@Url.Content("~/Images/ActiveBorrorwer-blue.svg")" alt="@SmartLibrary.Resources.General.History" class="active-icon"></a></li>
+            <li><a href="javascript:void(0);" title="@SmartLibrary.Resources.General.Edit" onclick="LoadModal(@Model.ID)"><img src="@Url.Content("~/Images/edit.svg")" alt="@SmartLibrary.Resources.General.Edit" /></a></li>
+            <li><a href="@Url.Action(SmartLibrary.Admin.Pages.Actions.BookDetailView, SmartLibrary.Admin.Pages.Controllers.Book,new { bookId = Model.IdEncrypted, q = EncryptionDecryption.EncryptByTripleDES("comments") })" title="@SmartLibrary.Resources.General.Comments"><img src="@Url.Content("~/Images/comment.svg")" alt="@SmartLibrary.Resources.General.Comments" /></a></li>
+            <li><a href="@Url.Action(SmartLibrary.Admin.Pages.Actions.BookDetailView, SmartLibrary.Admin.Pages.Controllers.Book,new { bookId = Model.IdEncrypted })" title="@SmartLibrary.Resources.General.FullScreen"><img src="@Url.Content("~/Images/full-screen.svg")" alt="@SmartLibrary.Resources.General.FullScreen" /></a></li>
+        </ul>
+    </div>
+    <div class="middle-section custom-scroll">
+        <div class="scroller-inner">
+            <img src="@Url.Content("~/" + ProjectConfiguration.BookImagesPath + "/" + Model.ImagePath)" alt="@Model.BookName" class="book-image" onerror="this.src = '@Url.Content("~/Images/DefaultBookImage.jpg")'; "/>
+            <ul class="book-specs">
+                <li>
+                    <label>@SmartLibrary.Resources.General.Name</label>
+                    <span>@Model.BookName</span>
+                    <img src="@Url.Content("~/Images/book-name.svg")" alt="@SmartLibrary.Resources.General.Name" />
+                </li>
+                <li>
+                    <label>@SmartLibrary.Resources.Books.ISBN</label>
+                    <span>@Model.ISBNNo</span>
+                    <img src="@Url.Content("~/Images/barcode.svg")" alt="@SmartLibrary.Resources.Books.ISBN" />
+                </li>
+                <li>
+                    <label>@SmartLibrary.Resources.Books.Location</label>
+                    <span>@Model.BookLocation</span>
+                    <img src="@Url.Content("~/Images/library.svg")" alt=">@SmartLibrary.Resources.Books.Location" />
+                </li>
+                <li>
+                    <label>@SmartLibrary.Resources.Books.Genre</label>
+                    <span>@Model.BookGenre</span>
+                    <img src="@Url.Content("~/Images/library.svg")" alt="@SmartLibrary.Resources.Books.Genre" />
+                </li>
+                <li>
+                    <label>@SmartLibrary.Resources.Books.LatestBorrower</label>
+                    <span>@(Model.LatestBorrower.ToStringTrim() == string.Empty ? @SmartLibrary.Resources.Books.NotBorrowed : Model.LatestBorrower.ToStringTrim())</span>
+                    <img src="@Url.Content("~/Images/profile-thin.svg")" alt="@SmartLibrary.Resources.General.User" />
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row bottom-section">
+        <div class="col-xs-12  col-sm-6">
+            <a href="@Url.Action(SmartLibrary.Admin.Pages.Actions.ManageMessages, SmartLibrary.Admin.Pages.Controllers.Message)" class="btn btn-grey btn-lg" title="@SmartLibrary.Resources.General.Send @SmartLibrary.Resources.General.Message">
+                @SmartLibrary.Resources.General.Send @SmartLibrary.Resources.General.Message
+            </a>
+        </div>
+        @if (Model.Active.ToBoolean())
+        {
+        <div class="col-xs-12 col-sm-6 book-status">
+            @if (Model.CurrentBookStatus == @ConvertTo.ToInteger(@SystemEnumList.BorrowBookStatus.Available.GetHashCode()))
+                {
+                <a href="#borrow-book-modal" data-toggle="modal" class="btn btn-primary btn-lg" title="@SmartLibrary.Resources.General.Register  @SmartLibrary.Resources.Books.Borrower">@SmartLibrary.Resources.General.Register  @SmartLibrary.Resources.Books.Borrower</a>
+                }
+                else
+                {
+                <span class="status warning book-status-borrowed">@SmartLibrary.Resources.Books.AllBooksBorrowed</span>
+                }
+
+        </div>
+        }
+    </div>
+    <div class="history-tab custom-scroll">
+        <div class="scroller-inner">
+            <h3 class="title">@SmartLibrary.Resources.General.History</h3>
+            <ul class="history-list">
+                @if (Model.BorrowedBookList.Count() == 0)
+                {
+                <li class="lblNoRecord">
+                    <div class="text-center">
+                        <label>@SmartLibrary.Resources.Messages.NoRecordFound</label>
+                    </div>
+
+
+                </li>
+                }
+                @foreach (var bookborrow in Model.BorrowedBookList)
+                {
+                <li>
+                    <ul class="book-specs">
+                        <li>
+                            <label>@SmartLibrary.Resources.General.Member @SmartLibrary.Resources.General.Name</label>
+                            <span>@bookborrow.BorrowerName (@bookborrow.BorrowerEmail)</span>
+                            <img src="@Url.Content("~/Images/profile-thin.svg")" alt="@SmartLibrary.Resources.General.User" />
+                        </li>
+                        <li>
+                            <label>@SmartLibrary.Resources.Books.ReturnDate</label>
+                            <span>@ConvertTo.ToCustomDateFormat(bookborrow.ReturnDate, SmartLibrary.Infrastructure.ProjectConfiguration.DateFormat)</span>
+                            <img src="@Url.Content("~/Images/calendar-sm.svg")" alt="Calendar" />
+                        </li>
+                    </ul>
+                </li>
+                }
+            </ul>
+        </div>
+    </div>
+    <div class="activeBorrorwer-tab custom-scroll">
+        <div class="scroller-inner">
+            <h3 class="title">@SmartLibrary.Resources.General.ActiveBorrorwers</h3>
+            <ul class="history-list">
+                @if (Model.ActiveBorrowers.Count() == 0)
+                {
+                    <li class="lblNoRecord">
+                        <div class="text-center">
+                            <label>@SmartLibrary.Resources.Messages.NoRecordFound</label>
+                        </div>
+                    </li>
+                }
+                @foreach (var bookborrow in Model.ActiveBorrowers)
+                {
+                    string q = bookborrow.BorrowerEmail + "&" + 
+                        (bookborrow.ReturnDate.HasValue && bookborrow.ReturnDate.Value.Date < DateTime.Now.Date ? SystemEnumList.BorrowBookStatus.OverDue.GetHashCode() : SystemEnumList.BorrowBookStatus.Borrowed.GetHashCode());
+                    <li class="active-redirect" data-url="@Url.Action(SmartLibrary.Admin.Pages.Actions.BookDetailView, SmartLibrary.Admin.Pages.Controllers.Book, new { bookId = Model.IdEncrypted, q = EncryptionDecryption.EncryptByTripleDES(q) })" style="cursor:pointer;">
+                        <ul class="book-specs">
+                            <li>
+                                <label>@SmartLibrary.Resources.General.Member @SmartLibrary.Resources.General.Name</label>
+                                <span>@bookborrow.BorrowerName (@bookborrow.BorrowerEmail)</span>
+                                <img src="@Url.Content("~/Images/profile-thin.svg")" alt="@SmartLibrary.Resources.General.User" />
+                            </li>
+                            <li>
+                                <label>Return Date</label>
+                                <span>@ConvertTo.ToCustomDateFormat(bookborrow.ReturnDate, SmartLibrary.Infrastructure.ProjectConfiguration.DateFormat)</span>
+                                <img src="@Url.Content("~/Images/calendar-sm.svg")" alt="Calendar" />
+                            </li>
+                        </ul>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="modal fade cus-modal borrow-book-modal" id="borrow-book-modal" tabindex="-1">
+    @using (Html.SmartLibSecureForm(SmartLibrary.Admin.Pages.Actions.BorrowBook, SmartLibrary.Admin.Pages.Controllers.Book, new { id = "formDetailSideBar" }))
+    {
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header has-subtext">
+                <a href="#" class="modal-close" data-dismiss="modal"><img src="@Url.Content("~/Images/modal-close.svg")" alt="Close" /></a>
+                <h4 class="modal-title">@SmartLibrary.Resources.Books.Borrow @SmartLibrary.Resources.General.Book</h4>
+                <p class="sub-text">@SmartLibrary.Resources.Messages.BorrowBookforCustomerHeader</p>
+            </div>
+            <div class="modal-body">
+                <div class="form-group floating big-input has-value-fixed ">
+                    <label class="control-label">@SmartLibrary.Resources.General.Member</label>
+                    @Html.DropDownList("CustomerId", SmartLibrary.Services.CommonBL.GetListForDropdown<SmartLibrary.Models.Customer>(SmartLibrary.Resources.General.SelectMember, string.Empty, textField: "NameWithEmail", valueField: "Id"), new { @class = "form-control selectpicker", data_placeholder = @SmartLibrary.Resources.General.SelectMember, id = "ddlCustomer", required = true })
+                </div>
+                <div class="inline-calendar1 form-group">
+                    <div class="form-group floating has-value big-input">
+                        <label class="control-label">@SmartLibrary.Resources.Books.PickUpDate</label>
+                        <input type="text" class="form-control date-holder" readonly="" id="bookPickUpDate" />
+                    </div>
+                    <div class="calendar-body"></div>
+                </div>
+                <div class="form-group radio-wrapper">
+                    <span>@SmartLibrary.Resources.Books.BookPeriod</span>
+                    <p>@SmartLibrary.Resources.Messages.BookPeriodMessage </p>
+                    <ul class="radio-btn-group">
+                        <li>
+                            <label>
+                                <input type="radio" name="book-period" value="1W" />
+                                <span>@SmartLibrary.Resources.General.OneWeek</span>
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="radio" name="book-period" checked="checked" value="2W" />
+                                <span>@SmartLibrary.Resources.General.TwoWeeks</span>
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="radio" name="book-period" value="1M" />
+                                <span>@SmartLibrary.Resources.General.OneMonth</span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-block btn-lg" onclick="BorrowBook(@Model.ID,$('input[name=book-period]:checked').val(),$('#bookPickUpDate').val(),$('#ddlCustomer').val())">@SmartLibrary.Resources.Books.Borrow</button>
+            </div>
+        </div>
+    </div>
+    }
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".selectpicker").selectpicker({ 'liveSearch': true });
+        $(".inline-calendar1").each(function () {
+            var target = $(this).find(".calendar-body");
+            var dateHolder = $(this).find(".date-holder");
+            pickmeup(target[0], {
+                flat: true,
+                mode: 'single',
+                format: 'd b Y',
+                min: new Date()
+            });
+            target.on("pickmeup-change", function () {
+                var selectedValue = pickmeup(target[0]).get_date(true);
+                dateHolder.val(selectedValue);
+            });
+            var selectedValue = pickmeup(target[0]).get_date(true);
+            dateHolder.val(selectedValue);
+        });
+    });
+
+    $('.active-redirect').on('click', function () {
+        location.href = $(this).attr('data-url');
+    });
+
+    function BorrowBook(bookId, borrowedPeriod, pickUpDate, customerId) {
+        var $form = $('#formDetailSideBar');
+        if (!$("#formDetailSideBar").valid()) return;
+        var params = {};
+        params["pickUpDate"] = pickUpDate;
+        params["bookId"] = bookId;
+        params["period"] = borrowedPeriod;
+        params["customerId"] = customerId;
+        $.ajax({
+            type: "Post",
+            url: "@Url.Action(SmartLibrary.Admin.Pages.Actions.BorrowBook, SmartLibrary.Admin.Pages.Controllers.Book)",
+            traditional: true,
+            beforeSend: function (xhr) { xhr.setRequestHeader('__RequestVerificationToken', $('input[name="__RequestVerificationToken"]', $("#formDetailSideBar")).val()); },
+            data: params,
+            success: function (response) {
+                ShowMessage(response.status, response.message, response.title, null, null)
+                if (response.status == statusConstant.success) {
+                    $('#borrow-book-modal').modal('hide');
+                    $('.modal-backdrop').remove();
+                    setTimeout(BookDetailSideBarLoad, 500, bookId);
+                    BindTable(bookId);
+                }
+            }
+        });
+    }
+
+</script>
+
+

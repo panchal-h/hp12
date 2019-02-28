@@ -1,0 +1,723 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Actions" xml:space="preserve">
+    <value>أفعال</value>
+  </data>
+  <data name="Active" xml:space="preserve">
+    <value>نشيط</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>إضافة</value>
+  </data>
+  <data name="AddNew" xml:space="preserve">
+    <value>اضف جديد</value>
+  </data>
+  <data name="ApplicationName" xml:space="preserve">
+    <value>المكتبة الذكية</value>
+  </data>
+  <data name="Authorization" xml:space="preserve">
+    <value>تفويض</value>
+  </data>
+  <data name="BookGenre" xml:space="preserve">
+    <value>نوع الكتاب</value>
+  </data>
+  <data name="BookLocation" xml:space="preserve">
+    <value>كتاب الموقع</value>
+  </data>
+  <data name="BookSector" xml:space="preserve">
+    <value>قطاع الكتب</value>
+  </data>
+  <data name="Capacity" xml:space="preserve">
+    <value>سعة</value>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>تغيير كلمة السر</value>
+  </data>
+  <data name="ConfirmDelete" xml:space="preserve">
+    <value>تأكيد حذف؟</value>
+  </data>
+  <data name="ConfirmDeleteMessage" xml:space="preserve">
+    <value>هل أنت متأكد من أنك تريد حذف البند؟</value>
+  </data>
+  <data name="CreatedBy" xml:space="preserve">
+    <value>صنع من قبل</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>وصف</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>تصحيح</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>البريد الإلكتروني</value>
+  </data>
+  <data name="Entries" xml:space="preserve">
+    <value>إدخالات</value>
+  </data>
+  <data name="First" xml:space="preserve">
+    <value>أول</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>الاسم الاول</value>
+  </data>
+  <data name="Last" xml:space="preserve">
+    <value>الاخير</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>الكنية</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>جار التحميل ...</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>الخروج</value>
+  </data>
+  <data name="MessageType" xml:space="preserve">
+    <value>نوع الرسالة</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>اسم</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>التالى</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>لا</value>
+  </data>
+  <data name="NotificationTemplate" xml:space="preserve">
+    <value>قالب الإخطار</value>
+  </data>
+  <data name="Of" xml:space="preserve">
+    <value>من</value>
+  </data>
+  <data name="Page" xml:space="preserve">
+    <value>صفحة</value>
+  </data>
+  <data name="PageSize" xml:space="preserve">
+    <value>مقاس الصفحه</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>كلمه السر</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>سابق</value>
+  </data>
+  <data name="Processing" xml:space="preserve">
+    <value>معالجة ...</value>
+  </data>
+  <data name="Records" xml:space="preserve">
+    <value>تسجيل</value>
+  </data>
+  <data name="Role" xml:space="preserve">
+    <value>وظيفة</value>
+  </data>
+  <data name="SelectRole" xml:space="preserve">
+    <value>اختر الدور</value>
+  </data>
+  <data name="SessionExpired" xml:space="preserve">
+    <value>جيتار</value>
+  </data>
+  <data name="Showing" xml:space="preserve">
+    <value>عرض</value>
+  </data>
+  <data name="Space" xml:space="preserve">
+    <value>الفراغ</value>
+  </data>
+  <data name="Statuses" xml:space="preserve">
+    <value>الأوضاع</value>
+  </data>
+  <data name="StatusGroup" xml:space="preserve">
+    <value>مجموعة الحالة</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>خضع</value>
+  </data>
+  <data name="SuperAdmin" xml:space="preserve">
+    <value>من المشرفين المميزين</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>إلى</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>تحديث</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>المستعمل</value>
+  </data>
+  <data name="UserProfile" xml:space="preserve">
+    <value>الملف الشخصي</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>نعم فعلا</value>
+  </data>
+  <data name="ResetPassword" xml:space="preserve">
+    <value>إعادة ضبط كلمة المرور</value>
+  </data>
+  <data name="Books" xml:space="preserve">
+    <value>كتب</value>
+  </data>
+  <data name="Customer" xml:space="preserve">
+    <value>زبون</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>حذف</value>
+  </data>
+  <data name="InActive" xml:space="preserve">
+    <value>غير نشط</value>
+  </data>
+  <data name="PageAcess" xml:space="preserve">
+    <value>صفحة الوصول</value>
+  </data>
+  <data name="IsAddUpdate" xml:space="preserve">
+    <value>إضافة / تحديث</value>
+  </data>
+  <data name="IsDelete" xml:space="preserve">
+    <value>حذف</value>
+  </data>
+  <data name="IsView" xml:space="preserve">
+    <value>رأي</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>الحالة</value>
+  </data>
+  <data name="Book" xml:space="preserve">
+    <value>كتاب</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>قريب</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>تحميل</value>
+  </data>
+  <data name="GridView" xml:space="preserve">
+    <value>عرض الشبكة</value>
+  </data>
+  <data name="ListView" xml:space="preserve">
+    <value>عرض القائمة</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>بحث</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>عنوان</value>
+  </data>
+  <data name="Member" xml:space="preserve">
+    <value>عضو</value>
+  </data>
+  <data name="ActionName" xml:space="preserve">
+    <value>اسم العمل</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>رقم الهاتف</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>لغة</value>
+  </data>
+  <data name="Arabic" xml:space="preserve">
+    <value>عربى</value>
+  </data>
+  <data name="English" xml:space="preserve">
+    <value>الإنجليزية</value>
+  </data>
+  <data name="Author" xml:space="preserve">
+    <value>مؤلف</value>
+  </data>
+  <data name="BookTitle" xml:space="preserve">
+    <value>عنوان كتاب</value>
+  </data>
+  <data name="Genre" xml:space="preserve">
+    <value>نوع أدبي</value>
+  </data>
+  <data name="Interests" xml:space="preserve">
+    <value>الإهتمامات</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>موقعك</value>
+  </data>
+  <data name="Qty" xml:space="preserve">
+    <value>كيو تي</value>
+  </data>
+  <data name="Section" xml:space="preserve">
+    <value>الجزء</value>
+  </data>
+  <data name="Available" xml:space="preserve">
+    <value>متاح</value>
+  </data>
+  <data name="Borrowed" xml:space="preserve">
+    <value>اقترضت ، استعارت</value>
+  </data>
+  <data name="Sector" xml:space="preserve">
+    <value>قطاع</value>
+  </data>
+  <data name="FromDate" xml:space="preserve">
+    <value>من التاريخ</value>
+  </data>
+  <data name="ToDate" xml:space="preserve">
+    <value>ان يذهب في موعد</value>
+  </data>
+  <data name="CreatedDate" xml:space="preserve">
+    <value>تاريخ الإنشاء</value>
+  </data>
+  <data name="Comments" xml:space="preserve">
+    <value>تعليقات</value>
+  </data>
+  <data name="History" xml:space="preserve">
+    <value>التاريخ</value>
+  </data>
+  <data name="Information" xml:space="preserve">
+    <value>معلومات</value>
+  </data>
+  <data name="Message" xml:space="preserve">
+    <value>رسالة</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>تسجيل</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>تقارير</value>
+  </data>
+  <data name="Reviews" xml:space="preserve">
+    <value>التعليقات</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>إرسال</value>
+  </data>
+  <data name="View" xml:space="preserve">
+    <value>رأي</value>
+  </data>
+  <data name="InviteNewMember" xml:space="preserve">
+    <value>دعوة عضو جديد</value>
+  </data>
+  <data name="BookHistory" xml:space="preserve">
+    <value>كتاب التاريخ</value>
+  </data>
+  <data name="MemberHistory" xml:space="preserve">
+    <value>تاريخ العضو</value>
+  </data>
+  <data name="PickUpDate" xml:space="preserve">
+    <value>اختر تاريخا</value>
+  </data>
+  <data name="ReturnDate" xml:space="preserve">
+    <value>تاريخ العودة</value>
+  </data>
+  <data name="SpaceHistory" xml:space="preserve">
+    <value>تاريخ الفضاء</value>
+  </data>
+  <data name="BookingTitle" xml:space="preserve">
+    <value>عنوان الحجز</value>
+  </data>
+  <data name="NoOfPeople" xml:space="preserve">
+    <value>لا من الناس</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>إزالة</value>
+  </data>
+  <data name="Area" xml:space="preserve">
+    <value>منطقة</value>
+  </data>
+  <data name="BookingDate" xml:space="preserve">
+    <value>تاريخ الحجز</value>
+  </data>
+  <data name="BookingTime" xml:space="preserve">
+    <value>وقت الحجز</value>
+  </data>
+  <data name="DaysLeft" xml:space="preserve">
+    <value>ايام متبقية</value>
+  </data>
+  <data name="Favourite" xml:space="preserve">
+    <value>مفضل</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>عنوان</value>
+  </data>
+  <data name="AddComment" xml:space="preserve">
+    <value>أضف تعليق</value>
+  </data>
+  <data name="Comment" xml:space="preserve">
+    <value>تعليق</value>
+  </data>
+  <data name="BookInterest" xml:space="preserve">
+    <value>BookInterest</value>
+  </data>
+  <data name="LibraryRoomBooking" xml:space="preserve">
+    <value>حجز غرفة المكتبة</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>الملف الشخصي</value>
+  </data>
+  <data name="Security" xml:space="preserve">
+    <value>الأمان</value>
+  </data>
+  <data name="OneMonth" xml:space="preserve">
+    <value>1 شهر</value>
+  </data>
+  <data name="OneWeek" xml:space="preserve">
+    <value>أسبوع 1</value>
+  </data>
+  <data name="TwoWeeks" xml:space="preserve">
+    <value>2 أسابيع</value>
+  </data>
+  <data name="BookSpace" xml:space="preserve">
+    <value>كتاب الفضاء</value>
+  </data>
+  <data name="Gender" xml:space="preserve">
+    <value>جنس</value>
+  </data>
+  <data name="Female" xml:space="preserve">
+    <value>إناثا</value>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>الذكر</value>
+  </data>
+  <data name="SignUp" xml:space="preserve">
+    <value>سجل</value>
+  </data>
+  <data name="BookingArea" xml:space="preserve">
+    <value>منطقة الحجز</value>
+  </data>
+  <data name="BookSpaceTitle" xml:space="preserve">
+    <value>الملحقات هنا ويمكن العثور على أفضل ملحقات الكمبيوتر للكمبيوتر المحمول ، والشاشة ، والطابعة</value>
+  </data>
+  <data name="FromTime" xml:space="preserve">
+    <value>من وقت</value>
+  </data>
+  <data name="TotalAttendees" xml:space="preserve">
+    <value>عدد الحضور</value>
+  </data>
+  <data name="ToTime" xml:space="preserve">
+    <value>الى وقت</value>
+  </data>
+  <data name="ApplicationName_BackOffice" xml:space="preserve">
+    <value>المكتبة الذكية - BackOffice</value>
+  </data>
+  <data name="PageNotFound" xml:space="preserve">
+    <value>الصفحة غير موجودة</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>أهلا بك</value>
+  </data>
+  <data name="Notification" xml:space="preserve">
+    <value>إعلام</value>
+  </data>
+  <data name="NotAssign" xml:space="preserve">
+    <value>-</value>
+  </data>
+  <data name="BookProfile" xml:space="preserve">
+    <value>نشاط الحجز</value>
+  </data>
+  <data name="UserComments" xml:space="preserve">
+    <value>تعليقات المستخدم</value>
+  </data>
+  <data name="Approve" xml:space="preserve">
+    <value>يوافق</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+  <data name="Reschedule" xml:space="preserve">
+    <value>إعادة جدولة</value>
+  </data>
+  <data name="Hide" xml:space="preserve">
+    <value>إخفاء</value>
+  </data>
+  <data name="Show" xml:space="preserve">
+    <value>تبين</value>
+  </data>
+  <data name="SelectGenre" xml:space="preserve">
+    <value>حدد النوع</value>
+  </data>
+  <data name="SelectLocation" xml:space="preserve">
+    <value>اختر موقعا</value>
+  </data>
+  <data name="SelectSector" xml:space="preserve">
+    <value>اختر القطاع</value>
+  </data>
+  <data name="SelectMember" xml:space="preserve">
+    <value>اختر العضو</value>
+  </data>
+  <data name="SelectBookingArea" xml:space="preserve">
+    <value>حدد منطقة الحجز</value>
+  </data>
+  <data name="RequestDetail" xml:space="preserve">
+    <value>طلب التفاصيل</value>
+  </data>
+  <data name="ViewSpaceBookingRequests" xml:space="preserve">
+    <value>عرض كل طلب لمدة محددة</value>
+  </data>
+  <data name="BookDate" xml:space="preserve">
+    <value>تاريخ الكتاب</value>
+  </data>
+  <data name="Period" xml:space="preserve">
+    <value>فترة</value>
+  </data>
+  <data name="Rescheduleevent" xml:space="preserve">
+    <value>حدث إعادة الجدولة</value>
+  </data>
+  <data name="Accept" xml:space="preserve">
+    <value>قبول</value>
+  </data>
+  <data name="Decline" xml:space="preserve">
+    <value>انخفاض</value>
+  </data>
+  <data name="InviteNewMembers" xml:space="preserve">
+    <value>دعوة أعضاء جدد</value>
+  </data>
+  <data name="Todaysactivities" xml:space="preserve">
+    <value>كل الأنشطة</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>الكل</value>
+  </data>
+  <data name="Approved" xml:space="preserve">
+    <value>وافق</value>
+  </data>
+  <data name="BookingBy" xml:space="preserve">
+    <value>الحجز عن طريق</value>
+  </data>
+  <data name="Confirmed" xml:space="preserve">
+    <value>تم تأكيد</value>
+  </data>
+  <data name="Pending" xml:space="preserve">
+    <value>قيد الانتظار</value>
+  </data>
+  <data name="SelectDateRange" xml:space="preserve">
+    <value>حدد النطاق الزمني</value>
+  </data>
+  <data name="SelectRange" xml:space="preserve">
+    <value>اختر نطاقا</value>
+  </data>
+  <data name="BookHadToReturnNotificationDelayed" xml:space="preserve">
+    <value>اضطر {0} إلى إطارات هذا الكتاب</value>
+  </data>
+  <data name="BookHasToReturnNotification" xml:space="preserve">
+    <value>{0} يجب أن يرجع {1}</value>
+  </data>
+  <data name="BookReturnDelayedDayNotification" xml:space="preserve">
+    <value>قبل 0 يوم</value>
+  </data>
+  <data name="BookToBeReturnedNotificationTitle" xml:space="preserve">
+    <value>كتاب ليتم الرسمها</value>
+  </data>
+  <data name="Delayed" xml:space="preserve">
+    <value>مؤجل</value>
+  </data>
+  <data name="EventRequests" xml:space="preserve">
+    <value>طلبات الحدث</value>
+  </data>
+  <data name="ReturnToday" xml:space="preserve">
+    <value>العودة اليوم</value>
+  </data>
+  <data name="Messages" xml:space="preserve">
+    <value>رسائل</value>
+  </data>
+  <data name="Admin" xml:space="preserve">
+    <value>مشرف</value>
+  </data>
+  <data name="EnterYourMessage" xml:space="preserve">
+    <value>أدخل رسالتك</value>
+  </data>
+  <data name="SearchUsers" xml:space="preserve">
+    <value>بحث المستخدمين</value>
+  </data>
+  <data name="You" xml:space="preserve">
+    <value>أنت</value>
+  </data>
+  <data name="FullScreen" xml:space="preserve">
+    <value>تكبير الشاشة</value>
+  </data>
+  <data name="Select" xml:space="preserve">
+    <value>حدد {0}</value>
+  </data>
+  <data name="SendMessageTitle" xml:space="preserve">
+    <value>الملحقات هنا ويمكن العثور على أفضل ملحقات الكمبيوتر للكمبيوتر المحمول ، والشاشة ، والطابعة</value>
+  </data>
+  <data name="Reporting" xml:space="preserve">
+    <value>التقارير</value>
+  </data>
+  <data name="ActiveBorrorwers" xml:space="preserve">
+    <value>المقترضون النشطون</value>
+  </data>
+  <data name="ActiveInActive" xml:space="preserve">
+    <value>نشط نشط</value>
+  </data>
+  <data name="ViewProfile" xml:space="preserve">
+    <value>عرض الصفحة الشخصية</value>
+  </data>
+  <data name="OnTime" xml:space="preserve">
+    <value>في الوقت المحدد</value>
+  </data>
+  <data name="Booked" xml:space="preserve">
+    <value>حجز</value>
+  </data>
+  <data name="Bookreturndelayed" xml:space="preserve">
+    <value>تأجيلائة الكتاب</value>
+  </data>
+  <data name="Borrows" xml:space="preserve">
+    <value>يستعير</value>
+  </data>
+  <data name="MostActiveBorrower" xml:space="preserve">
+    <value>معظم المقترض النشط</value>
+  </data>
+  <data name="MostPopularAuthor" xml:space="preserve">
+    <value>المؤلف الاكثر شعبية</value>
+  </data>
+  <data name="MostPopularBook" xml:space="preserve">
+    <value>الكتاب الأكثر شعبية</value>
+  </data>
+  <data name="MostPopularGenre" xml:space="preserve">
+    <value>النوع الأكثر شيوعًا</value>
+  </data>
+  <data name="Mostpopulartimeforborrowingbooks" xml:space="preserve">
+    <value>الوقت الأكثر شعبية لاستعارة الكتب</value>
+  </data>
+  <data name="Mostpopularuserbookingrooms" xml:space="preserve">
+    <value>غرف المسافرين الشعبية الأكثر شعبية</value>
+  </data>
+  <data name="ReturningBooksontime" xml:space="preserve">
+    <value>العودة في الوقت المحدد</value>
+  </data>
+  <data name="Rooms" xml:space="preserve">
+    <value>غرف</value>
+  </data>
+  <data name="TotalBooks" xml:space="preserve">
+    <value>مجموع الكتب</value>
+  </data>
+  <data name="TotalBooksBorrowed" xml:space="preserve">
+    <value>مجموع الكتب المقترضة</value>
+  </data>
+  <data name="TotalBooksBorrowedthroughLibrary" xml:space="preserve">
+    <value>مجموع الكتب المقترضة من خلال المكتبة</value>
+  </data>
+  <data name="TotalRoomsBooked" xml:space="preserve">
+    <value>مجموع الغرف حجزها</value>
+  </data>
+  <data name="LibraryRoomBookings" xml:space="preserve">
+    <value>حجوزات غرفة المكتبة</value>
+  </data>
+  <data name="Master" xml:space="preserve">
+    <value>رئيس</value>
+  </data>
+  <data name="Members" xml:space="preserve">
+    <value>أفراد</value>
+  </data>
+  <data name="UserManagement" xml:space="preserve">
+    <value>إدارةالمستخدم</value>
+  </data>
+</root>

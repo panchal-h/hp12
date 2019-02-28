@@ -1,0 +1,81 @@
+﻿@using SmartLibrary.Admin.Classes
+@using SmartLibrary.Admin.Pages
+@model IEnumerable<BorrowedBook>
+
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a href="#event-requests" data-toggle="tab" data-url="@Url.Action(Actions.GetEventRequests, Controllers.Notification)">@SmartLibrary.Resources.General.EventRequests</a>
+    </li>
+    <li >
+        <a href="#return-today" data-toggle="tab">@SmartLibrary.Resources.General.ReturnToday</a>
+    </li>
+    <li>
+        <a href="#delayed" data-toggle="tab">@SmartLibrary.Resources.General.Delayed</a>
+    </li>
+</ul>
+<div class="tab-content">
+    <div class="tab-pane" id="return-today">
+        <div class="custom-scroll">
+            <div class="scroller-inner">
+                <ul class="notification-list">
+                    @foreach (var borrowedBook in Model.Where(b => b.ReturnDate.HasValue && b.ReturnDate.Value.Date == DateTime.Now.Date))
+                    {
+                        <li>
+                            <div class="image-wrapper">
+                                <img src="@Url.Content("~/images/bookmark2.svg")" alt="" />
+                            </div>
+                            <span>@SmartLibrary.Resources.General.BookToBeReturnedNotificationTitle</span>
+                            <p>@SmartLibrary.Resources.General.BookHasToReturnNotification.SetArguments(borrowedBook.CustomerName, borrowedBook.BookName)</p>
+                            <a href="@(Rights.HasAccess(Controllers.Home, Actions.AllActivities) ? Url.Action(Actions.AllActivities, Controllers.Home, new { BorrowedBookId = EncryptionDecryption.EncryptByTripleDES(borrowedBook.ID.ToString()) }) : "#")" title=""><img src="@Url.Content("~/images/tail-right.svg")" alt="" /></a>
+                        </li>
+                    }
+                    @if (Model.Where(b => b.ReturnDate.HasValue && b.ReturnDate.Value.Date == DateTime.Now.Date).Count() == 0)
+                    {
+                        <li class="lblNoRecord">                           
+                            <label>@SmartLibrary.Resources.Messages.NoReturnToday</label>                       
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <div class="tab-pane" id="delayed">
+        <div class="custom-scroll">
+            <div class="scroller-inner">
+                <ul class="notification-list with-btn">
+                    @foreach (var borrowedBook in Model.Where(b => b.ReturnDate.HasValue && b.ReturnDate.Value.Date < DateTime.Now.Date))
+                    {
+                        <li>
+                            <div class="image-wrapper">
+                                <img src="@Url.Content("~/images/bookmark2.svg")" alt="" />
+                            </div>
+                            <span>@borrowedBook.BookName</span>
+                            <p>@SmartLibrary.Resources.General.BookHadToReturnNotificationDelayed.SetArguments(borrowedBook.CustomerName)</p>
+                            <span class="days">@SmartLibrary.Resources.General.BookReturnDelayedDayNotification.SetArguments(Math.Ceiling(DateTime.Now.Date.Subtract(borrowedBook.ReturnDate.Value).TotalDays))</span>
+                            <a href="@(Rights.HasAccess(Controllers.Home, Actions.AllActivities) ? Url.Action(Actions.AllActivities, Controllers.Home, new { BorrowedBookId = EncryptionDecryption.EncryptByTripleDES(borrowedBook.ID.ToString()) }) : "#")" title=""><img src="@Url.Content("~/images/tail-right.svg")" alt="" /></a>
+                        </li>
+                    }
+                    @if (Model.Where(b => b.ReturnDate.HasValue && b.ReturnDate.Value.Date < DateTime.Now.Date).Count() == 0)
+                    {
+                        <li class="lblNoRecord">                         
+                            <label>@SmartLibrary.Resources.Messages.NoDelayed</label>                           
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane custom-loading active" id="event-requests">
+        <div id="floatingBarsG">
+            <div class="blockG" id="rotateG_01"></div>
+            <div class="blockG" id="rotateG_02"></div>
+            <div class="blockG" id="rotateG_03"></div>
+            <div class="blockG" id="rotateG_04"></div>
+            <div class="blockG" id="rotateG_05"></div>
+            <div class="blockG" id="rotateG_06"></div>
+            <div class="blockG" id="rotateG_07"></div>
+            <div class="blockG" id="rotateG_08"></div>
+        </div>
+    </div>
+</div>
