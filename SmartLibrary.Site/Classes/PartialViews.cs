@@ -24,64 +24,64 @@ namespace SmartLibrary.Site.Pages
         /// <summary>
         /// Access Denied Partial View
         /// </summary>
-        public const string AccessDenied = "_accessdenied";
+        public static string AccessDenied { get { return "_accessdenied"; } }
 
         /// <summary>
         /// InviteCustomer
         /// </summary>
-        public const string InviteCustomer = "_InviteCustomer";
+        public static string InviteCustomer { get { return "_InviteCustomer"; } }
 
         #region Books
 
         /// <summary>
         /// Manage Book
         /// </summary>
-        public const string ManageBook = "_managebook";
+        public static string ManageBook { get { return "_managebook"; } }
 
         /// <summary>
         /// The BookGrid
         /// </summary>
-        public const string BookGrid = "_BookGrid";
+        public static string BookGrid { get { return "_BookGrid"; } }
 
         /// <summary>
         /// The BookGrid
         /// </summary>
-        public const string BookDetailSideBar = "_BookDetailSideBar";
+        public static string BookDetailSideBar { get { return "_BookDetailSideBar"; } }
 
         /// <summary>
         /// The BorrowerDetails
         /// </summary>
-        public const string BorrowerDetails = "_BorrowerDetails";
+        public static string BorrowerDetails { get { return "_BorrowerDetails"; } }
 
         /// <summary>
         /// The Comment
         /// </summary>
-        public const string CommentList = "_CommentList";
+        public static string CommentList { get { return "_CommentList"; } }
 
         /// <summary>
         /// The Book Detail View Reload
         /// </summary>
-        public const string BookDetailViewReload = "_BookDetailViewReload";
+        public static string BookDetailViewReload { get { return "_BookDetailViewReload"; } }
 
         /// <summary>
         /// The Notifications Side Bar
         /// </summary>
-        public const string Notifications = "_notification";
+        public static string Notifications { get { return "_notification"; } }
 
         /// <summary>
         /// The Messages
         /// </summary>
-        public const string MessageList = "_messagelist";
+        public static string MessageList { get { return "_messagelist"; } }
 
         /// <summary>
         /// The Chat Users List
         /// </summary>
-        public const string ChatList = "_chatlist";
+        public static string ChatList { get { return "_chatlist"; } }
 
         /// <summary>
         /// The Chat Users List
         /// </summary>
-        public const string SendMessageModal = "_sendmessage";
+        public static string SendMessageModal { get { return "_sendmessage"; } }
         #endregion
 
         #region SpaceBookings
@@ -89,17 +89,17 @@ namespace SmartLibrary.Site.Pages
         /// <summary>
         ///  Book the Space
         /// </summary>
-        public const string BookSpace = "_bookspace";
+        public static string BookSpace { get { return "_bookspace"; } }
 
         /// <summary>
         ///  Book the Space
         /// </summary>
-        public const string SpaceBookingRequests = "_BookingRequests";
+        public static string SpaceBookingRequests { get { return "_BookingRequests"; } }
 
         /// <summary>
         ///  Book the Space
         /// </summary>
-        public const string ViewSpaceStatus = "_ViewSpaceStatus";
+        public static string ViewSpaceStatus { get { return "_ViewSpaceStatus"; } }
 
         #endregion
     }

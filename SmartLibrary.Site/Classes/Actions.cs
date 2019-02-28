@@ -24,194 +24,194 @@ namespace SmartLibrary.Site.Pages
         /// <summary>
         /// Index View
         /// </summary>
-        public const string Index = "index";
+        public static string Index { get { return "index"; } }
 
         /// <summary>
         /// Sign Up
         /// </summary>
-        public const string StaffSignUp = "staffsignup";
+        public static string StaffSignUp { get { return "staffsignup"; } }
 
         /// <summary>
         /// Sign Up
         /// </summary>
-        public const string SignUp = "signup";
+        public static string SignUp { get { return "signup"; } }
 
         /// <summary>
         /// Is Session Expired
         /// </summary>
-        public const string IsSessionExpired = "is-session-expired";
+        public static string IsSessionExpired { get { return "is-session-expired"; } }
 
         /// <summary>
         /// Forgot Password View
         /// </summary>
-        public const string ForgotPassword = "forgot-password";
+        public static string ForgotPassword { get { return "forgot-password"; } }
 
         /// <summary>
         /// Change Password View
         /// </summary>
-        public const string ChangePassword = "change-password";
+        public static string ChangePassword { get { return "change-password"; } }
 
         /// <summary>
         /// The reset password
         /// </summary>
-        public const string ResetPassword = "Resetpassword";
+        public static string ResetPassword { get { return "Resetpassword"; } }
 
         /// <summary>
         /// Logout View
         /// </summary>
-        public const string Logout = "logout";
+        public static string Logout { get { return "logout"; } }
 
         /// <summary>
         /// Session Expired
         /// </summary>
-        public const string SessionExpired = "session-expired";
+        public static string SessionExpired { get { return "session-expired"; } }
 
         /// <summary>
         /// My Profile View
         /// </summary>
-        public const string MyProfile = "my-profile";
+        public static string MyProfile { get { return "my-profile"; } }
 
         /// <summary>
         /// Personal Information View
         /// </summary>
-        public const string PersonalInformation = "personal-information";
+        public static string PersonalInformation { get { return "personal-information"; } }
 
         /// <summary>
         /// Access Denied Ajax
         /// </summary>
-        public const string AccessDeniedAjax = "access-denied-ajax";
+        public static string AccessDeniedAjax { get { return "access-denied-ajax"; } }
 
         /// <summary>
         /// The session expired for customer
         /// </summary>
-        public const string SessionExpiredForCustomer = "session-expired-for-customer";
+        public static string SessionExpiredForCustomer { get { return "session-expired-for-customer"; } }
 
         /// <summary>
         /// Access Denied
         /// </summary>
-        public const string AccessDenied = "access-denied";
+        public static string AccessDenied { get { return "access-denied"; } }
 
         /// <summary>
         /// Set Language
         /// </summary>
-        public const string SetLanguage = "set-language";
+        public static string SetLanguage { get { return "set-language"; } }
 
         /// <summary>
         /// InviteCustomer
         /// </summary>
-        public const string InviteCustomer = "invitecustomer";
+        public static string InviteCustomer { get { return "invitecustomer"; } }
 
         /// <summary>
         ///  View of the Book Status
         /// </summary>
-        public const string ViewSpaceStatus = "View-Space-Status";
+        public static string ViewSpaceStatus { get { return "View-Space-Status"; } }
 
         /// <summary>
         /// All Activity
         /// </summary>
-        public const string AllActivities = "All-Activities";
+        public static string AllActivities { get { return "All-Activities"; } }
 
         /// <summary>
         /// All Activity List
         /// </summary>
-        public const string AllActivitiesList = "All-Activity-List"; 
+        public static string AllActivitiesList { get { return "All-Activity-List"; } }
 
         /// <summary>
         /// Notify Me
         /// </summary>
-        public const string AddNotifyMe = "Add-Notify-Me";
+        public static string AddNotifyMe { get { return "Add-Notify-Me"; } }
 
         /// <summary>
         /// Staff Login View
         /// </summary>
-        public const string StaffLogin = "StaffLogin";
+        public static string StaffLogin { get { return "StaffLogin"; } }
 
         /// <summary>
         /// Staff Login View
         /// </summary>
-        public const string StaffDirectLogin = "StaffDirectLogin";
+        public static string StaffDirectLogin { get { return "StaffDirectLogin"; } }
 
         /// <summary>
         /// Active Directory Login View
         /// </summary>
-        public const string ActiveDirectoryLogin = "ActiveDirectoryLogin";
+        public static string ActiveDirectoryLogin { get { return "ActiveDirectoryLogin"; } }
 
         #region Books
 
         /// <summary>
         /// Book
         /// </summary>
-        public const string Book = "Manage-Book";
+        public static string Book { get { return "Manage-Book"; } }
 
         /// <summary>
         /// Book List
         /// </summary>
-        public const string BookList = "Book-List-View";
+        public static string BookList { get { return "Book-List-View"; } }
 
         /// <summary>
         /// Book Grid
         /// </summary>
-        public const string BookGrid = "Book-Grid-View";
+        public static string BookGrid { get { return "Book-Grid-View"; } }
 
         /// <summary>
         /// Get Book Detail by ISBN
         /// </summary>
-        public const string GetBookByISBN = "get-book-by-isbn";
+        public static string GetBookByISBN { get { return "get-book-by-isbn"; } }
 
         /// <summary>
         /// Book Detail Side Bar
         /// </summary>
-        public const string BookDetailSideBar = "BookDetailSideBar";
+        public static string BookDetailSideBar { get { return "BookDetailSideBar"; } }
 
         /// <summary>
         /// Book Detail View
         /// </summary>
-        public const string BookDetailView = "Book-Detail-View";
+        public static string BookDetailView { get { return "Book-Detail-View"; } }
 
         /// <summary>
         /// Borrowe rDetails View
         /// </summary>
-        public const string BorrowerDetails = "BorrowerDetails";
+        public static string BorrowerDetails { get { return "BorrowerDetails"; } }
 
         /// <summary>
         /// Add Book Interest 
         /// </summary>
-        public const string AddBookInterest = "Add-Book-Interest";
+        public static string AddBookInterest { get { return "Add-Book-Interest"; } }
 
         /// <summary>
         /// Remove Book Interest 
         /// </summary>
-        public const string RemoveBookInterest = "Remove-Book-Interest";
+        public static string RemoveBookInterest { get { return "Remove-Book-Interest"; } }
 
         /// <summary>
         /// Current Book Status
         /// </summary>
-        public const string CurrentBookStatus = "Current-Book-Status";
+        public static string CurrentBookStatus { get { return "Current-Book-Status"; } }
 
         /// <summary>
         /// BorrowBook
         /// </summary>
-        public const string BorrowBook = "Borrow-Book";
+        public static string BorrowBook { get { return "Borrow-Book"; } }
 
         /// <summary>
         /// Add Comment
         /// </summary>
-        public const string AddComment = "Add-Comment";
+        public static string AddComment { get { return "Add-Comment"; } }
 
         /// <summary>
         /// Comment List
         /// </summary>
-        public const string CommentList = "Comment-List";
+        public static string CommentList { get { return "Comment-List"; } }
 
         /// <summary>
         /// Book Detail View reload
         /// </summary>
-        public const string BookDetailViewReload = "BookDetailViewReload";
+        public static string BookDetailViewReload { get { return "BookDetailViewReload"; } }
 
         /// <summary>
         /// Book History.
         /// </summary>
-        public const string BookProfile = "Book-Profile";
+        public static string BookProfile { get { return "Book-Profile"; } }
         #endregion
 
         #region UserProfile
@@ -219,7 +219,7 @@ namespace SmartLibrary.Site.Pages
         /// <summary>
         /// User Profile
         /// </summary>
-        public const string UserProfile = "userprofile";
+        public static string UserProfile { get { return "userprofile"; } }
 
         #endregion UserProfile
 
@@ -228,22 +228,22 @@ namespace SmartLibrary.Site.Pages
         /// <summary>
         /// The Space Bookings
         /// </summary>
-        public const string LibraryRoomBookings = "library-room-bookings";
+        public static string LibraryRoomBookings { get { return "library-room-bookings"; } }
 
         /// <summary>
         ///  Book the Space
         /// </summary>
-        public const string BookSpace = "Book-Space";
+        public static string BookSpace { get { return "Book-Space"; } }
 
         /// <summary>
         ///  Space Booking Requests
         /// </summary>
-        public const string SpaceBookingRequests = "Space-Booking-Requests";
+        public static string SpaceBookingRequests { get { return "Space-Booking-Requests"; } }
 
         /// <summary>
         ///  Space Booking Requests
         /// </summary>
-        public const string GetSpaceBookingRequestTimings = "Space-Booking-Requests-Timings";
+        public static string GetSpaceBookingRequestTimings { get { return "Space-Booking-Requests-Timings"; } }
 
         #endregion
 
@@ -252,12 +252,12 @@ namespace SmartLibrary.Site.Pages
         /// <summary>
         /// Get New Notification Count
         /// </summary>
-        public const string GetNewNotificationCount = "Get-New-Notification-Count";
+        public static string GetNewNotificationCount { get { return "Get-New-Notification-Count"; } }
 
         /// <summary>
         ///  Get Notifications
         /// </summary>
-        public const string GetNotifications = "Get-Notifications";
+        public static string GetNotifications { get { return "Get-Notifications"; } }
 
         #endregion
 
@@ -266,27 +266,27 @@ namespace SmartLibrary.Site.Pages
         /// <summary>
         /// The Get Messages
         /// </summary>
-        public const string GetMessages = "get-messages";
+        public static string GetMessages { get { return "get-messages"; } }
 
         /// <summary>
         /// The Send Messages
         /// </summary>
-        public const string SendMessage = "send-message";
+        public static string SendMessage { get { return "send-message"; } }
 
         /// <summary>
         /// Chat list
         /// </summary>
-        public const string GetChatList = "get-chat-list";
+        public static string GetChatList { get { return "get-chat-list"; } }
 
         /// <summary>
         /// send message modal
         /// </summary>
-        public const string SendMessageModal = "send-message-modal";
+        public static string SendMessageModal { get { return "send-message-modal"; } }
 
         /// <summary>
         /// Get New Message Count
         /// </summary>
-        public const string GetNewMessageCount = "Get-New-Message-Count";
+        public static string GetNewMessageCount { get { return "Get-New-Message-Count"; } }
         #endregion
 
         #region :: Error Page ::
@@ -294,17 +294,17 @@ namespace SmartLibrary.Site.Pages
         /// <summary>
         /// Page not found Action
         /// </summary>
-        public const string PageNotFound = "page-not-found";
+        public static string PageNotFound { get { return "page-not-found"; } }
 
         /// <summary>
         /// UnAuthorizePage
         /// </summary>
-        public const string UnAuthorizePage = "Un-Authorize";
+        public static string UnAuthorizePage { get { return "Un-Authorize"; } }
 
         /// <summary>
         /// UnAuthorizePage
         /// </summary>
-        public const string ErrorPage = "error";
+        public static string ErrorPage { get { return "error"; } }
 
         #endregion
     }

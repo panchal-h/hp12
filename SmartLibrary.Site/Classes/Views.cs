@@ -24,69 +24,69 @@ namespace SmartLibrary.Site.Pages
         /// <summary>
         /// Index View
         /// </summary>
-        public const string Index = "index";
+        public static string Index { get { return "index"; } }
 
         /// <summary>
         /// Manage view
         /// </summary>
-        public const string Manage = "manage";
+        public static string Manage { get { return "manage"; } }
 
         /// <summary>
         /// Profile view
         /// </summary>
-        public const string Profile = "Profile";
+        public static string Profile { get { return "Profile"; } }
 
         /// <summary>
         /// Forgot Password View
         /// </summary>
-        public const string ForgotPassword = "forgotpassword";
+        public static string ForgotPassword { get { return "forgotpassword"; } }
 
         /// <summary>
         /// Change Password View
         /// </summary>
-        public const string ChangePassword = "changepassword";
+        public static string ChangePassword { get { return "changepassword"; } }
 
         /// <summary>
         /// The reset password
         /// </summary>
-        public const string ResetPassword = "resetpassword";
+        public static string ResetPassword { get { return "resetpassword"; } }
 
         /// <summary>
         /// Session Expired
         /// </summary>
-        public const string SessionExpired = "sessionexpired";
+        public static string SessionExpired { get { return "sessionexpired"; } }
 
         /// <summary>
         /// Access Denied
         /// </summary>
-        public const string AccessDenied = "accessdenied";
+        public static string AccessDenied { get { return "accessdenied"; } }
 
         /// <summary>
         /// Staff Login
         /// </summary>
-        public const string StaffLogin = "StaffLogin";
+        public static string StaffLogin { get { return "StaffLogin"; } }
 
         #region Books
 
         /// <summary>
         /// Book List
         /// </summary>
-        public const string BookList = "Book-List-View";
+        public static string BookList { get { return "Book-List-View"; } }
 
         /// <summary>
         /// Book Grid
         /// </summary>
-        public const string BookGrid = "Book-Grid-View";
+        public static string BookGrid { get { return "Book-Grid-View"; } }
 
         /// <summary>
         /// SignUp
         /// </summary>
-        public const string SignUp = "SignUp";
+        public static string SignUp { get { return "SignUp"; } }
 
         /// <summary>
         /// Book History.
         /// </summary>
-        public const string BookProfile = "Book-Profile";
+        public static string BookProfile { get { return "Book-Profile"; } }
 
         #endregion
 
@@ -95,7 +95,7 @@ namespace SmartLibrary.Site.Pages
         /// <summary>
         /// Space Booking list
         /// </summary>
-        public const string ManageSpaceBooking = "ManageSpaceBooking";
+        public static string ManageSpaceBooking { get { return "ManageSpaceBooking"; } }
 
         #endregion
 
@@ -104,23 +104,23 @@ namespace SmartLibrary.Site.Pages
         /// <summary>
         /// Message View page
         /// </summary>
-        public const string Message = "Message";
+        public static string Message { get { return "Message"; } }
 
         #endregion
 
         /// <summary>
         /// Page not found view
         /// </summary>
-        public const string PageNotFound = "PageNotfound";
+        public static string PageNotFound { get { return "PageNotfound"; } }
 
         /// <summary>
         /// UnAuthorized
         /// </summary>
-        public const string UnAuthorizePage = "UnAuthorized";
+        public static string UnAuthorizePage { get { return "UnAuthorized"; } }
 
         /// <summary>
         /// UnAuthorized
         /// </summary>
-        public const string ErrorPage = "ErrorPage";
+        public static string ErrorPage { get { return "ErrorPage"; } }
     }
 }
