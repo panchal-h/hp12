@@ -725,7 +725,7 @@ namespace SmartLibrary.Infrastructure
         /// <returns>return DBNull value</returns>
         public static object ToDBNullValue(this string value)
         {
-            if (value == null | string.IsNullOrEmpty(value))
+            if (value == null || string.IsNullOrEmpty(value))
             {
                 return System.DBNull.Value;
             }
