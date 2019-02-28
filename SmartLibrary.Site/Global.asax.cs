@@ -68,15 +68,6 @@ namespace SmartLibrary.Site
         }
 
         /// <summary>
-        /// Application Start Event
-        /// </summary>
-        /// <param name="sender">sender value</param>
-        /// <param name="e">e value</param>
-        protected void Session_Start(object sender, EventArgs e)
-        {
-        }
-
-        /// <summary>
         /// Application Post Authorize Request
         /// </summary>
         protected void Application_PostAuthorizeRequest()
